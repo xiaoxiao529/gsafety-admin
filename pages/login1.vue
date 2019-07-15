@@ -1,0 +1,182 @@
+<template>
+  <div class="login-wrapper">
+    <div class="login-box">
+      <div class="left-img">
+        <img src="/img/login/img1.png" />
+      </div>
+      <div class="loginForm-wrap">
+        <el-form :model="loginForm" :rules="rules" ref="loginForm" class="loginForm">
+          <h3 class="title">辰安天泽后台管理系统</h3>
+          <el-form-item prop="name">
+            <el-input
+              type="text"
+              v-model="loginForm.name"
+              autocomplete="off"
+              prefix-icon="el-icon-user"
+              placeholder="请输入您的账号"
+            ></el-input>
+          </el-form-item>
+          <el-form-item prop="passWord">
+            <el-input
+              type="password"
+              v-model="loginForm.passWord"
+              autocomplete="off"
+              prefix-icon="el-icon-unlock"
+              placeholder="请输入6~18位密码"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" @click=" submitForm('loginForm')">登 &nbsp;&nbsp;录</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <img src="/img/login/bg1.png" class="bg bg1" />
+    <img src="/img/login/bg2.png" class="bg bg2" />
+  </div>
+</template>
+
+<script>
+import md5 from "js-md5";
+
+export default {
+  fetch({ redirect }) {
+    return redirect("/login1");
+  },
+  layout: "login",
+  data() {
+    return {
+      salt: "true",
+      loginForm: {
+        name: "",
+        passWord: ""
+      },
+      rules: {
+        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+        passWord: [
+          { required: true, message: "请输入密码", trigger: "blur" },
+          { min: 6, max: 18, message: "请输入6-18位密码", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          let pwdOld = this.loginForm.passWord + this.salt;
+          md5(pwdOld);
+          let hash = md5.create();
+          hash.update(pwdOld);
+          let pwd = hash.hex(pwdOld);
+          this.$axios
+            .$POST({
+              api_name: "login",
+              params: {
+                loginName: this.loginForm.name,
+                password: pwd,
+                sysCode: "manager",
+                client: "WEB"
+              }
+            })
+            .then(res => {
+              console.log(JSON.stringify(res.data));
+              if (res.data.code == "success") {
+                this.$router.push({
+                  name: "index"
+                });
+              }
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+.login-box {
+  width: 1342px;
+  height: 670px;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0px 5px 20px 0px rgba(0, 0, 0, 0.09);
+  margin: 90px auto;
+  display: flex;
+  position: relative;
+  z-index: 1;
+}
+.login-wrapper {
+  position: relative;
+  .left-img {
+    width: 555px;
+    height: 670px;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .loginForm-wrap {
+    width: 375px;
+    margin: 0 auto;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+  /deep/.loginForm {
+    width: 100%;
+    text-align: center;
+    .title {
+      font-size: 26px;
+      font-weight: bold;
+      color: rgba(28, 119, 255, 1);
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .el-form-item {
+      margin-bottom: 33px;
+      .el-input__prefix {
+        left: 15px;
+        .el-input__icon {
+          color: #667480;
+          font-size: 19px;
+        }
+      }
+      input {
+        font-size: 16px;
+        text-indent: 20px;
+        height: 50px;
+        line-height: 50px;
+        background: transparent;
+      }
+      .el-button {
+        width: 100%;
+        height: 48px;
+        font-size: 16px;
+        font-weight: 400;
+        background: #1c77ff;
+        &:hover {
+          background: #5697f8;
+        }
+      }
+    }
+  }
+  .bg {
+    position: absolute;
+    width: 380px;
+    &.bg1 {
+      top: 0;
+      left: 13px;
+      z-index: 0;
+    }
+    &.bg2 {
+      bottom: 0px;
+      right: -200px;
+      z-index: 0;
+    }
+  }
+}
+</style>

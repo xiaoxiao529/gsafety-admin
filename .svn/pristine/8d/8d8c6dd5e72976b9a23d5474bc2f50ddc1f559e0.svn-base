@@ -1,0 +1,720 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>硬件库存</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>硬件库存</h3>
+        </el-col>
+        <el-col :span="12" class="add-btn-style">
+          <el-button type="success" icon="el-icon-plus" @click="inStock">入库</el-button>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="硬件ID:" label-width="70px">
+            <el-input placeholder="请输入硬件ID" v-model="formData.deviceId"></el-input>
+          </el-form-item>
+          <el-form-item label="硬件名称:" label-width="95px">
+            <el-input placeholder="请输入硬件名称" v-model="formData.deviceName"></el-input>
+          </el-form-item>
+          <el-form-item label="硬件父类:" label-width="95px">
+            <el-select
+              v-model.trim="formData.deviceSysVal"
+              placeholder="请选择"
+              @change="getChildrenHardwareType"
+            >
+              <el-option
+                v-for="item of deviceSys"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="硬件子类:" label-width="95px">
+            <el-select
+              v-model.trim="formData.device"
+              placeholder="请选择"
+              @change="setHardwareTypeValue"
+            >
+              <el-option
+                v-for="item in optsTemp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="品牌:" label-width="65px">
+            <el-input placeholder="品牌" v-model="formData.brand"></el-input>
+          </el-form-item>
+          <el-form-item label="存管状态:" label-width="95px">
+            <el-select v-model="formData.repStatus" placeholder="请选择">
+              <el-option
+                v-for="item of repStsList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="最后申请人:" label-width="100px">
+            <el-input placeholder="请输入最后申请人" v-model="formData.applyerPerson"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请类型:" label-width="120px">
+            <el-input placeholder="最后申请类型" v-model="formData.applyStatus"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请项目:" label-width="120px">
+            <el-input placeholder="请输入最后申请项目" v-model="formData.applyProject"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请运营中心:" label-width="145px">
+            <el-input placeholder="请输入最后申请运营中心" v-model="formData.orgCode"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请单位:" label-width="115px">
+            <el-input placeholder="请输入最后申请单位" v-model="formData.unitId"></el-input>
+          </el-form-item>
+          <el-form-item label label-width="15px" style="width: 140px">
+            <el-button type="primary" size="small" @click="getDeviceRepositoryPage('search')">查询</el-button>
+            <el-button size="small" @click="reset">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table
+            v-loading.lock="isLoading"
+            :data="tableData"
+            stripe
+            show-overflow-tooltip
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="30" :selectable="selectInit"></el-table-column>
+            <el-table-column label="硬件ID" prop="deviceId" show-overflow-tooltip min-width="6%"></el-table-column>
+            <el-table-column label="硬件名称" prop="deviceName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column
+              label="硬件类型"
+              prop="deviceTypeName"
+              show-overflow-tooltip
+              min-width="8%"
+            ></el-table-column>
+            <el-table-column label="厂家" prop="factory" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="型号" prop="model" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column
+              label="存管状态"
+              prop="repStatus"
+              show-overflow-tooltip
+              min-width="6%"
+              :filters="repStsList"
+              :filter-method="filterTag"
+              filter-placement="bottom-end"
+            >
+              <template slot-scope="scope">
+                <div class="stock-p-wrap">{{showLabel(scope.row.repStatus,repStsList)}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="最后申请信息" show-overflow-tooltip min-width="15%">
+              <template slot-scope="scope">
+                <div class="stock-p-wrap">
+                  <p>申请类型：{{showLabel(scope.row.applyType,applyTypeList)}}</p>
+                  <p>&nbsp;&nbsp;申请人：{{scope.row.applyPerson || '--'}}</p>
+                  <p>申请单位：{{scope.row.applyUnit || '--'}}</p>
+                  <p>申请项目：{{scope.row.applyProject || '--'}}</p>
+                </div>
+              </template>
+            </el-table-column>
+            <!--            <el-table-column label="创建时间" prop="createTime" show-overflow-tooltip min-width="8%"></el-table-column>-->
+            <el-table-column label="操作" show-overflow-tooltip align="center" min-width="10%">
+              <template slot-scope="scope">
+                <el-link
+                  type="primary"
+                  @click="viewEcode(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus != 2"
+                >二维码</el-link>
+                <el-link
+                  type="primary"
+                  @click="setupInfo(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus === 1"
+                >安装信息</el-link>
+                <el-link
+                  type="primary"
+                  @click="returnStock(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus === 1"
+                >回退入库</el-link>
+                <el-link
+                  type="primary"
+                  @click="sellingStock(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus === 0"
+                >销库</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="page-footer">
+            <div class="pf-left">
+              <span class="span-yx">已选({{multipleSelection.length}})</span>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="batchOutStock"
+                :disabled="multipleSelection.length == 0?true:false"
+              >批量出库</el-button>
+              <el-button
+                type="primary"
+                size="mini"
+                @click="batchExportOutStock"
+                :disabled="multipleSelection.length == 0?true:false"
+              >批量导出excel</el-button>
+            </div>
+            <div class="pf-right">
+              <Pagination
+                :widgetInfo="widgetInfo"
+                v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--    二维码弹出框-->
+    <el-dialog title="二维码" :visible.sync="dialogQrcodeVisible" width="300px">
+      <div id="dialogQrcode"></div>
+    </el-dialog>
+    <div id="qrcode" style="display: none"></div>
+    <!--    出库-->
+    <out-stock ref="outStock" @sureHandel="outStockHandel"></out-stock>
+    <!--    入库-->
+    <in-stock ref="inStock" @sureHandel="outStockHandel"></in-stock>
+    <!--    安装信息-->
+    <setup-info ref="stepInfo"></setup-info>
+    <!--    提示弹框-->
+    <tips-diglog :message="message" ref="tipDiloag" @loadData="getDeviceRepositoryPage('load')"></tips-diglog>
+  </div>
+</template>
+<script>
+import Pagination from "~/components/Pagination";
+import OutStock from "~/pages/hardwareStock/outStock";
+import InStock from "~/pages/hardwareStock/inStock";
+import TipsDiglog from "~/pages/hardwareStock/tipsDiglog";
+import SetupInfo from "~/pages/hardwareStock/setupInfo";
+import ApiConfig from "../../config/api";
+export default {
+  components: {
+    Pagination,
+    OutStock,
+    InStock,
+    SetupInfo,
+    TipsDiglog
+  },
+  data() {
+    return {
+      dialogReurnVisible: false, //回退入库弹出
+      dialogDelVisible: false, //销库弹出框
+      dialogQrcodeVisible: false, //二维码
+      optTitle: null,
+      labelPosition: "top",
+      isLoading: false,
+      hardwareTypeId: null, //删除的主键id
+      optMode: null,
+      formData: {
+        deviceId: "",
+        deviceName: "",
+        brand: "",
+        repStatus: "",
+        deviceSysVal: "00000000",
+        device: "00000000",
+        deviceTypeCodes: ""
+      }, //查询的formData
+      deviceSys: [
+        {
+          value: "00000000",
+          label: "全部"
+        }
+      ],
+      optsTemp: [
+        {
+          value: "00000000",
+          label: "全部"
+        }
+      ],
+      hardwareTypeTreeList: [],
+      tableData: [], //table查询结果
+      parentTypeNameList: [], //父类型树
+      loading: true,
+      plan: {},
+      widgetInfo: {
+        pageSize: 10,
+        pageNo: 1,
+        total: 0
+      },
+      repStsList: [
+        {
+          value: 0,
+          label: "已入库",
+          text: "已入库"
+        },
+        {
+          value: 1,
+          label: "已出库",
+          text: "已出库"
+        },
+        {
+          value: 2,
+          label: "已销库",
+          text: "已销库"
+        }
+      ],
+      applyTypeList: [
+        {
+          value: "0",
+          label: "运营中心"
+        },
+        {
+          value: "1",
+          label: "企业"
+        },
+        {
+          value: "2",
+          label: "其它"
+        }
+      ],
+
+      rules: {
+        parentCode: [
+          { required: true, message: "请选择父类型", trigger: "change" }
+        ],
+        typeName: [
+          { required: true, message: "硬件类型不能为空", trigger: "blur" },
+          { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "blur" }
+        ],
+        code: [
+          { required: true, message: "硬件code不能为空", trigger: "blur" },
+          { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "blur" }
+        ]
+      },
+      checkAll: false,
+      isIndeterminate: false,
+      qrcodeObj: {}, // 二维码配置
+      multipleSelection: [], //选中
+      azDeviceId: null,
+      message: {
+        setType: "",
+        deviceId: ""
+      }
+    };
+  },
+  created() {
+    const that = this;
+  },
+  mounted() {
+    const that = this;
+    that.getHardwareTypeTree();
+    that.initCreateQrcode();
+  },
+  computed: {},
+  methods: {
+    /**
+     * 入库
+     */
+    inStock() {
+      const that = this;
+      that.$refs.inStock.initInStock();
+    },
+
+    /**
+     * 出库确定按钮事件
+     */
+    outStockHandel() {
+      const that = this;
+      that.getDeviceRepositoryPage("search");
+    },
+
+    /**
+     * 销库
+     * @param index
+     * @param row
+     */
+    sellingStock(index, row) {
+      const that = this;
+      that.$refs.tipDiloag.showDialog();
+      that.message.setType = "destroy";
+      that.message.deviceId = row.deviceId;
+      console.log(11, that.message);
+    },
+    /**
+     * 回退入库
+     * @param index
+     * @param row
+     */
+    returnStock(index, row) {
+      const that = this;
+      that.message.setType = "back";
+      that.message.deviceId = row.deviceId;
+      that.$refs.tipDiloag.showDialog();
+    },
+    /**
+     * 硬件类型全部数据
+     */
+    getHardwareTypeTree() {
+      const that = this;
+      that.$axios.$GET({ api_name: "getHardwareTypeTree" }).then(res => {
+        if (res.data.code == "success") {
+          that.hardwareTypeTreeList = res.data.data;
+          //加载分类
+          if (
+            null != that.hardwareTypeTreeList &&
+            that.hardwareTypeTreeList.length > 0
+          ) {
+            that.hardwareTypeTreeList.forEach(item => {
+              let obj = {};
+              obj.label = item.typeName;
+              obj.value = item.code;
+              that.deviceSys.push(obj);
+            });
+          }
+        }
+      });
+    },
+    /**
+     * 联动硬件类型下级
+     * @param val
+     */
+    getChildrenHardwareType(val) {
+      const that = this;
+      that.optsTemp = [{ value: "00000000", label: "全部" }];
+      that.formData.device = that.optsTemp[0].value;
+      if ("00000000" === val) {
+        that.formData.deviceTypeCodes = "";
+        return;
+      }
+      if (
+        null != that.hardwareTypeTreeList &&
+        that.hardwareTypeTreeList.length > 0
+      ) {
+        for (let i = 0; i < that.hardwareTypeTreeList.length; i++) {
+          if (val === that.hardwareTypeTreeList[i].code) {
+            let children = that.hardwareTypeTreeList[i].children;
+            if (null != children && children.length > 0) {
+              let codes = [];
+              children.forEach(item => {
+                let obj = {};
+                obj.label = item.typeName;
+                obj.value = item.code;
+                that.optsTemp.push(obj);
+                codes.push(item.code);
+              });
+              that.formData.deviceTypeCodes = codes.join(",");
+            }
+            break;
+          }
+        }
+      }
+    },
+    /**
+     * 设置硬件分类的值
+     * @param val
+     */
+    setHardwareTypeValue(val) {
+      const that = this;
+      if ("00000000" === val) {
+        //根据上级的值，获取全部内容
+        if (
+          null != that.hardwareTypeTreeList &&
+          that.hardwareTypeTreeList.length > 0
+        ) {
+          for (let i = 0; i < that.hardwareTypeTreeList.length; i++) {
+            if (
+              that.formData.deviceSysVal === that.hardwareTypeTreeList[i].code
+            ) {
+              let children = that.hardwareTypeTreeList[i].children;
+              if (null != children && children.length > 0) {
+                let codes = [];
+                children.forEach(item => {
+                  codes.push(item.code);
+                });
+                that.formData.deviceTypeCodes = codes.join(",");
+              }
+              break;
+            }
+          }
+        }
+      } else {
+        that.formData.deviceTypeCodes = val;
+      }
+    },
+    /**
+     * 将存管状态和申请类型对应的中文显示出来
+     * @param key
+     * @param list
+     * @returns {string|*}
+     */
+    showLabel(key, list) {
+      if (key === "" || key === null || key === undefined) {
+        return "--";
+      }
+      return list.find(item => item.value == key).label;
+    },
+    /**
+     * 硬件库存列表
+     * @param pagenoFlag
+     */
+    getDeviceRepositoryPage(pagenoFlag) {
+      const that = this;
+      that.isLoading = true;
+      if (pagenoFlag == "search") {
+        that.widgetInfo.pageNo = 1;
+      }
+      that.$axios
+        .$POST({
+          api_name: "getDeviceRepositoryPage",
+          params: {
+            deviceId: that.formData.deviceId, //设备主键id
+            deviceName: that.formData.typeName, //设备名称
+            deviceTypeCodes: that.formData.deviceTypeCodes, //设备类型code,多个之间使用逗号进行分隔
+            brand: that.formData.brand, //品牌
+            repositoryStatus: that.formData.repStatus, //存管状态
+            applyStatus: that.formData.applyStatus, //最后申请类型
+            applyerPerson: that.formData.applyerPerson, //最后申请人
+            applyProject: that.formData.applyProject, //最后申请项目
+            orgCode: that.formData.orgCode, //最后申请运营中心orgCode
+            unitId: that.formData.unitId, //最后单位
+            pageNo: that.widgetInfo.pageNo,
+            pageSize: that.widgetInfo.pageSize
+          }
+        })
+        .then(res => {
+          that.isLoading = false;
+          if (res.data.code == "success") {
+            let data = res.data.data;
+            that.tableData = data.rows;
+            that.widgetInfo.total = data.total === null ? 0 : data.total;
+          } else {
+            that.tableData = [];
+            that.widgetInfo.list = data.rows;
+            that.widgetInfo.total = 0;
+            console.log("没有数值。。。。。");
+          }
+        })
+        .catch(() => {
+          console.log("这里是异常");
+        });
+    },
+
+    /**
+     * 硬件库存列表分页
+     * @param widgetInfo
+     */
+    sonHandleCurrentChange(widgetInfo) {
+      this.widgetInfo.pageSize = widgetInfo.pageSize
+        ? parseInt(widgetInfo.pageSize)
+        : this.widgetInfo.pageSize;
+      this.widgetInfo.pageNo = widgetInfo.pageNo
+        ? parseInt(widgetInfo.pageNo)
+        : this.widgetInfo.pageNo;
+      this.getDeviceRepositoryPage("load");
+    },
+
+    /**
+     * 查询重置
+     */
+    reset() {
+      this.formData = {};
+      this.getDeviceRepositoryPage("search");
+    },
+    /**
+     * 查看二维码
+     * @param index row的索引
+     * @param row  行信息
+     */
+    viewEcode(index, row) {
+      const that = this;
+      that.dialogQrcodeVisible = true;
+      that.qrcodeObj.makeCode(row.deviceId + "");
+      setTimeout(function() {
+        $("#dialogQrcode")
+          .html($("#qrcode").html())
+          .show();
+      }, 200);
+    },
+    /**
+     * 初始化二维码
+     */
+    initCreateQrcode() {
+      const that = this;
+      that.$nextTick(() => {
+        that.qrcodeObj = new QRCode(
+          "qrcode",
+          {
+            text: "我是二维码",
+            width: 260,
+            height: 260,
+            colorDark: "#000",
+            colorLight: "#fff",
+            correctLevel: QRCode.CorrectLevel.H
+          },
+          3000
+        );
+      });
+    },
+    /**
+     * 安装信息
+     * @param index
+     * @param row
+     */
+    setupInfo(index, row) {
+      const that = this;
+      that.azDeviceId = row.deviceId;
+      that.$refs.stepInfo.initStupInfo(that.azDeviceId);
+    },
+
+    /**
+     * 复选框选中值
+     */
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    /**
+     * 复选框按钮初始化时是否可编辑
+     * @param row
+     * @param index
+     * @returns {boolean}
+     */
+    selectInit(row, index) {
+      return row.repStatus == 1 || row.repStatus == 2 ? false : true;
+    },
+    /**
+     * 批量出库
+     */
+    batchOutStock() {
+      const that = this;
+      if (
+        null == that.multipleSelection ||
+        that.multipleSelection.length == 0
+      ) {
+        that.$message.error("请勾选出库列");
+        return;
+      }
+      that.$refs.outStock.initOutStock(that.multipleSelection);
+    },
+
+    /**
+     * 批量导出excel
+     */
+    batchExportOutStock() {
+      const that = this;
+      if (
+        null == that.multipleSelection ||
+        that.multipleSelection.length == 0
+      ) {
+        that.$message.error("请勾选出库列");
+        return;
+      }
+      let deviceIdArr = [];
+      that.multipleSelection.forEach(item => {
+        deviceIdArr.push(item.deviceId);
+      });
+      let url =
+        "/gsafetyclound/" +
+        ApiConfig.api["downloadDeviceRepositoryExcel"] +
+        "?deviceIds=" +
+        deviceIdArr.join(",");
+      that
+        .$confirm("确认批量导出excel？")
+        .then(_ => {
+          window.open(url);
+        })
+        .catch(_ => {});
+    },
+    /**
+     * 筛选存管状态
+     * @param value
+     * @param row
+     * @returns {boolean}
+     */
+    filterTag(value, row) {
+      return row.repStatus === value;
+    }
+  }
+};
+</script>
+<style lang="scss" scoped="scoped">
+.add-btn-style {
+  text-align: right;
+  padding-right: 25px;
+  box-sizing: border-box;
+}
+.hardware-form {
+  padding: 20px 25px 0 25px;
+  /deep/.el-form-item {
+    margin-right: 0;
+    .el-form-item__content {
+      width: 170px;
+    }
+  }
+}
+.list-wrap {
+  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132
+  height: calc(100vh - 90px - 64px - 20px - 65px - 132px);
+  overflow: hidden;
+  /deep/.el-table {
+    padding: 0;
+    overflow: hidden;
+    th {
+      background: rgba(240, 243, 247, 1);
+    }
+    .el-table__body-wrapper {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132 分页85 头部高度48px
+      height: calc(100vh - 90px - 64px - 20px - 65px - 132px - 85px - 48px);
+      overflow-y: auto;
+    }
+  }
+  /*.el-checkbox{ margin-top: 6px;}*/
+}
+
+.page-footer {
+  display: flex;
+  .pf-left {
+    width: 450px;
+    margin: 28px 0 0 10px;
+    .span-yx {
+      width: 60px;
+      font-size: 14px;
+      color: #666;
+      display: inline-block;
+    }
+  }
+  .pf-right {
+    flex: 1;
+  }
+}
+@media screen and (min-width: 1394px) and (max-width: 1920px) {
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单188
+    height: calc(100vh - 90px - 64px - 20px - 65px - 188px);
+    /deep/.el-table {
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单188 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 188px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+}
+@media screen and (max-width: 1393px) {
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单244
+    height: calc(100vh - 90px - 64px - 20px - 65px - 244px);
+    /deep/.el-table {
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单244 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 244px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+}
+</style>

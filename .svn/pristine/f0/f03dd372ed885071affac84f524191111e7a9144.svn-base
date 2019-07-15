@@ -1,0 +1,405 @@
+<template>
+  <div v-cloak style="height:100%">
+    <el-row class="container">
+      <el-col :span="24" class="header">
+        <el-col :span="14" class="logo">
+          <span class="icon-list" @click.prevent="collapse">
+            <i class="el-icon-s-fold"></i>
+          </span>
+          <img class="main-logo" src="../assets/img/main-logo.jpg" />
+        </el-col>
+        <el-col :span="4">
+          <el-input placeholder="请输入关键词" prefix-icon="el-icon-search" v-model="form.searchInput"></el-input>
+        </el-col>
+        <el-col :span="2" class="bell">
+          <a href="javascript:;">
+            <i class="el-icon-bell"></i>
+          </a>
+        </el-col>
+        <el-col :span="4" class="userinfo">
+          <el-dropdown trigger="hover">
+            <span class="el-dropdown-link userinfo-inner">
+              <b>沈思归</b>
+              <img src="../assets/img/avatar.jpg" />
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>我的消息</el-dropdown-item>
+              <el-dropdown-item>设置</el-dropdown-item>
+              <el-dropdown-item divided @click.native="logout">退出登录</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-col>
+      <el-col :span="24" class="main">
+        <aside :class="isCollapse?'menu-collapsed':'menu-expanded'">
+          <!--导航菜单-->
+          <el-menu
+            router
+            unique-opened
+            default-active="this.$route.path"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            :collapse="isCollapse"
+          >
+            <el-menu-item index="/">
+              <i class="el-icon-document"></i>
+              <span slot="title">首页</span>
+            </el-menu-item>
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="el-icon-s-platform"></i>
+                <span slot="title">硬件平台</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/hardwareCategory">硬件类型</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index>硬件库存列表</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/outInRecord">出入库记录</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/equipmentList">项目设备列表</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/downLine/downlinkControl">下行控制</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index>附件管理</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
+                <i class="el-icon-s-promotion"></i>
+                <span slot="title">工具平台</span>
+              </template>
+              <el-menu-item-group>
+                <a class="menu-link" href="http://112.27.198.15:9835/e-record" target="_blank">电子档案</a>
+                <!--<el-menu-item index="">电子档案</el-menu-item>-->
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="el-icon-s-check"></i>
+                <span slot="title">系统配置</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index>用户管理</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index>角色管理</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index>资源管理</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+          </el-menu>
+        </aside>
+        <section class="content-container">
+
+	        <el-col :span="24" class="breadcrumb-container">
+	          <!--<strong class="title"><nuxt-link :to="$route.path">{{$route.name}}</nuxt-link></strong>
+						<span class="title">/</span>
+	          <span class="title" v-for="item in $route.matched" :key="item.path">{{item.name}}</span>-->
+	          <!--<span class="title">/</span>-->
+	        </el-col>
+	        <el-col :span="24" class="content-wrapper">
+	          <transition name="fade" mode="out-in">
+	            <nuxt />
+	          </transition>
+	        </el-col>
+
+        </section>
+      </el-col>
+    </el-row>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      sysName: "VUEADMIN",
+      sysUserName: "",
+      sysUserAvatar: "",
+      isCollapse: false,
+      form: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+        searchInput: ""
+      },
+      navlist: [],
+      linkName: ""
+    };
+  },
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    onSubmit() {
+      console.log("submit!");
+    },
+    handleopen() {
+      //console.log('handleopen');
+    },
+    handleclose() {
+      //console.log('handleclose');
+    },
+    handleselect: function(a, b) {},
+    //退出登录
+    logout: function() {
+      var _this = this;
+      this.$confirm("确认退出吗?", "提示", {
+        //type: 'warning'
+      })
+        .then(() => {
+          sessionStorage.removeItem("user");
+          _this.$router.push("/login");
+        })
+        .catch(() => {});
+    },
+    //折叠导航栏
+    collapse: function() {
+      this.isCollapse = !this.isCollapse;
+    },
+    showMenu(i, status) {
+      this.$refs.menuCollapsed.getElementsByClassName(
+        "submenu-hook-" + i
+      )[0].style.display = status ? "block" : "none";
+    }
+  },
+  mounted() {
+    var user = sessionStorage.getItem("user");
+    if (user) {
+      user = JSON.parse(user);
+      this.sysUserName = user.name || "";
+      this.sysUserAvatar = user.avatar || "";
+    }
+    var matchedLink = this.$route.matched;
+    matchedLink.forEach(item => {
+      switch (item.name) {
+        case "index":
+          this.linkName = "首页";
+          break;
+        case "downLine-downlinkControl":
+          this.linkName = "下行控制";
+          break;
+      }
+    });
+  },
+  watch: {
+    "this.$route.matched": function(newVal, oldVal) {}
+  }
+};
+</script>
+<style>
+.el-menu-item-group__title {
+  padding: 0;
+}
+</style>
+<style  scoped lang="scss">
+.menu-link {
+  font-size: 14px;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 45px;
+  min-width: auto;
+  display: block;
+  color: #303133;
+  text-decoration: none;
+}
+.menu-link:active,
+.menu-link:hover {
+  outline: 0;
+  background-color: #ecf5ff;
+}
+.breadcrumb-container {
+  padding-left: 20px;
+  a {
+    color: #333;
+    text-decoration: none;
+  }
+}
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 180px;
+  min-height: 400px;
+}
+html {
+  font-family: "microsoft yahei";
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+
+.el-submenu .el-menu-item {
+  height: 40px;
+  line-height: 40px;
+  padding: 0 45px;
+  min-width: auto;
+}
+
+.container {
+  /*position: absolute;
+		top: 0px;
+		bottom: 0px;
+		width: 100%;*/
+  padding-bottom: 10px;
+  .header {
+    height: 90px;
+    line-height: 90px;
+    background: #ffffff;
+    box-shadow: 0px 7px 7px -7px #5e5e5e;
+    .bell i {
+      color: #667480;
+      margin-left: 40px;
+      font-size: 20px;
+      border: 1px solid #e3e7ec;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    .icon-list {
+      width: 64px;
+      text-align: center;
+      background-color: #edf2fa;
+      float: left;
+      font-size: 32px;
+      height: 90px;
+      margin-bottom: 15px;
+      color: #606266;
+      transition: color 0.15s linear;
+      i {
+        cursor: pointer;
+      }
+    }
+    .userinfo {
+      text-align: right;
+      padding-right: 35px;
+      float: right;
+      height: 90px;
+      .userinfo-inner {
+        cursor: pointer;
+        color: #25282e;
+        img {
+          width: 40px;
+          height: 40px;
+          border-radius: 20px;
+          margin: 25px 0px 10px 10px;
+          float: right;
+        }
+        b {
+          float: right;
+          font-weight: normal;
+          margin-left: 10px;
+        }
+      }
+    }
+    .logo {
+      height: 90px;
+      line-height: 90px;
+      font-size: 22px;
+      border-color: rgba(238, 241, 146, 0.3);
+      border-right-width: 1px;
+      border-right-style: solid;
+      img {
+        float: left;
+        margin: 30px 10px 10px 25px;
+      }
+      .txt {
+        color: #fff;
+      }
+    }
+    .logo-width {
+    }
+    .logo-collapse-width {
+      width: 60px;
+    }
+    .tools {
+      padding: 0px 23px;
+      width: 14px;
+      height: 60px;
+      line-height: 60px;
+      cursor: pointer;
+    }
+  }
+  .main {
+    /*padding-bottom: 30px;*/
+    display: flex;
+    /*position: absolute;
+			top: 95px;
+			bottom: 0px;*/
+    margin-top: 3px;
+
+    aside {
+      flex: 0 0 180px;
+      width: 180px;
+      transition: all 1s;
+      .el-menu {
+        height: 100%;
+      }
+      .collapsed {
+        width: 60px;
+        transition: all 1s;
+        .item {
+          position: relative;
+        }
+        .submenu {
+          position: absolute;
+          top: 0px;
+          left: 60px;
+          z-index: 99999;
+          height: auto;
+          display: none;
+        }
+      }
+    }
+    .menu-collapsed {
+      flex: 0 0 65px;
+      width: 60px;
+      transition: all 1s;
+    }
+    .menu-expanded {
+      transition: all 1s;
+    }
+    .content-container {
+      flex: 1;
+      padding: 0 15px 15px;
+      background: #f5f8fc;
+      .breadcrumb-container {
+        .title {
+          margin-right: 5px;
+          font-weight: normal;
+          padding: 0 0 26px;
+          float: left;
+          color: #a5adb8;
+          font-size: 16px;
+        }
+        .breadcrumb-inner {
+          float: left;
+        }
+      }
+      .content-wrapper {
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+</style>

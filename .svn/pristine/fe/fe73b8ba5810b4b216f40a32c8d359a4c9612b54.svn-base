@@ -1,0 +1,38 @@
+/* 
+ * @Author: TanZer.hanyu 
+ * @Date: 2019-05-10 15:28:08
+ * --- api配置项 ---
+ * */
+const getTargetHost = (milieu) => {
+
+  switch (milieu) {
+    case 'test':
+      return 'http://112.27.198.15:9873/userCenter/';
+    case 'dev':
+      // return 'http://172.19.12.180:9000/userCenter'; //内网
+      return 'http://172.19.12.209:9832/api/v1/upms-service'; //内网
+      //return 'http://112.27.198.15:9873/userCenter/'; //外网
+    case "pro":
+      return ""
+    default:
+      return milieu;
+  }
+};
+
+export default {
+  // apiHost: "https://api.douban.com/", 
+  apiHost: getTargetHost(process.env.milieu),
+  api: {
+    findMonitorDeviceStateDownList: "monitorDeviceState/findMonitorDeviceStateDownList", //硬件平台-下行控制列表
+    findSubCenterValue: "monitorDeviceState/findSubCenterValue", //硬件平台-下行控制-运营中心下拉框
+    hnlaSendDown: "monitorDeviceState/hnlaSendDown", //硬件平台-发送河南力安下行命令
+    sendCommand: "monitorDeviceState/sendCommand", //硬件平台-发送北京乐鸟下行命令
+    findMonitorDeviceStateExtByMonitorId: "monitorDeviceState/findMonitorDeviceStateExtByMonitorId", //根据监测设备ID获取设备阈值信息---立安
+    findUnitValue: "monitorDeviceState/findUnitValue", //根据监测设备ID获取设备阈值信息---立安
+    login: "login/login", //系统登录,
+    findUserByUserId: "user/findUserByUserId", //根据用户id获取用户详情信息
+  },
+
+  // websocket地址
+  wsHost: ""
+}

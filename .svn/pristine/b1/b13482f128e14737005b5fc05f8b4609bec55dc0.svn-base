@@ -1,0 +1,791 @@
+<template>
+  <div class="configuration-parameter-wrapper">
+    <h3 class="title">控制操作</h3>
+    <div class="tab-content-detail control-operation">
+      <el-button size="mini" @click="sendCommand('1')">复位</el-button>
+      <el-button size="mini" @click="sendCommand('3')">脱扣</el-button>
+    </div>
+    <h3 class="title">
+      参数配置
+      <el-link :disabled="disbledFlag">
+        <i class="el-icon-refresh" @click="findMonitorDeviceStateExtByMonitorId()"></i>
+      </el-link>
+      <el-button size="small" style="margin-left:20px;" @click="getLatestParameters">最新参数获取</el-button>
+    </h3>
+    <template class="tab-content-detail">
+      <el-form
+        :label-position="labelPosition"
+        :rules="rules"
+        ref="configParameter"
+        label-width="100%"
+        :model="configParameter"
+        class="el-form-diy"
+      >
+        <el-form-item label="剩余电流报警设置值" class="switch-show" prop="wdbjzA">
+          <div class="item-warpper">
+            <el-input placeholder="请输入剩余电流报警设置值" v-model="configParameter.sydlbjz">
+              <i slot="suffix" class="test-icon-diy">mA</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[10]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="A相温度" class="switch-show" prop="wdbjzA">
+          <div class="item-warpper">
+            <el-input placeholder="请输入A相温度" v-model="configParameter.wdbjzA">
+              <i slot="suffix" class="test-icon-diy">℃</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[9]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="B相温度" class="switch-show" prop="wdbjzB">
+          <div class="item-warpper">
+            <el-input placeholder="请输入B相温度" v-model="configParameter.wdbjzB">
+              <i slot="suffix" class="test-icon-diy">℃</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[8]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="C相温度" class="switch-show" prop="wdbjzC">
+          <div class="item-warpper">
+            <el-input placeholder="请输入C相温度" v-model="configParameter.wdbjzC">
+              <i slot="suffix" class="test-icon-diy">℃</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[7]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="N相温度" class="switch-show" prop="wdbjzN">
+          <div class="item-warpper">
+            <el-input placeholder="请输入N相温度" v-model="configParameter.wdbjzN">
+              <i slot="suffix" class="test-icon-diy">℃</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[6]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="A相电流" class="switch-show" prop="dlbjzA">
+          <div class="item-warpper">
+            <el-input placeholder="请输入A相电流" v-model="configParameter.dlbjzA">
+              <i slot="suffix" class="test-icon-diy">A</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[5]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="B相电流" class="switch-show" prop="dlbjzB">
+          <div class="item-warpper">
+            <el-input placeholder="请输入B相电流" v-model="configParameter.dlbjzB">
+              <i slot="suffix" class="test-icon-diy">A</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[4]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="C相电流" class="switch-show" prop="dlbjzC">
+          <div class="item-warpper">
+            <el-input placeholder="请输入C相电流" v-model="configParameter.dlbjzC">
+              <i slot="suffix" class="test-icon-diy">A</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[3]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="A相电压" class="switch-show" prop="dybjzA">
+          <div class="item-warpper">
+            <el-input placeholder="请输入A相电压" v-model="configParameter.dybjzA">
+              <i slot="suffix" class="test-icon-diy">V</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[2]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="B相电压" class="switch-show" prop="dybjzB">
+          <div class="item-warpper">
+            <el-input placeholder="请输入B相电压" v-model="configParameter.dybjzB">
+              <i slot="suffix" class="test-icon-diy">V</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[1]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="C相电压" class="switch-show" prop="dybjzC">
+          <div class="item-warpper">
+            <el-input placeholder="请输入C相电压" v-model="configParameter.dybjzC">
+              <i slot="suffix" class="test-icon-diy">V</i>
+            </el-input>
+            <div class="el-switch-wrap">
+              <el-switch
+                v-model="isOpenArr[0]"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警时有无输出" class="switch-show" prop="jdq">
+          <el-radio v-model="configParameter.jdq" label="1">有动作</el-radio>
+          <el-radio v-model="configParameter.jdq" label="0">无动作</el-radio>
+        </el-form-item>
+        <el-form-item label="报警或者故障时蜂鸣器响不响" class="switch-show" prop="fmq">
+          <el-radio v-model="configParameter.fmq" label="1">响</el-radio>
+          <el-radio v-model="configParameter.fmq" label="0">不响</el-radio>
+        </el-form-item>
+        <el-form-item label="电压类型" class="switch-show" prop="dylx">
+          <el-radio v-model="configParameter.dylx" label="1" disabled>单相</el-radio>
+          <el-radio v-model="configParameter.dylx" label="0" disabled>三相</el-radio>
+        </el-form-item>
+        <el-form-item label="报警延时值" class="switch-show" prop="bjys">
+          <div class="item-warpper">
+            <el-input placeholder="请输入报警延时值" v-model="configParameter.bjys">
+              <i slot="suffix" class="test-icon-diy">S</i>
+            </el-input>
+            <div class="el-switch-wrap"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="第一路电流变比" class="switch-show" prop="dlbbA">
+          <div class="item-warpper">
+            <el-input placeholder="请输入第一路电流变比" v-model="configParameter.dlbbA"></el-input>
+            <div class="el-switch-wrap"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="第二路电流变比" class="switch-show" prop="dlbbB">
+          <div class="item-warpper">
+            <el-input placeholder="请输入第二路电流变比" v-model="configParameter.dlbbB"></el-input>
+            <div class="el-switch-wrap"></div>
+          </div>
+        </el-form-item>
+        <el-form-item label="第三路电流变比" class="switch-show" prop="dlbbC">
+          <div class="item-warpper">
+            <el-input placeholder="请输入第三路电流变比" v-model="configParameter.dlbbC"></el-input>
+            <div class="el-switch-wrap"></div>
+          </div>
+        </el-form-item>
+        <template v-if="['0020','0021','0022','0023'].includes(fromParent.deviceVersion)">
+          <!--      这里是第二种状态多的内容  % ↑-->
+          <el-form-item label="A相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[6]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[6]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="B相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[5]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[5]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="C相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[4]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[4]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="实时值最小上传时间间隔" class="switch-show" prop="zdsy">
+            <div class="item-warpper">
+              <el-input placeholder="请输入实时值最小上传时间间隔" v-model="configParameter.zdsy" disabled>
+                <i slot="suffix" class="test-icon-diy">分</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="A相电弧报警阈值" class="switch-show" prop="dhbjzA">
+            <div class="item-warpper">
+              <el-input placeholder="请输入A相电弧报警阈值" v-model="configParameter.dhbjzA" disabled>
+                <i slot="suffix" class="test-icon-diy">↑</i>
+              </el-input>
+              <div class="el-switch-wrap">
+                <el-switch
+                  v-model="isValidArr[11]"
+                  active-color="#1C77FF"
+                  inactive-color="#CCD4E0"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="开"
+                  inactive-text="关"
+                ></el-switch>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="B相电弧报警阈值" class="switch-show" prop="dhbjzB">
+            <div class="item-warpper">
+              <el-input placeholder="请输入B相电弧报警阈值" v-model="configParameter.dhbjzB" disabled>
+                <i slot="suffix" class="test-icon-diy">↑</i>
+              </el-input>
+              <div class="el-switch-wrap">
+                <el-switch
+                  v-model="isValidArr[10]"
+                  active-color="#1C77FF"
+                  inactive-color="#CCD4E0"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="开"
+                  inactive-text="关"
+                ></el-switch>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="C相电弧报警阈值" class="switch-show" prop="dhbjzC">
+            <div class="item-warpper">
+              <el-input placeholder="请输入C相电弧报警阈值" v-model="configParameter.dhbjzC" disabled>
+                <i slot="suffix" class="test-icon-diy">↑</i>
+              </el-input>
+              <div class="el-switch-wrap">
+                <el-switch
+                  v-model="isValidArr[9]"
+                  active-color="#1C77FF"
+                  inactive-color="#CCD4E0"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="开"
+                  inactive-text="关"
+                ></el-switch>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="三相电压平衡度报警阈值" class="switch-show" prop="sxdyphdbjz">
+            <div class="item-warpper">
+              <el-input placeholder="请输入三相电压平衡度报警阈值" v-model="configParameter.sxdyphdbjz" disabled>
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap">
+                <el-switch
+                  v-model="isValidArr[8]"
+                  active-color="#1C77FF"
+                  inactive-color="#CCD4E0"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="开"
+                  inactive-text="关"
+                ></el-switch>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="三相电流平衡度报警阈值" class="switch-show" prop="sxdlphdbjz">
+            <div class="item-warpper">
+              <el-input placeholder="请输入三相电流平衡度报警阈值" v-model="configParameter.sxdlphdbjz" disabled>
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap">
+                <el-switch
+                  v-model="isValidArr[7]"
+                  active-color="#1C77FF"
+                  inactive-color="#CCD4E0"
+                  active-value="1"
+                  inactive-value="0"
+                  active-text="开"
+                  inactive-text="关"
+                ></el-switch>
+              </div>
+            </div>
+          </el-form-item>
+          <el-form-item label="电压实时值上传跃阶：额定值" class="switch-show" prop="dyjy">
+            <div class="item-warpper">
+              <el-input placeholder="请输入电压实时值上传跃阶：额定值" v-model="configParameter.dyjy">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="电流实时值上传跃阶：额定值" class="switch-show" prop="dljy">
+            <div class="item-warpper">
+              <el-input placeholder="请输入电流实时值上传跃阶：额定值" v-model="configParameter.dljy">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="电弧周期" class="switch-show" prop="gzdhbjsjz">
+            <div class="item-warpper">
+              <el-input placeholder="请输入电弧周期" v-model="configParameter.gzdhbjsjz" disabled>
+                <i slot="suffix" class="test-icon-diy">S</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="电流电压平衡度报警延时" class="switch-show" prop="sxphdbjsj">
+            <div class="item-warpper">
+              <el-input placeholder="请输入电流电压平衡度报警延时" v-model="configParameter.sxphdbjsj">
+                <i slot="suffix" class="test-icon-diy">S</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="漏电实时值上传跃阶：额定值" class="switch-show" prop="ldjy">
+            <div class="item-warpper">
+              <el-input placeholder="请输入漏电实时值上传跃阶：额定值" v-model="configParameter.ldjy">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="温度实时值上传跃阶：额定值" class="switch-show" prop="wdjy">
+            <div class="item-warpper">
+              <el-input placeholder="请输入温度实时值上传跃阶：额定值" v-model="configParameter.wdjy">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="电弧幅值：电流阙值" class="switch-show" prop="gzdhbjz">
+            <div class="item-warpper">
+              <el-input placeholder="请输入电弧幅值" v-model="configParameter.gzdhbjz" disabled>
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+        </template>
+        <!--      这里是第三种状态多的内容  % ↑-->
+        <template v-if="fromParent.deviceVersion == '0023'">
+          <el-form-item label="短路电压下降百分比" class="switch-show" prop="dldyxjbfb">
+            <div class="item-warpper">
+              <el-input placeholder="请输入短路电压下降百分比" v-model="configParameter.dldyxjbfb">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="短路电流上升百分比" class="switch-show" prop="dldlssbfb">
+            <div class="item-warpper">
+              <el-input placeholder="请输入短路电流下降百分比" v-model="configParameter.dldlssbfb">
+                <i slot="suffix" class="test-icon-diy">%</i>
+              </el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="大功率负载值" class="switch-show" prop="dglfz">
+            <div class="item-warpper">
+              <el-input placeholder="请输入大功率负载值" v-model="configParameter.dglfz"></el-input>
+              <div class="el-switch-wrap"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="大功率负载" class="switch-show">
+            <el-radio v-model="isValidArr[3]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[3]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="A相电压短路" class="switch-show">
+            <el-radio v-model="isValidArr[2]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[2]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="B相电压短路" class="switch-show">
+            <el-radio v-model="isValidArr[1]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[1]" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="C相电压短路" class="switch-show">
+            <el-radio v-model="isValidArr[0]" label="1">是</el-radio>
+            <el-radio v-model="isValidArr[0]" label="0">否</el-radio>
+          </el-form-item>
+        </template>
+        <el-form-item class="btn-wrapper">
+          <el-button type="primary" :disabled="disbledSubmitFlag" @click="submitForm()">确定</el-button>
+          <el-button :disabled="disbledFlag" @click="findMonitorDeviceStateExtByMonitorId()">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+  </div>
+</template>
+
+<script>
+export default {
+  //
+  props: ["fromParent"],
+  data() {
+    return {
+      labelPosition: "top",
+      isOpenArr: [],
+      isValidArr: [],
+      isShow: "",
+      disbledFlag: false,
+      disbledSubmitFlag: false,
+      configParameter: {},
+      rules: {
+        sydlbjz: [
+          { required: true, message: "剩余电流报警设置值", trigger: "blur" }
+        ],
+        wdbjzA: [{ required: true, message: "请输入A相温度", trigger: "blur" }],
+        wdbjzB: [{ required: true, message: "请输入B相温度", trigger: "blur" }],
+        wdbjzC: [{ required: true, message: "请输入C相温度", trigger: "blur" }],
+        wdbjzN: [{ required: true, message: "请输入N相温度", trigger: "blur" }],
+        dlbjzA: [{ required: true, message: "请输入A相电流", trigger: "blur" }],
+        dlbjzB: [{ required: true, message: "请输入B相电流", trigger: "blur" }],
+        dlbjzC: [{ required: true, message: "请输入C相电流", trigger: "blur" }],
+        dybjzA: [{ required: true, message: "请输入A相电压", trigger: "blur" }],
+        dybjzB: [{ required: true, message: "请输入B相电压", trigger: "blur" }],
+        dybjzC: [{ required: true, message: "请输入C相电压", trigger: "blur" }],
+        ldjy: [
+          {
+            required: true,
+            message: "请输入漏电阶跃额定值的百分数",
+            trigger: "blur"
+          }
+        ],
+        wdjy: [
+          {
+            required: true,
+            message: "请输入温度阶跃额定值的百分数",
+            trigger: "blur"
+          }
+        ],
+        dljy: [
+          {
+            required: true,
+            message: "请输入电流阶跃额定值的百分数",
+            trigger: "blur"
+          }
+        ],
+        dyjy: [
+          {
+            required: true,
+            message: "请输入电压阶跃额定值的百分数",
+            trigger: "blur"
+          }
+        ],
+        zdsy: [
+          { required: true, message: "请输入数据上传最大时延", trigger: "blur" }
+        ],
+        dhbjzA: [
+          {
+            required: true,
+            message: "请输入A相故障电弧报警个数",
+            trigger: "blur"
+          }
+        ],
+        dhbjzB: [
+          {
+            required: true,
+            message: "请输入B相故障电弧报警个数",
+            trigger: "blur"
+          }
+        ],
+        dhbjzC: [
+          {
+            required: true,
+            message: "请输入C相故障电弧报警个数",
+            trigger: "blur"
+          }
+        ],
+        gzdhbjz: [
+          {
+            required: true,
+            message: "请输入故障电弧额定值的百分数",
+            trigger: "blur"
+          }
+        ],
+        gzdhbjsjz: [
+          { required: true, message: "请输入故障电弧采集时间", trigger: "blur" }
+        ],
+        sxdyphdbjz: [
+          { required: true, message: "请输入电压平衡度设定值", trigger: "blur" }
+        ],
+        sxdlphdbjz: [
+          { required: true, message: "请输入电流平衡度设定值", trigger: "blur" }
+        ],
+        sxphdbjsj: [
+          { required: true, message: "请输入平衡度报警延时", trigger: "blur" }
+        ],
+        jdq: [{ required: true, message: "请输入继电器", trigger: "blur" }],
+        fmq: [{ required: true, message: "请输入蜂鸣器", trigger: "blur" }],
+        dylx: [{ required: true, message: "不能为空", trigger: "blur" }],
+        dybb: [{ required: true, message: "请输入电压变比", trigger: "blur" }],
+        dlbbA: [
+          { required: true, message: "请输入第一路电流变比", trigger: "blur" }
+        ],
+        dlbbB: [
+          { required: true, message: "请输入第二路电流变比", trigger: "blur" }
+        ],
+        dlbbC: [
+          { required: true, message: "请输入第三路电流变比", trigger: "blur" }
+        ],
+        bjys: [{ required: true, message: "请输入报警延时", trigger: "blur" }],
+        dglfz: [
+          { required: true, message: "请输入大功率负载报警值", trigger: "blur" }
+        ],
+        dldyxjbfb: [
+          {
+            required: true,
+            message: "请输入短路电压下降百分比",
+            trigger: "blur"
+          }
+        ],
+        dldlssbfb: [
+          {
+            required: true,
+            message: "请输入电路电流上升百分比",
+            trigger: "blur"
+          }
+        ],
+        ckA: [{ required: true, message: "不能为空", trigger: "blur" }],
+        ckB: [{ required: true, message: "不能为空", trigger: "blur" }],
+        ckC: [{ required: true, message: "不能为空", trigger: "blur" }],
+        dglfz: [{ required: true, message: "不能为空", trigger: "blur" }],
+        Adydl: [{ required: true, message: "不能为空", trigger: "blur" }],
+        Bdydl: [{ required: true, message: "不能为空", trigger: "blur" }],
+        Cdydl: [{ required: true, message: "不能为空", trigger: "blur" }]
+      }
+    };
+  },
+  mounted() {
+    this.findMonitorDeviceStateExtByMonitorId();
+  },
+  methods: {
+    findMonitorDeviceStateExtByMonitorId() {
+      //硬件平台-根据监测设备ID获取设备阈值信息---乐鸟
+      let that = this;
+      this.$axios
+        .$POST({
+          api_name: "findMonitorDeviceStateExtByMonitorId",
+          params: {
+            monitorId: that.fromParent.id,
+            sourceId: that.fromParent.sourceId
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            that.configParameter = JSON.parse(res.data.data.thresholdValue);
+            that.isOpenArr = that.configParameter.isOpen.split("");
+            that.isValidArr = that.configParameter.isValid.split("");
+          } else {
+            console.log("失败");
+          }
+        });
+    },
+
+    resetForm(formName) {
+      this.findMonitorDeviceStateExtByMonitorId();
+    },
+    sendCommand(type) {
+      let that = this;
+      that.configParameter.isOpen = that.isOpenArr.join(""); //isOpenArr拼接成字符串赋值给isOpen
+      that.configParameter.isValid = that.isValidArr.join(""); //isValidArr拼接成字符串赋值给isValid
+      that.$refs.configParameter.validate(valid => {
+        if (valid) {
+          this.$axios
+            .$POST({
+              api_name: "sendCommand",
+              params: {
+                monitorId: that.fromParent.id,
+                controlHost: that.fromParent.controlHost,
+                sourceId: that.fromParent.sourceId,
+                commandType: type,
+                params: type == "5" ? JSON.stringify(that.configParameter) : ""
+              }
+            })
+            .then(res => {
+              if (res.data.code == "success") {
+                //如果state不存在 或者state值为空 直接
+                if (!res.data.data.state) {
+                  console.log("state为空");
+                  this.$message.error("命令发送失败");
+                  return;
+                }
+                if (res.data.data.state == "1") {
+                  this.$message({
+                    message: "命令下发成功",
+                    type: "success"
+                  });
+                  //发送成功后，取消刷新按钮3秒后才能动 防止不入库
+                  that.disbledFlag = true;
+                  setTimeout(function() {
+                    that.disbledFlag = false;
+                  }, 3000);
+                } else if (res.data.data.state == "2") {
+                  this.$message.error("发送失败");
+                } else if (res.data.data.state == "3") {
+                  this.$message({
+                    message: "设备不在线或者未接入",
+                    type: "warning"
+                  });
+                }
+              } else {
+                console.log("失败");
+              }
+            });
+          //防止重复点击确定按钮，间隔1秒才能修改
+          that.disbledSubmitFlag = true;
+          setTimeout(function() {
+            that.disbledSubmitFlag = false;
+          }, 1000);
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    submitForm() {
+      let that = this;
+      that.sendCommand(5);
+      setTimeout(function() {
+        that.findMonitorDeviceStateExtByMonitorId();
+      }, 5000);
+    },
+    getLatestParameters() {
+      //获取最新参数
+      let that = this;
+      this.$axios
+        .$POST({
+          api_name: "sendCommand",
+          params: {
+            monitorId: that.fromParent.id,
+            controlHost: that.fromParent.controlHost,
+            sourceId: that.fromParent.sourceId,
+            commandType: "2",
+            flushThreshold: "1"
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            this.$message({
+              message: "命令下发成功",
+              type: "success"
+            });
+            setTimeout(function() {
+              that.findMonitorDeviceStateExtByMonitorId();
+            }, 5000);
+          } else {
+            console.log("失败");
+          }
+        });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.configuration-parameter-wrapper {
+  width: auto;
+  max-width: 1200px;
+  /deep/.el-form-diy {
+    padding: 0 0 20px 0;
+    .el-form-item {
+      box-sizing: border-box;
+      padding-right: 40px;
+      width: 33.33%;
+      float: left;
+      margin-bottom: 10px;
+      &.btn-wrapper {
+        width: 100%;
+        margin-top: 20px;
+      }
+      &.switch-show {
+        .item-warpper {
+          display: flex;
+        }
+        .el-switch-wrap {
+          width: 120px;
+          text-align: right;
+          .el-switch__label--left {
+            margin-right: 5px;
+          }
+          .el-switch__label--right {
+            margin-left: 5px;
+          }
+        }
+      }
+      .el-form-item__label {
+        padding: 0;
+        line-height: 36px;
+      }
+      .el-input--suffix .el-input__inner {
+        padding-right: 36px;
+      }
+      .test-icon-diy {
+        font-style: normal;
+        width: 36px;
+        text-align: center;
+        display: inline-block;
+      }
+    }
+  }
+}
+</style>

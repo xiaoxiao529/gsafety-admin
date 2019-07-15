@@ -1,0 +1,444 @@
+<template>
+  <div class="msgbox-container" :class="{show:show}">
+    <div class="msgbox" v-if="show">
+      <div class="msgbox-title">
+        <span>{{titleName}}</span>
+        <img src="~/assets/img/msgbox-close.png" alt class="cursor" @click="close" />
+      </div>
+      <div class="msgbox-main">
+        <el-form :model="formData" label-width="100px" :rules="rules" ref="formData">
+          <el-form-item label="上级资源" prop="pname" class="msgbox-item-mb">
+            <el-input v-model="formData.pname" @focus="isfocus($event)"></el-input>
+            <div class="threeData" v-show="threeShow">
+              <el-tree
+                :data="code"
+                show-checkbox
+                node-key="id"
+                ref="treeForm"
+                :props="defaultProps"
+                :default-expand-all="true"
+                :check-strictly="true"
+                @check="handleClick"
+              ></el-tree>
+              <div class="threeShade" @click="threeShow=false"></div>
+            </div>
+          </el-form-item>
+          <el-form-item label="资源类型" prop="resType" class="msgbox-item-mb">
+            <el-radio-group v-model="formData.resType">
+              <el-radio label="0">目录</el-radio>
+              <el-radio label="1">菜单</el-radio>
+              <el-radio label="2">按钮</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item size="mini" label="资源名称" prop="resName" class="msgbox-item-mb">
+            <el-input v-model="formData.resName" placeholder="请输入菜单名或按钮名称"></el-input>
+          </el-form-item>
+          <el-form-item label="资源别名" prop="resAlias" class="msgbox-item-mb">
+            <el-input v-model="formData.resAlias" placeholder="请输入菜单名或按钮名称"></el-input>
+          </el-form-item>
+          <el-form-item label="链接地址" prop="resUrl" class="msgbox-item-mb">
+            <el-input v-model="formData.resUrl" placeholder="请输入请求地址"></el-input>
+          </el-form-item>
+          <el-form-item label="权限标识" prop="resIdent" class="msgbox-item-mb">
+            <el-input v-model="formData.resIdent" placeholder="请输入权限标识"></el-input>
+          </el-form-item>
+          <el-form-item label="请求方式" prop="resRequestType" class="msgbox-item-mb">
+            <el-select v-model="formData.resRequestType" placeholder="请选择" :size="'medium'">
+              <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="图标" prop="resIcon" class="msgbox-item-mb">
+            <el-input v-model="formData.resIcon" placeholder="请输入"></el-input>
+          </el-form-item>
+          <el-form-item label="序号" prop="resOrder" class="msgbox-item-mb">
+            <!-- <el-input v-model="formData.resOrder"></el-input> -->
+            <el-input-number v-model="formData.resOrder" controls-position="right" :min="1"></el-input-number>
+          </el-form-item>
+          <div class="submitBtn">
+            <el-button @click="close">取消</el-button>
+            <el-button type="primary" @click="submitForm('formData')">保存</el-button>
+          </div>
+        </el-form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { getTree } from "~/components/resourceManage/treeToArray";
+import { valiName } from "~/utils/validate";
+import { system_item, admin_dataRes } from "~/config/conf";
+
+// var admin_dataRes = admin_dataRes;
+
+const HOME_DIRECTORY = {
+  resName: "主目录",
+  id: "-1",
+  children: ""
+};
+
+const ADD_RESOURCE = "新增资源";
+
+const EDIT_RESOURCE = "编辑资源";
+
+const RES_DEFAULTPROPS = {
+  children: "children",
+  label: "resName"
+};
+
+const RES_REQUESTTYPE = [
+  { value: "get", label: "get" },
+  { value: "post", laber: "post" },
+  { value: "put", label: "put" },
+  { value: "delete", label: "delete" }
+];
+
+const SET_FORMDATA = {
+  pname: "",
+  resType: "",
+  resName: "",
+  resAlias: "",
+  resUrl: "",
+  resIdent: "",
+  resRequestType: "",
+  resIcon: "",
+  resOrder: "",
+  parentId: "-1",
+  id: "-1",
+  dataRes: "03"
+};
+
+const SET_STATUS = {
+  modify: "updateResourceA",
+  add: "addResource"
+};
+
+const SET_RULES = {};
+
+export default {
+  data() {
+    return {
+      show: false,
+      code: [],
+      sysCode: "manager",
+      threeShow: false,
+      status: "",
+      titleName: "",
+      formData: Object.assign({}, SET_FORMDATA),
+      options: RES_REQUESTTYPE,
+      defaultProps: RES_DEFAULTPROPS,
+      rules: {
+        pname: [{ required: true, message: "请输入活动名称", trigger: "blur" }],
+        resType: [
+          { required: true, message: "请选择资源类型", trigger: "change" }
+        ],
+        resName: [
+          { required: true, message: "请输入资源名称", trigger: "blur" },
+          { validator: valiName("资源名称"), trigger: "blur" },
+          { min: 2, max: 50, message: "资源名称长度2~50", trigger: "blur" }
+        ],
+        resAlias: [
+          //{ validator: valiName('资源别名'),  trigger: 'blur' }
+        ],
+        resUrl: [
+          //{ validator: valiName('链接地址'),  trigger: 'blur' }
+        ],
+        resIdent: [
+          //{ validator: valiName('权限标识'),  trigger: 'blur' }
+        ],
+        resIcon: [
+          //{ validator: valiName('图标'),  trigger: 'blur' }
+        ],
+        resOrder: [{ required: true, message: "请选择序号", trigger: "change" }]
+      }
+    };
+  },
+  created() {},
+  mounted() {
+    this.$bus.on("showMsg", this.changeData);
+  },
+  methods: {
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.seedData();
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    changeData(status, code, item) {
+      this.status = status;
+      this.sysCode = code;
+      if (item) this.formData = Object.assign({}, item);
+      this.findResourceBySysCode(code);
+      if (this.status === "add") {
+        this.titleName = ADD_RESOURCE;
+      } else {
+        this.titleName = EDIT_RESOURCE;
+      }
+      this.open();
+    },
+    open() {
+      this.show = true;
+    },
+    close() {
+      this.show = false;
+      this.formData = Object.assign({}, SET_FORMDATA);
+      this.threeShow = false;
+    },
+    isfocus(event) {
+      event.target.blur();
+      this.threeShow = !this.threeShow;
+    },
+    findResourceBySysCode(code) {
+      //api.forent_url.res_url+'/findResourceBySysCode'
+      return this.$axios
+        .$POST({
+          api_name: "findResourceBySysCode",
+          params: {
+            sysCode: "manager"
+          }
+        })
+        .then(res => {
+          if (res && res.data.code === "success") {
+            var data = res.data.data;
+            for (let i = 0; i < data.length; i++) {
+              if (data[i].id === this.formData.id) {
+                data[i].disabled = true;
+              }
+            }
+            //let data = res.data;
+            let num = 0;
+            let formData = this.formData;
+            let code = getTree(data, "-1", "id", "parentId") || [];
+            code.unshift(HOME_DIRECTORY);
+            this.code = code;
+            this.$nextTick(() => {
+              // let Id = formData.parentId==="-1"?formData.id:formData.parentId
+              let Id = formData.parentId;
+              data.forEach((obj, i) => {
+                if (obj.id === Id) {
+                  num++;
+                  this.$set(formData, "pname", obj.resName);
+                }
+              });
+              if (num === 0) {
+                this.$set(formData, "pname", code[0].resName);
+              }
+              setTimeout(() => {
+                try {
+                  this.$refs.treeForm.setCheckedKeys([Id]);
+                } catch (error) {}
+              }, 300);
+            });
+          }
+        });
+    },
+    handleClick(data, checked, node) {
+      let { id, resName } = data;
+      this.$refs.treeForm.setCheckedNodes([]);
+      this.$refs.treeForm.setCheckedNodes([data]);
+      this.formData.parentId = id;
+      this.formData.pname = resName;
+      this.threeShow = false;
+    },
+    seedData() {
+      this.formData.updateUserId = this._Storage.getObj(
+        "downListRow",
+        "obj"
+      ).id;
+      this.formData.sysCode = this.sysCode;
+      this.formData.dataRes = admin_dataRes;
+      let url = SET_STATUS[this.status];
+      if (this.formData.parent || this.formData.children) {
+        delete this.formData.parent;
+        delete this.formData.children;
+      }
+      console.log("url1", url);
+      debugger;
+      this.$axios
+        .$POST({
+          api_name: url,
+          params: this.formData
+        })
+        .then(res => {
+          debugger;
+          console.log(res);
+          if (res && res.data.code === "success") {
+            debugger;
+            this.$message({
+              type: "success",
+              message: "保存成功~"
+            });
+            this.$bus.emit("refresh");
+            this.close();
+          } else {
+            this.$message({
+              type: "error",
+              message: "保存失败1111"
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      console.log("url2", url);
+    }
+  }
+};
+</script>
+
+
+<style lang="scss" scoped>
+@mixin display($content, $align) {
+  display: flex;
+  justify-content: $content;
+  align-items: $align;
+}
+
+.el-main {
+  text-align: left;
+}
+
+.msgbox-container {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  transition: all 0.4s;
+  opacity: 0;
+  visibility: hidden;
+  .msgbox {
+    width: 432px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    .msgbox-title {
+      @include display(space-between, center);
+      background: #254f85;
+      color: white;
+      text-align: left;
+      padding: 6px 15px;
+      font-size: 16px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      img {
+        width: 15px;
+        height: 15px;
+      }
+    }
+    .msgbox-main {
+      padding: 20px 0;
+      background: white;
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      padding-right: 30px;
+      .msgbox-item-mb {
+        margin-bottom: 10px;
+        position: relative;
+        text-align: left;
+        .el-select {
+          width: 100%;
+        }
+        .threeData {
+          width: 89.5%;
+          min-height: 20px;
+          background: white;
+          position: absolute;
+          border: 1px solid #dcdfe6;
+          padding: 0 15px;
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          z-index: 10;
+          max-height: 250px;
+          overflow: auto;
+        }
+      }
+      .msgbox-item {
+        @include display(center, center);
+        position: relative;
+        margin: 10px 0;
+        .item-name {
+          text-align: right;
+          font-size: 16px;
+          margin-right: 10px;
+          b {
+            color: red;
+          }
+        }
+        input {
+          padding: 3px 10px;
+        }
+        .treeData {
+          background: white;
+          position: absolute;
+          top: 106px;
+          right: 8.7%;
+          width: 59.5%;
+          z-index: 100;
+          border: 1px solid #ececec;
+        }
+        .msgbox-btn,
+        .msgbox-btn-save {
+          width: 80px;
+          margin: 0 10px;
+          padding: 3px 0;
+          background: #e7e7e7;
+          font-size: 14px;
+          color: #979797;
+          border-radius: 3px;
+        }
+        .msgbox-btn-save {
+          background: #009cff;
+          color: white;
+        }
+      }
+    }
+  }
+}
+
+.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.threeShade {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.el-select {
+  width: 60%;
+}
+.three-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 99;
+}
+.submitBtn {
+  width: 100%;
+  margin-left: 30px;
+}
+
+.cursor {
+  cursor: pointer;
+}
+</style>

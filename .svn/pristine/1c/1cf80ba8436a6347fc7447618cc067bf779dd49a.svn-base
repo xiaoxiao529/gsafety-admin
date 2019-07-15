@@ -1,0 +1,31 @@
+<template>
+  <div>
+    <nuxt />
+  </div>
+</template>
+<script>
+export default {};
+</script>
+
+<style scoped="scoped">
+[v-cloak] {
+  display: none !important;
+}
+html,
+body {
+  background: linear-gradient(
+    0deg,
+    rgba(218, 218, 219, 1) 0%,
+    rgba(248, 248, 249, 1) 100%
+  );
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+}
+
+body > div > div > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

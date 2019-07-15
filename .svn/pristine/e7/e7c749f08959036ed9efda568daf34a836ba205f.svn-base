@@ -1,0 +1,71 @@
+/* 
+ * @Author: TanZer.hanyu 
+ * @Date: 2019-05-10 15:28:08
+ * --- api配置项 ---
+ * */
+const getTargetHost = (milieu) => {
+
+  switch (milieu) {
+    case 'test':
+      return 'http://112.27.198.15:9873/userCenter/';
+    case 'dev':
+      //return 'http://172.19.12.52:9000/userCenter/'; //内网
+      return 'http://172.19.12.180:9000/userCenter'; //内网-测试地址
+      //return 'http://172.19.12.209:9832/api/v1/upms-service'; //内网
+      //return 'http://112.27.198.15:9873/userCenter/'; //外网
+    case "pro":
+      return 'http://172.19.13.17:9000/userCenter/';
+    default:
+      return milieu;
+  }
+};
+
+export default {
+  // apiHost: "https://api.douban.com/", 
+  apiHost: getTargetHost(process.env.milieu),
+  api: {
+    findMonitorDeviceStateDownList: "monitorDeviceState/findMonitorDeviceStateDownList", //硬件平台-下行控制列表
+    findSubCenterValue: "monitorDeviceState/findSubCenterValue", //硬件平台-下行控制-运营中心下拉框
+    hnlaSendDown: "monitorDeviceState/hnlaSendDown", //硬件平台-发送河南力安下行命令
+    sendCommand: "monitorDeviceState/sendCommand", //硬件平台-发送北京乐鸟下行命令
+    findMonitorDeviceStateExtByMonitorId: "monitorDeviceState/findMonitorDeviceStateExtByMonitorId", //根据监测设备ID获取设备阈值信息---立安
+    findUnitValue: "monitorDeviceState/findUnitValue", //根据监测设备ID获取设备阈值信息---立安
+    login: "login/login", //系统登录,
+    findUserByUserId: "user/findUserByUserId", //根据用户id获取用户详情信息,
+    getRopositoryRecordPage: "rep/getRopositoryRecordPage", // 获取出入库记录分页
+    getHardwareTypePage: "hardwareType/getHardwareTypePage", //硬件类型
+    deleteHardwareType: "/hardwareType/deleteHardwareType", //删除硬件类型
+    addHardwareType: "/hardwareType/addHardwareType", //添加设备类型
+    getHardwareTypeTree: "/hardwareType/getHardwareTypeTree", //获取设备类型树
+    updateHardwareType: "/hardwareType/updateHardwareType", //更新设备类型
+    findTotalNum: "/homepage/findTotalNum", //首页-总数统计
+    findEnterpriseUnitModelCount: "/homepage/findEnterpriseUnitModelCount", //首页-服务模式分布
+    newUnitForSixMonth: "/homepage/newUnitForSixMonth", //新增企业趋势
+    getEnterpriseDevice: "/homepage/getEnterpriseDevice", //硬件设备供应分类
+    findProjectDeviceList: "/monitorDeviceStateInfo/findProjectDeviceList", //项目设备列表-表格数据
+    findDeviceOfflineHisList: "/monitorDeviceStateInfo/findDeviceOfflineHisList", //项目设备列表-表格数据
+    findEnclosureManageList: "/enclosureManage/findEnclosureManageList", //附件管理-表格数据
+    deleteEnclosureManageInfoById:"/enclosureManage/deleteEnclosureManageInfoById",  //附件管理-删除附件
+    addEnclosureManageInfo:"/enclosureManage/addEnclosureManageInfo", //附件管理-上传附件
+    findHardwareDeviceControlRecordList: "/monitorDeviceState/findHardwareDeviceControlRecordList", //设备下行记录列表
+    getAllParentTypeInfo: "/hardwareType/getAllParentTypeInfo", //更新设备类型
+    getDeviceRepositoryPage:"rep/getDeviceRepositoryPage",//,获取设备库存列表分页
+    putInRepository:"rep/putInRepository",//入库
+    putOutRepository:"rep/putOutRepository",//正常出库
+    destroyOutRepository:"rep/destroyOutRepository",//销库出库
+    getAllOrgInfo:"/record/getAllOrgInfo",//获取所有的运营中心
+    getUnitInfoByOrgCode:"/record/getUnitInfoByOrgCode",//获取某运营中心下的单位信息
+    backInToRepository:"/rep/backInToRepository",//回退入库
+    downloadDeviceRepositoryExcel:"/rep/downloadDeviceRepositoryExcel",//导出设备库存excel信息,
+    findRoleListBySysCodeAndPager:"/role/findRoleListBySysCodeAndPager",  //角色管理-获取角色列表
+    addRole:"/role/addRole",  //角色管理-获取角色列表  
+    updateRole:"/role/updateRole",  //角色管理-编辑权限
+    deleteRole:"/role/deleteRole",  //角色管理-删除角色
+    findRoleById:"/role/findRoleById",  //角色管理-获取角色信息详情
+    findTreeBySysCode:"/role/findTreeBySysCode",  //角色管理-获取角色信息详情
+    
+  },
+
+  // websocket地址
+  wsHost: ""
+}

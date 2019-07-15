@@ -1,0 +1,43 @@
+.list-wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
+.list-wrap /deep/.el-table {
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+.list-wrap /deep/.el-table th {
+  background: #f0f3f7;
+}
+
+.list-wrap /deep/.el-table .el-table__body-wrapper {
+  height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 30px);
+  overflow-y: auto;
+}
+
+.hardware-form {
+  font-size: 0;
+  padding: 20px 20px 0 20px;
+}
+
+.hardware-form .el-form-item {
+  width: 20%;
+  display: inline-flex;
+  margin-right: 0;
+}
+
+.hardware-form .el-form-item .el-select {
+  width: 100%;
+}
+
+.hardware-form .serch-btn button:first-child {
+  margin-left: 10px;
+}
+
+/deep/.el-pagination {
+  margin: 0;
+  padding-top: 20px;
+}

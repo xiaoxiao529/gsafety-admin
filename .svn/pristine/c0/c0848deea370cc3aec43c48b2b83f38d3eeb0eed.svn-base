@@ -1,0 +1,110 @@
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog custom-class="del-dialog-wrap"  :visible.sync="dialogTipsVisible" width="280px">
+      <div class="del-dialog-main">
+        <div class="icon-wrap">
+          <i class="el-icon-s-opportunity"></i>
+        </div>
+        <div class="p-wrap" v-if="message.setType=='destroy'">
+          <p class="title-p">是否确定销库？</p>
+          <p class="tips-p">销库后将不可恢复</p>
+        </div>
+        <div class="p-wrap" v-else-if="message.setType=='back'">
+          <p class="title-p">是否确定回退入库？</p>
+          <p class="tips-p">回退入库后将不可恢复</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureHandle">确 定</el-button>
+         <el-button @click="cancalHandle">取 消</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    props:{
+      message:{
+        type:Object,
+        required:true
+      }
+    },
+    data() {
+      return{
+        dialogTipsVisible:false,//弹框是否显示
+        isLoading:false,
+        userObj:{},
+        handwareObj:{}
+      }
+    },
+    mounted() {
+      const that = this;
+      that.userObj = that._Storage.getObj("userObj", "userObj");
+    },
+    computed: {},
+    methods: {
+      showDialog(index,row){
+        const that = this;
+        that.handwareObj = row;
+        that.dialogTipsVisible = true;
+      },
+      /**
+       * 提示确定按钮
+       */
+      sureHandle(){
+        const that = this;
+        that.isLoading = true;
+        let url = null;
+        console.log(2222,that.handwareObj)
+        if(that.message.setType == 'back'){
+          url="backInToRepository"
+        }else if(that.message.setType == 'destroy'){
+          url="destroyOutRepository"
+        }
+        that.$axios
+          .$POST({
+            api_name: url,
+            params: {
+              deviceId: that.message.deviceId,
+              userId:that.userObj.id//这里的id随便填的
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              that.isLoading = false;
+              that.dialogTipsVisible = false;
+              that.$message({
+                message: res.data.rspMsg,
+                type: 'success'
+              });
+
+              that.$emit('loadData',that.handwareObj);
+            } else {
+              that.isLoading = false;
+              that.$message.error(res.data.rspMsg);
+            }
+          }).catch(()=>{
+          this.$message({
+            message: '这里是异常',
+            type: 'warning'
+          });
+        });
+      },
+      /**
+       * 提示取消按钮
+       */
+      cancalHandle(){
+        const that = this;
+        that.dialogTipsVisible = false;
+        this.$message('取消操作');
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .DialogStockWrap{
+    font-family:MicrosoftYaHei;
+  }
+
+</style>

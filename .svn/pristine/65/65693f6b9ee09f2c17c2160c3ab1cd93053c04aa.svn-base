@@ -1,0 +1,70 @@
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog
+      title="安装信息"
+      :visible.sync="dialogSetupInfoVisible"
+      width="524px">
+      <div class="stock-mian">
+         <div class="stepInfo-wrap">
+           <p class="stepInfo-p"><span class="title">运营中心：</span><span class="info">{{stepInfo.orgName || '--'}}</span></p>
+           <p class="stepInfo-p"><span class="title">安装单位：</span><span class="info">{{stepInfo.unitName || '--'}}</span></p>
+           <p class="stepInfo-p"><span class="title">安装位置：</span><span class="info">{{stepInfo.setupAddress || '--'}}</span></p>
+           <p class="stepInfo-p"><span class="title">IMEI/SN/序列号：</span><span class="info">{{stepInfo.imei || '--'}}</span></p>
+           <p class="stepInfo-p"><span class="title">初次安装时间：</span><span class="info">{{stepInfo.creatTime || '--'}}</span></p>
+           <p class="stepInfo-p"><span class="title">最新修改时间：</span><span class="info">{{stepInfo.modifyTime || '--'}}</span></p>
+         </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        dialogSetupInfoVisible: false, //安装信息
+        stepInfo:{
+          orgName:'合肥运营中心',
+          unitName:'合肥要素大市场',
+          setupAddress:'5号楼14层北1消防井',
+          imei:'1283124184873467238423',
+          creatTime:'2018-11-20 19:00',
+          modifyTime:'2018-11-22 19:00'
+        }
+      };
+    },
+    mounted() {
+      const that = this;
+
+    },
+    computed: {},
+    methods: {
+      /**
+       * 弹框显示
+       */
+      initOutStock(){
+        const that= this;
+        that.dialogSetupInfoVisible=true;
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .DialogStockWrap{
+    font-family:MicrosoftYaHei;
+    .stepInfo-wrap{
+      margin: 5px 0;
+      .stepInfo-p{
+        font-size:16px;
+        line-height: 32px;
+        font-family:MicrosoftYaHei;
+        .title{
+          color:rgba(165,173,184,1);
+        }
+        .info{
+          color:rgba(37,40,46,1);
+        }
+      }
+    }
+
+  }
+</style>

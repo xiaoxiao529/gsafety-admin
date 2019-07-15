@@ -1,0 +1,3528 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>IconFont Demo</title>
+  <link rel="shortcut icon" href="https://gtms04.alicdn.com/tps/i4/TB1_oz6GVXXXXaFXpXXJDFnIXXX-64-64.ico" type="image/x-icon"/>
+  <link rel="stylesheet" href="https://g.alicdn.com/thx/cube/1.3.2/cube.min.css">
+  <link rel="stylesheet" href="demo.css">
+  <link rel="stylesheet" href="iconfont.css">
+  <script src="iconfont.js"></script>
+  <!-- jQuery -->
+  <script src="https://a1.alicdn.com/oss/uploads/2018/12/26/7bfddb60-08e8-11e9-9b04-53e73bb6408b.js"></script>
+  <!-- 代码高亮 -->
+  <script src="https://a1.alicdn.com/oss/uploads/2018/12/26/a3f714d0-08e6-11e9-8a15-ebf944d7534c.js"></script>
+</head>
+<body>
+  <div class="main">
+    <h1 class="logo"><a href="https://www.iconfont.cn/" title="iconfont 首页" target="_blank">&#xe86b;</a></h1>
+    <div class="nav-tabs">
+      <ul id="tabs" class="dib-box">
+        <li class="dib active"><span>Unicode</span></li>
+        <li class="dib"><span>Font class</span></li>
+        <li class="dib"><span>Symbol</span></li>
+      </ul>
+      
+      <a href="https://www.iconfont.cn/manage/index?manage_type=myprojects&projectId=833857" target="_blank" class="nav-more">查看项目</a>
+      
+    </div>
+    <div class="tab-container">
+      <div class="content unicode" style="display: block;">
+          <ul class="icon_lists dib-box">
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe655;</span>
+                <div class="name">禁止</div>
+                <div class="code-name">&amp;#xe655;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe640;</span>
+                <div class="name">警铃</div>
+                <div class="code-name">&amp;#xe640;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63e;</span>
+                <div class="name">notice</div>
+                <div class="code-name">&amp;#xe63e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61b;</span>
+                <div class="name">电话</div>
+                <div class="code-name">&amp;#xe61b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe694;</span>
+                <div class="name">柱状图</div>
+                <div class="code-name">&amp;#xe694;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63d;</span>
+                <div class="name">删除</div>
+                <div class="code-name">&amp;#xe63d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe639;</span>
+                <div class="name">暂停</div>
+                <div class="code-name">&amp;#xe639;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe6bd;</span>
+                <div class="name">箭头</div>
+                <div class="code-name">&amp;#xe6bd;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe634;</span>
+                <div class="name">定位</div>
+                <div class="code-name">&amp;#xe634;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63a;</span>
+                <div class="name">监测</div>
+                <div class="code-name">&amp;#xe63a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63f;</span>
+                <div class="name">menu</div>
+                <div class="code-name">&amp;#xe63f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe906;</span>
+                <div class="name">menu-circle-dots</div>
+                <div class="code-name">&amp;#xe906;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe638;</span>
+                <div class="name">用户</div>
+                <div class="code-name">&amp;#xe638;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe6ad;</span>
+                <div class="name">arrow-up-b</div>
+                <div class="code-name">&amp;#xe6ad;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe649;</span>
+                <div class="name">info</div>
+                <div class="code-name">&amp;#xe649;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe629;</span>
+                <div class="name">密码</div>
+                <div class="code-name">&amp;#xe629;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe67a;</span>
+                <div class="name">跟踪定位</div>
+                <div class="code-name">&amp;#xe67a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66c;</span>
+                <div class="name">sq-checked</div>
+                <div class="code-name">&amp;#xe66c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62f;</span>
+                <div class="name">Person</div>
+                <div class="code-name">&amp;#xe62f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62a;</span>
+                <div class="name">关闭</div>
+                <div class="code-name">&amp;#xe62a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe7b7;</span>
+                <div class="name">关闭</div>
+                <div class="code-name">&amp;#xe7b7;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe659;</span>
+                <div class="name">文件夹收起</div>
+                <div class="code-name">&amp;#xe659;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe650;</span>
+                <div class="name">箭头 下</div>
+                <div class="code-name">&amp;#xe650;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63b;</span>
+                <div class="name">编辑</div>
+                <div class="code-name">&amp;#xe63b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65b;</span>
+                <div class="name">性别-男</div>
+                <div class="code-name">&amp;#xe65b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65c;</span>
+                <div class="name">性别-女</div>
+                <div class="code-name">&amp;#xe65c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe78d;</span>
+                <div class="name">搜索</div>
+                <div class="code-name">&amp;#xe78d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61c;</span>
+                <div class="name">趋势</div>
+                <div class="code-name">&amp;#xe61c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe627;</span>
+                <div class="name">铃声</div>
+                <div class="code-name">&amp;#xe627;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe637;</span>
+                <div class="name">饼状图</div>
+                <div class="code-name">&amp;#xe637;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61a;</span>
+                <div class="name">刷新</div>
+                <div class="code-name">&amp;#xe61a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe623;</span>
+                <div class="name">铃铛</div>
+                <div class="code-name">&amp;#xe623;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe691;</span>
+                <div class="name">增加</div>
+                <div class="code-name">&amp;#xe691;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe6dd;</span>
+                <div class="name">退出</div>
+                <div class="code-name">&amp;#xe6dd;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe628;</span>
+                <div class="name">人</div>
+                <div class="code-name">&amp;#xe628;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe7ea;</span>
+                <div class="name">play</div>
+                <div class="code-name">&amp;#xe7ea;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe678;</span>
+                <div class="name">箭头</div>
+                <div class="code-name">&amp;#xe678;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe620;</span>
+                <div class="name">chart-5</div>
+                <div class="code-name">&amp;#xe620;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61d;</span>
+                <div class="name">phone-2</div>
+                <div class="code-name">&amp;#xe61d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61e;</span>
+                <div class="name">clock</div>
+                <div class="code-name">&amp;#xe61e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe61f;</span>
+                <div class="name">build</div>
+                <div class="code-name">&amp;#xe61f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe621;</span>
+                <div class="name">phone-1</div>
+                <div class="code-name">&amp;#xe621;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe622;</span>
+                <div class="name">company</div>
+                <div class="code-name">&amp;#xe622;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe624;</span>
+                <div class="name">phone-3</div>
+                <div class="code-name">&amp;#xe624;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe625;</span>
+                <div class="name">power</div>
+                <div class="code-name">&amp;#xe625;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe626;</span>
+                <div class="name">tips</div>
+                <div class="code-name">&amp;#xe626;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe600;</span>
+                <div class="name">chart</div>
+                <div class="code-name">&amp;#xe600;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe601;</span>
+                <div class="name">diamond</div>
+                <div class="code-name">&amp;#xe601;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe602;</span>
+                <div class="name">content</div>
+                <div class="code-name">&amp;#xe602;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe603;</span>
+                <div class="name">crown</div>
+                <div class="code-name">&amp;#xe603;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe604;</span>
+                <div class="name">company</div>
+                <div class="code-name">&amp;#xe604;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe605;</span>
+                <div class="name">device</div>
+                <div class="code-name">&amp;#xe605;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe606;</span>
+                <div class="name">duty</div>
+                <div class="code-name">&amp;#xe606;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe607;</span>
+                <div class="name">family</div>
+                <div class="code-name">&amp;#xe607;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe608;</span>
+                <div class="name">file</div>
+                <div class="code-name">&amp;#xe608;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe609;</span>
+                <div class="name">gis</div>
+                <div class="code-name">&amp;#xe609;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60a;</span>
+                <div class="name">heart</div>
+                <div class="code-name">&amp;#xe60a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60b;</span>
+                <div class="name">handshake</div>
+                <div class="code-name">&amp;#xe60b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60c;</span>
+                <div class="name">index</div>
+                <div class="code-name">&amp;#xe60c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60d;</span>
+                <div class="name">home</div>
+                <div class="code-name">&amp;#xe60d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60e;</span>
+                <div class="name">moon</div>
+                <div class="code-name">&amp;#xe60e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe60f;</span>
+                <div class="name">logo</div>
+                <div class="code-name">&amp;#xe60f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe610;</span>
+                <div class="name">monitor</div>
+                <div class="code-name">&amp;#xe610;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe611;</span>
+                <div class="name">register</div>
+                <div class="code-name">&amp;#xe611;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe612;</span>
+                <div class="name">organization</div>
+                <div class="code-name">&amp;#xe612;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe613;</span>
+                <div class="name">operation</div>
+                <div class="code-name">&amp;#xe613;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe614;</span>
+                <div class="name">service</div>
+                <div class="code-name">&amp;#xe614;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe615;</span>
+                <div class="name">star</div>
+                <div class="code-name">&amp;#xe615;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe616;</span>
+                <div class="name">supervise</div>
+                <div class="code-name">&amp;#xe616;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe617;</span>
+                <div class="name">sun</div>
+                <div class="code-name">&amp;#xe617;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe618;</span>
+                <div class="name">set</div>
+                <div class="code-name">&amp;#xe618;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe619;</span>
+                <div class="name">user</div>
+                <div class="code-name">&amp;#xe619;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe6af;</span>
+                <div class="name">arrow-up-b</div>
+                <div class="code-name">&amp;#xe6af;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe907;</span>
+                <div class="name">箭头</div>
+                <div class="code-name">&amp;#xe907;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62b;</span>
+                <div class="name">check-1</div>
+                <div class="code-name">&amp;#xe62b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62c;</span>
+                <div class="name">device-2</div>
+                <div class="code-name">&amp;#xe62c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62d;</span>
+                <div class="name">chart-1</div>
+                <div class="code-name">&amp;#xe62d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe62e;</span>
+                <div class="name">person-2</div>
+                <div class="code-name">&amp;#xe62e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe630;</span>
+                <div class="name">花</div>
+                <div class="code-name">&amp;#xe630;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe631;</span>
+                <div class="name">尺子</div>
+                <div class="code-name">&amp;#xe631;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe632;</span>
+                <div class="name">商店</div>
+                <div class="code-name">&amp;#xe632;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe633;</span>
+                <div class="name">电话</div>
+                <div class="code-name">&amp;#xe633;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe635;</span>
+                <div class="name">日历</div>
+                <div class="code-name">&amp;#xe635;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe636;</span>
+                <div class="name">图表-3</div>
+                <div class="code-name">&amp;#xe636;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe63c;</span>
+                <div class="name">饼图</div>
+                <div class="code-name">&amp;#xe63c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe641;</span>
+                <div class="name">折线图</div>
+                <div class="code-name">&amp;#xe641;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe642;</span>
+                <div class="name">公文包</div>
+                <div class="code-name">&amp;#xe642;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe643;</span>
+                <div class="name">device-4</div>
+                <div class="code-name">&amp;#xe643;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64d;</span>
+                <div class="name">unusual</div>
+                <div class="code-name">&amp;#xe64d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe644;</span>
+                <div class="name">日历-1</div>
+                <div class="code-name">&amp;#xe644;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe645;</span>
+                <div class="name">耳机</div>
+                <div class="code-name">&amp;#xe645;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe646;</span>
+                <div class="name">下载</div>
+                <div class="code-name">&amp;#xe646;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe647;</span>
+                <div class="name">查岗</div>
+                <div class="code-name">&amp;#xe647;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64e;</span>
+                <div class="name">预警-2</div>
+                <div class="code-name">&amp;#xe64e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0a;</span>
+                <div class="name">arrow</div>
+                <div class="code-name">&amp;#xec0a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0b;</span>
+                <div class="name">arrow</div>
+                <div class="code-name">&amp;#xec0b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe648;</span>
+                <div class="name">订单</div>
+                <div class="code-name">&amp;#xe648;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64a;</span>
+                <div class="name">接入</div>
+                <div class="code-name">&amp;#xe64a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64b;</span>
+                <div class="name">unlock</div>
+                <div class="code-name">&amp;#xe64b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64c;</span>
+                <div class="name">lock</div>
+                <div class="code-name">&amp;#xe64c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe64f;</span>
+                <div class="name">故障</div>
+                <div class="code-name">&amp;#xe64f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe651;</span>
+                <div class="name">日志</div>
+                <div class="code-name">&amp;#xe651;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe652;</span>
+                <div class="name">菜单</div>
+                <div class="code-name">&amp;#xe652;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe653;</span>
+                <div class="name">离线</div>
+                <div class="code-name">&amp;#xe653;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe654;</span>
+                <div class="name">在线</div>
+                <div class="code-name">&amp;#xe654;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe657;</span>
+                <div class="name">叹号</div>
+                <div class="code-name">&amp;#xe657;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe656;</span>
+                <div class="name">eye-close</div>
+                <div class="code-name">&amp;#xe656;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe658;</span>
+                <div class="name">eye-open</div>
+                <div class="code-name">&amp;#xe658;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65a;</span>
+                <div class="name">文件夹</div>
+                <div class="code-name">&amp;#xe65a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65d;</span>
+                <div class="name">电话</div>
+                <div class="code-name">&amp;#xe65d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65e;</span>
+                <div class="name">邮件</div>
+                <div class="code-name">&amp;#xe65e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe65f;</span>
+                <div class="name">用户</div>
+                <div class="code-name">&amp;#xe65f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe660;</span>
+                <div class="name">身份证</div>
+                <div class="code-name">&amp;#xe660;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe661;</span>
+                <div class="name">退出</div>
+                <div class="code-name">&amp;#xe661;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe662;</span>
+                <div class="name">Add</div>
+                <div class="code-name">&amp;#xe662;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe663;</span>
+                <div class="name">文档</div>
+                <div class="code-name">&amp;#xe663;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe664;</span>
+                <div class="name">个人资料</div>
+                <div class="code-name">&amp;#xe664;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe665;</span>
+                <div class="name">数据</div>
+                <div class="code-name">&amp;#xe665;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0c;</span>
+                <div class="name">电话</div>
+                <div class="code-name">&amp;#xec0c;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe667;</span>
+                <div class="name">视频</div>
+                <div class="code-name">&amp;#xe667;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe668;</span>
+                <div class="name">全屏</div>
+                <div class="code-name">&amp;#xe668;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe669;</span>
+                <div class="name">小屏</div>
+                <div class="code-name">&amp;#xe669;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe666;</span>
+                <div class="name">视频-line</div>
+                <div class="code-name">&amp;#xe666;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe68d;</span>
+                <div class="name">首页</div>
+                <div class="code-name">&amp;#xe68d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66a;</span>
+                <div class="name">对号</div>
+                <div class="code-name">&amp;#xe66a;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66b;</span>
+                <div class="name">内容管理</div>
+                <div class="code-name">&amp;#xe66b;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66d;</span>
+                <div class="name">帮助中心</div>
+                <div class="code-name">&amp;#xe66d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66e;</span>
+                <div class="name">转换</div>
+                <div class="code-name">&amp;#xe66e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe66f;</span>
+                <div class="name">用户</div>
+                <div class="code-name">&amp;#xe66f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe670;</span>
+                <div class="name">服务</div>
+                <div class="code-name">&amp;#xe670;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe671;</span>
+                <div class="name">赔付</div>
+                <div class="code-name">&amp;#xe671;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe672;</span>
+                <div class="name">钱</div>
+                <div class="code-name">&amp;#xe672;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe673;</span>
+                <div class="name">保证</div>
+                <div class="code-name">&amp;#xe673;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe674;</span>
+                <div class="name">时钟</div>
+                <div class="code-name">&amp;#xe674;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe675;</span>
+                <div class="name">退出</div>
+                <div class="code-name">&amp;#xe675;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe676;</span>
+                <div class="name">保存</div>
+                <div class="code-name">&amp;#xe676;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe677;</span>
+                <div class="name">组 4115430</div>
+                <div class="code-name">&amp;#xe677;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe681;</span>
+                <div class="name">形状 35</div>
+                <div class="code-name">&amp;#xe681;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe687;</span>
+                <div class="name">数据</div>
+                <div class="code-name">&amp;#xe687;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe686;</span>
+                <div class="name">火警处理</div>
+                <div class="code-name">&amp;#xe686;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0d;</span>
+                <div class="name">arrow</div>
+                <div class="code-name">&amp;#xec0d;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0e;</span>
+                <div class="name">arrow</div>
+                <div class="code-name">&amp;#xec0e;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec0f;</span>
+                <div class="name">箭头</div>
+                <div class="code-name">&amp;#xec0f;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xec10;</span>
+                <div class="name">箭头</div>
+                <div class="code-name">&amp;#xec10;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe679;</span>
+                <div class="name">动作</div>
+                <div class="code-name">&amp;#xe679;</div>
+              </li>
+          
+            <li class="dib">
+              <span class="icon iconfont">&#xe67b;</span>
+                <div class="name">verify</div>
+                <div class="code-name">&amp;#xe67b;</div>
+              </li>
+          
+          </ul>
+          <div class="article markdown">
+          <h2 id="unicode-">Unicode 引用</h2>
+          <hr>
+
+          <p>Unicode 是字体在网页端最原始的应用方式，特点是：</p>
+          <ul>
+            <li>兼容性最好，支持 IE6+，及所有现代浏览器。</li>
+            <li>支持按字体的方式去动态调整图标大小，颜色等等。</li>
+            <li>但是因为是字体，所以不支持多色。只能使用平台里单色的图标，就算项目里有多色图标也会自动去色。</li>
+          </ul>
+          <blockquote>
+            <p>注意：新版 iconfont 支持多色图标，这些多色图标在 Unicode 模式下将不能使用，如果有需求建议使用symbol 的引用方式</p>
+          </blockquote>
+          <p>Unicode 使用步骤如下：</p>
+          <h3 id="-font-face">第一步：拷贝项目下面生成的 <code>@font-face</code></h3>
+<pre><code class="language-css"
+>@font-face {
+  font-family: 'iconfont';
+  src: url('iconfont.eot');
+  src: url('iconfont.eot?#iefix') format('embedded-opentype'),
+      url('iconfont.woff2') format('woff2'),
+      url('iconfont.woff') format('woff'),
+      url('iconfont.ttf') format('truetype'),
+      url('iconfont.svg#iconfont') format('svg');
+}
+</code></pre>
+          <h3 id="-iconfont-">第二步：定义使用 iconfont 的样式</h3>
+<pre><code class="language-css"
+>.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+</code></pre>
+          <h3 id="-">第三步：挑选相应图标并获取字体编码，应用于页面</h3>
+<pre>
+<code class="language-html"
+>&lt;span class="iconfont"&gt;&amp;#x33;&lt;/span&gt;
+</code></pre>
+          <blockquote>
+            <p>"iconfont" 是你项目下的 font-family。可以通过编辑项目查看，默认是 "iconfont"。</p>
+          </blockquote>
+          </div>
+      </div>
+      <div class="content font-class">
+        <ul class="icon_lists dib-box">
+          
+          <li class="dib">
+            <span class="icon iconfont icon-forbid"></span>
+            <div class="name">
+              禁止
+            </div>
+            <div class="code-name">.icon-forbid
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-alarm"></span>
+            <div class="name">
+              警铃
+            </div>
+            <div class="code-name">.icon-alarm
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-notice-2"></span>
+            <div class="name">
+              notice
+            </div>
+            <div class="code-name">.icon-notice-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone"></span>
+            <div class="name">
+              电话
+            </div>
+            <div class="code-name">.icon-phone
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-zhuzhuangtu"></span>
+            <div class="name">
+              柱状图
+            </div>
+            <div class="code-name">.icon-zhuzhuangtu
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-delete"></span>
+            <div class="name">
+              删除
+            </div>
+            <div class="code-name">.icon-delete
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-stop"></span>
+            <div class="name">
+              暂停
+            </div>
+            <div class="code-name">.icon-stop
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-1"></span>
+            <div class="name">
+              箭头
+            </div>
+            <div class="code-name">.icon-arrow-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-location"></span>
+            <div class="name">
+              定位
+            </div>
+            <div class="code-name">.icon-location
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-monitor-1"></span>
+            <div class="name">
+              监测
+            </div>
+            <div class="code-name">.icon-monitor-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-menu"></span>
+            <div class="name">
+              menu
+            </div>
+            <div class="code-name">.icon-menu
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-menu-2"></span>
+            <div class="name">
+              menu-circle-dots
+            </div>
+            <div class="code-name">.icon-menu-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-user-1"></span>
+            <div class="name">
+              用户
+            </div>
+            <div class="code-name">.icon-user-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-down"></span>
+            <div class="name">
+              arrow-up-b
+            </div>
+            <div class="code-name">.icon-arrow-down
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-info"></span>
+            <div class="name">
+              info
+            </div>
+            <div class="code-name">.icon-info
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-lock"></span>
+            <div class="name">
+              密码
+            </div>
+            <div class="code-name">.icon-lock
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-location-2"></span>
+            <div class="name">
+              跟踪定位
+            </div>
+            <div class="code-name">.icon-location-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-checked"></span>
+            <div class="name">
+              sq-checked
+            </div>
+            <div class="code-name">.icon-checked
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-person-1"></span>
+            <div class="name">
+              Person
+            </div>
+            <div class="code-name">.icon-person-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-close"></span>
+            <div class="name">
+              关闭
+            </div>
+            <div class="code-name">.icon-close
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-close-2"></span>
+            <div class="name">
+              关闭
+            </div>
+            <div class="code-name">.icon-close-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-files-close"></span>
+            <div class="name">
+              文件夹收起
+            </div>
+            <div class="code-name">.icon-files-close
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-jiantouxia"></span>
+            <div class="name">
+              箭头 下
+            </div>
+            <div class="code-name">.icon-jiantouxia
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-edit"></span>
+            <div class="name">
+              编辑
+            </div>
+            <div class="code-name">.icon-edit
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-gender-male"></span>
+            <div class="name">
+              性别-男
+            </div>
+            <div class="code-name">.icon-gender-male
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-gender-female"></span>
+            <div class="name">
+              性别-女
+            </div>
+            <div class="code-name">.icon-gender-female
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-search"></span>
+            <div class="name">
+              搜索
+            </div>
+            <div class="code-name">.icon-search
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-qushi"></span>
+            <div class="name">
+              趋势
+            </div>
+            <div class="code-name">.icon-qushi
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-notice-1"></span>
+            <div class="name">
+              铃声
+            </div>
+            <div class="code-name">.icon-notice-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-bingzhuangtu"></span>
+            <div class="name">
+              饼状图
+            </div>
+            <div class="code-name">.icon-bingzhuangtu
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-refresh"></span>
+            <div class="name">
+              刷新
+            </div>
+            <div class="code-name">.icon-refresh
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-notice"></span>
+            <div class="name">
+              铃铛
+            </div>
+            <div class="code-name">.icon-notice
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-add"></span>
+            <div class="name">
+              增加
+            </div>
+            <div class="code-name">.icon-add
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-exit"></span>
+            <div class="name">
+              退出
+            </div>
+            <div class="code-name">.icon-exit
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-person"></span>
+            <div class="name">
+              人
+            </div>
+            <div class="code-name">.icon-person
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-play"></span>
+            <div class="name">
+              play
+            </div>
+            <div class="code-name">.icon-play
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-right-2"></span>
+            <div class="name">
+              箭头
+            </div>
+            <div class="code-name">.icon-arrow-right-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-chart1"></span>
+            <div class="name">
+              chart-5
+            </div>
+            <div class="code-name">.icon-chart1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone-"></span>
+            <div class="name">
+              phone-2
+            </div>
+            <div class="code-name">.icon-phone-
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-clock"></span>
+            <div class="name">
+              clock
+            </div>
+            <div class="code-name">.icon-clock
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-build"></span>
+            <div class="name">
+              build
+            </div>
+            <div class="code-name">.icon-build
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone-1"></span>
+            <div class="name">
+              phone-1
+            </div>
+            <div class="code-name">.icon-phone-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-company-1"></span>
+            <div class="name">
+              company
+            </div>
+            <div class="code-name">.icon-company-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone-2"></span>
+            <div class="name">
+              phone-3
+            </div>
+            <div class="code-name">.icon-phone-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-power"></span>
+            <div class="name">
+              power
+            </div>
+            <div class="code-name">.icon-power
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-tips"></span>
+            <div class="name">
+              tips
+            </div>
+            <div class="code-name">.icon-tips
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-chart"></span>
+            <div class="name">
+              chart
+            </div>
+            <div class="code-name">.icon-chart
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-diamond"></span>
+            <div class="name">
+              diamond
+            </div>
+            <div class="code-name">.icon-diamond
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-content"></span>
+            <div class="name">
+              content
+            </div>
+            <div class="code-name">.icon-content
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-crown"></span>
+            <div class="name">
+              crown
+            </div>
+            <div class="code-name">.icon-crown
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-company"></span>
+            <div class="name">
+              company
+            </div>
+            <div class="code-name">.icon-company
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-device"></span>
+            <div class="name">
+              device
+            </div>
+            <div class="code-name">.icon-device
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-duty"></span>
+            <div class="name">
+              duty
+            </div>
+            <div class="code-name">.icon-duty
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-family"></span>
+            <div class="name">
+              family
+            </div>
+            <div class="code-name">.icon-family
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-file"></span>
+            <div class="name">
+              file
+            </div>
+            <div class="code-name">.icon-file
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-gis"></span>
+            <div class="name">
+              gis
+            </div>
+            <div class="code-name">.icon-gis
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-heart"></span>
+            <div class="name">
+              heart
+            </div>
+            <div class="code-name">.icon-heart
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-handshake"></span>
+            <div class="name">
+              handshake
+            </div>
+            <div class="code-name">.icon-handshake
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-index"></span>
+            <div class="name">
+              index
+            </div>
+            <div class="code-name">.icon-index
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-home"></span>
+            <div class="name">
+              home
+            </div>
+            <div class="code-name">.icon-home
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-moon"></span>
+            <div class="name">
+              moon
+            </div>
+            <div class="code-name">.icon-moon
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-logo"></span>
+            <div class="name">
+              logo
+            </div>
+            <div class="code-name">.icon-logo
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-monitor"></span>
+            <div class="name">
+              monitor
+            </div>
+            <div class="code-name">.icon-monitor
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-register"></span>
+            <div class="name">
+              register
+            </div>
+            <div class="code-name">.icon-register
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-organization"></span>
+            <div class="name">
+              organization
+            </div>
+            <div class="code-name">.icon-organization
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-operation"></span>
+            <div class="name">
+              operation
+            </div>
+            <div class="code-name">.icon-operation
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-service"></span>
+            <div class="name">
+              service
+            </div>
+            <div class="code-name">.icon-service
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-star"></span>
+            <div class="name">
+              star
+            </div>
+            <div class="code-name">.icon-star
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-supervise"></span>
+            <div class="name">
+              supervise
+            </div>
+            <div class="code-name">.icon-supervise
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-sun"></span>
+            <div class="name">
+              sun
+            </div>
+            <div class="code-name">.icon-sun
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-set"></span>
+            <div class="name">
+              set
+            </div>
+            <div class="code-name">.icon-set
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-user"></span>
+            <div class="name">
+              user
+            </div>
+            <div class="code-name">.icon-user
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-up"></span>
+            <div class="name">
+              arrow-up-b
+            </div>
+            <div class="code-name">.icon-arrow-up
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-2"></span>
+            <div class="name">
+              箭头
+            </div>
+            <div class="code-name">.icon-arrow-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-check-1"></span>
+            <div class="name">
+              check-1
+            </div>
+            <div class="code-name">.icon-check-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-device-2"></span>
+            <div class="name">
+              device-2
+            </div>
+            <div class="code-name">.icon-device-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-chart-2"></span>
+            <div class="name">
+              chart-1
+            </div>
+            <div class="code-name">.icon-chart-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-person-2"></span>
+            <div class="name">
+              person-2
+            </div>
+            <div class="code-name">.icon-person-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-flower"></span>
+            <div class="name">
+              花
+            </div>
+            <div class="code-name">.icon-flower
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-rule"></span>
+            <div class="name">
+              尺子
+            </div>
+            <div class="code-name">.icon-rule
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-store"></span>
+            <div class="name">
+              商店
+            </div>
+            <div class="code-name">.icon-store
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-telephone"></span>
+            <div class="name">
+              电话
+            </div>
+            <div class="code-name">.icon-telephone
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-calendar"></span>
+            <div class="name">
+              日历
+            </div>
+            <div class="code-name">.icon-calendar
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-chart-3"></span>
+            <div class="name">
+              图表-3
+            </div>
+            <div class="code-name">.icon-chart-3
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-pie"></span>
+            <div class="name">
+              饼图
+            </div>
+            <div class="code-name">.icon-pie
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-chart-4"></span>
+            <div class="name">
+              折线图
+            </div>
+            <div class="code-name">.icon-chart-4
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-package"></span>
+            <div class="name">
+              公文包
+            </div>
+            <div class="code-name">.icon-package
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-device-3"></span>
+            <div class="name">
+              device-4
+            </div>
+            <div class="code-name">.icon-device-3
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-accident"></span>
+            <div class="name">
+              unusual
+            </div>
+            <div class="code-name">.icon-accident
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-calendar-1"></span>
+            <div class="name">
+              日历-1
+            </div>
+            <div class="code-name">.icon-calendar-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-headset"></span>
+            <div class="name">
+              耳机
+            </div>
+            <div class="code-name">.icon-headset
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-download"></span>
+            <div class="name">
+              下载
+            </div>
+            <div class="code-name">.icon-download
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-lookup"></span>
+            <div class="name">
+              查岗
+            </div>
+            <div class="code-name">.icon-lookup
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-forewarning-2"></span>
+            <div class="name">
+              预警-2
+            </div>
+            <div class="code-name">.icon-forewarning-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-down-1"></span>
+            <div class="name">
+              arrow
+            </div>
+            <div class="code-name">.icon-arrow-down-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-up-1"></span>
+            <div class="name">
+              arrow
+            </div>
+            <div class="code-name">.icon-arrow-up-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-order-1"></span>
+            <div class="name">
+              订单
+            </div>
+            <div class="code-name">.icon-order-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-join"></span>
+            <div class="name">
+              接入
+            </div>
+            <div class="code-name">.icon-join
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-unlock-1"></span>
+            <div class="name">
+              unlock
+            </div>
+            <div class="code-name">.icon-unlock-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-lock-1"></span>
+            <div class="name">
+              lock
+            </div>
+            <div class="code-name">.icon-lock-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-accident-1"></span>
+            <div class="name">
+              故障
+            </div>
+            <div class="code-name">.icon-accident-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-log"></span>
+            <div class="name">
+              日志
+            </div>
+            <div class="code-name">.icon-log
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-menu-1"></span>
+            <div class="name">
+              菜单
+            </div>
+            <div class="code-name">.icon-menu-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-offline-1"></span>
+            <div class="name">
+              离线
+            </div>
+            <div class="code-name">.icon-offline-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-online-1"></span>
+            <div class="name">
+              在线
+            </div>
+            <div class="code-name">.icon-online-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-tips-1"></span>
+            <div class="name">
+              叹号
+            </div>
+            <div class="code-name">.icon-tips-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-eye-close"></span>
+            <div class="name">
+              eye-close
+            </div>
+            <div class="code-name">.icon-eye-close
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-eye-open"></span>
+            <div class="name">
+              eye-open
+            </div>
+            <div class="code-name">.icon-eye-open
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-folder-close"></span>
+            <div class="name">
+              文件夹
+            </div>
+            <div class="code-name">.icon-folder-close
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone-line"></span>
+            <div class="name">
+              电话
+            </div>
+            <div class="code-name">.icon-phone-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-mail-line"></span>
+            <div class="name">
+              邮件
+            </div>
+            <div class="code-name">.icon-mail-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-user-line"></span>
+            <div class="name">
+              用户
+            </div>
+            <div class="code-name">.icon-user-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-idcard-line"></span>
+            <div class="name">
+              身份证
+            </div>
+            <div class="code-name">.icon-idcard-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-exit-1"></span>
+            <div class="name">
+              退出
+            </div>
+            <div class="code-name">.icon-exit-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-add-1"></span>
+            <div class="name">
+              Add
+            </div>
+            <div class="code-name">.icon-add-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-document"></span>
+            <div class="name">
+              文档
+            </div>
+            <div class="code-name">.icon-document
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-user-info"></span>
+            <div class="name">
+              个人资料
+            </div>
+            <div class="code-name">.icon-user-info
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-data"></span>
+            <div class="name">
+              数据
+            </div>
+            <div class="code-name">.icon-data
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-phone-02"></span>
+            <div class="name">
+              电话
+            </div>
+            <div class="code-name">.icon-phone-02
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-video"></span>
+            <div class="name">
+              视频
+            </div>
+            <div class="code-name">.icon-video
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-full-screen"></span>
+            <div class="name">
+              全屏
+            </div>
+            <div class="code-name">.icon-full-screen
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-min-screen"></span>
+            <div class="name">
+              小屏
+            </div>
+            <div class="code-name">.icon-min-screen
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-video-line"></span>
+            <div class="name">
+              视频-line
+            </div>
+            <div class="code-name">.icon-video-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-mis-home"></span>
+            <div class="name">
+              首页
+            </div>
+            <div class="code-name">.icon-mis-home
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-duihao"></span>
+            <div class="name">
+              对号
+            </div>
+            <div class="code-name">.icon-duihao
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-content-manage"></span>
+            <div class="name">
+              内容管理
+            </div>
+            <div class="code-name">.icon-content-manage
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-help-center"></span>
+            <div class="name">
+              帮助中心
+            </div>
+            <div class="code-name">.icon-help-center
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-transfer"></span>
+            <div class="name">
+              转换
+            </div>
+            <div class="code-name">.icon-transfer
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-user-2"></span>
+            <div class="name">
+              用户
+            </div>
+            <div class="code-name">.icon-user-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-service-1"></span>
+            <div class="name">
+              服务
+            </div>
+            <div class="code-name">.icon-service-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-compensation"></span>
+            <div class="name">
+              赔付
+            </div>
+            <div class="code-name">.icon-compensation
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-money"></span>
+            <div class="name">
+              钱
+            </div>
+            <div class="code-name">.icon-money
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-insurance"></span>
+            <div class="name">
+              保证
+            </div>
+            <div class="code-name">.icon-insurance
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-clock-2"></span>
+            <div class="name">
+              时钟
+            </div>
+            <div class="code-name">.icon-clock-2
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-exit-line"></span>
+            <div class="name">
+              退出
+            </div>
+            <div class="code-name">.icon-exit-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-save-line"></span>
+            <div class="name">
+              保存
+            </div>
+            <div class="code-name">.icon-save-line
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-zu"></span>
+            <div class="name">
+              组 4115430
+            </div>
+            <div class="code-name">.icon-zu
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-store-1"></span>
+            <div class="name">
+              形状 35
+            </div>
+            <div class="code-name">.icon-store-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-data-1"></span>
+            <div class="name">
+              数据
+            </div>
+            <div class="code-name">.icon-data-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-alarm-handle"></span>
+            <div class="name">
+              火警处理
+            </div>
+            <div class="code-name">.icon-alarm-handle
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-left-1"></span>
+            <div class="name">
+              arrow
+            </div>
+            <div class="code-name">.icon-arrow-left-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-right-1"></span>
+            <div class="name">
+              arrow
+            </div>
+            <div class="code-name">.icon-arrow-right-1
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-3-copy"></span>
+            <div class="name">
+              箭头
+            </div>
+            <div class="code-name">.icon-arrow-3-copy
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-arrow-4-copy-copy"></span>
+            <div class="name">
+              箭头
+            </div>
+            <div class="code-name">.icon-arrow-4-copy-copy
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-action"></span>
+            <div class="name">
+              动作
+            </div>
+            <div class="code-name">.icon-action
+            </div>
+          </li>
+          
+          <li class="dib">
+            <span class="icon iconfont icon-verify"></span>
+            <div class="name">
+              verify
+            </div>
+            <div class="code-name">.icon-verify
+            </div>
+          </li>
+          
+        </ul>
+        <div class="article markdown">
+        <h2 id="font-class-">font-class 引用</h2>
+        <hr>
+
+        <p>font-class 是 Unicode 使用方式的一种变种，主要是解决 Unicode 书写不直观，语意不明确的问题。</p>
+        <p>与 Unicode 使用方式相比，具有如下特点：</p>
+        <ul>
+          <li>兼容性良好，支持 IE8+，及所有现代浏览器。</li>
+          <li>相比于 Unicode 语意明确，书写更直观。可以很容易分辨这个 icon 是什么。</li>
+          <li>因为使用 class 来定义图标，所以当要替换图标时，只需要修改 class 里面的 Unicode 引用。</li>
+          <li>不过因为本质上还是使用的字体，所以多色图标还是不支持的。</li>
+        </ul>
+        <p>使用步骤如下：</p>
+        <h3 id="-fontclass-">第一步：引入项目下面生成的 fontclass 代码：</h3>
+<pre><code class="language-html">&lt;link rel="stylesheet" href="./iconfont.css"&gt;
+</code></pre>
+        <h3 id="-">第二步：挑选相应图标并获取类名，应用于页面：</h3>
+<pre><code class="language-html">&lt;span class="iconfont icon-xxx"&gt;&lt;/span&gt;
+</code></pre>
+        <blockquote>
+          <p>"
+            iconfont" 是你项目下的 font-family。可以通过编辑项目查看，默认是 "iconfont"。</p>
+        </blockquote>
+      </div>
+      </div>
+      <div class="content symbol">
+          <ul class="icon_lists dib-box">
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-forbid"></use>
+                </svg>
+                <div class="name">禁止</div>
+                <div class="code-name">#icon-forbid</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-alarm"></use>
+                </svg>
+                <div class="name">警铃</div>
+                <div class="code-name">#icon-alarm</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-notice-2"></use>
+                </svg>
+                <div class="name">notice</div>
+                <div class="code-name">#icon-notice-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone"></use>
+                </svg>
+                <div class="name">电话</div>
+                <div class="code-name">#icon-phone</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-zhuzhuangtu"></use>
+                </svg>
+                <div class="name">柱状图</div>
+                <div class="code-name">#icon-zhuzhuangtu</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-delete"></use>
+                </svg>
+                <div class="name">删除</div>
+                <div class="code-name">#icon-delete</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-stop"></use>
+                </svg>
+                <div class="name">暂停</div>
+                <div class="code-name">#icon-stop</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-1"></use>
+                </svg>
+                <div class="name">箭头</div>
+                <div class="code-name">#icon-arrow-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-location"></use>
+                </svg>
+                <div class="name">定位</div>
+                <div class="code-name">#icon-location</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-monitor-1"></use>
+                </svg>
+                <div class="name">监测</div>
+                <div class="code-name">#icon-monitor-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-menu"></use>
+                </svg>
+                <div class="name">menu</div>
+                <div class="code-name">#icon-menu</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-menu-2"></use>
+                </svg>
+                <div class="name">menu-circle-dots</div>
+                <div class="code-name">#icon-menu-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-user-1"></use>
+                </svg>
+                <div class="name">用户</div>
+                <div class="code-name">#icon-user-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-down"></use>
+                </svg>
+                <div class="name">arrow-up-b</div>
+                <div class="code-name">#icon-arrow-down</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-info"></use>
+                </svg>
+                <div class="name">info</div>
+                <div class="code-name">#icon-info</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-lock"></use>
+                </svg>
+                <div class="name">密码</div>
+                <div class="code-name">#icon-lock</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-location-2"></use>
+                </svg>
+                <div class="name">跟踪定位</div>
+                <div class="code-name">#icon-location-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-checked"></use>
+                </svg>
+                <div class="name">sq-checked</div>
+                <div class="code-name">#icon-checked</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-person-1"></use>
+                </svg>
+                <div class="name">Person</div>
+                <div class="code-name">#icon-person-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-close"></use>
+                </svg>
+                <div class="name">关闭</div>
+                <div class="code-name">#icon-close</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-close-2"></use>
+                </svg>
+                <div class="name">关闭</div>
+                <div class="code-name">#icon-close-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-files-close"></use>
+                </svg>
+                <div class="name">文件夹收起</div>
+                <div class="code-name">#icon-files-close</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-jiantouxia"></use>
+                </svg>
+                <div class="name">箭头 下</div>
+                <div class="code-name">#icon-jiantouxia</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-edit"></use>
+                </svg>
+                <div class="name">编辑</div>
+                <div class="code-name">#icon-edit</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-gender-male"></use>
+                </svg>
+                <div class="name">性别-男</div>
+                <div class="code-name">#icon-gender-male</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-gender-female"></use>
+                </svg>
+                <div class="name">性别-女</div>
+                <div class="code-name">#icon-gender-female</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-search"></use>
+                </svg>
+                <div class="name">搜索</div>
+                <div class="code-name">#icon-search</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-qushi"></use>
+                </svg>
+                <div class="name">趋势</div>
+                <div class="code-name">#icon-qushi</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-notice-1"></use>
+                </svg>
+                <div class="name">铃声</div>
+                <div class="code-name">#icon-notice-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-bingzhuangtu"></use>
+                </svg>
+                <div class="name">饼状图</div>
+                <div class="code-name">#icon-bingzhuangtu</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-refresh"></use>
+                </svg>
+                <div class="name">刷新</div>
+                <div class="code-name">#icon-refresh</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-notice"></use>
+                </svg>
+                <div class="name">铃铛</div>
+                <div class="code-name">#icon-notice</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-add"></use>
+                </svg>
+                <div class="name">增加</div>
+                <div class="code-name">#icon-add</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-exit"></use>
+                </svg>
+                <div class="name">退出</div>
+                <div class="code-name">#icon-exit</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-person"></use>
+                </svg>
+                <div class="name">人</div>
+                <div class="code-name">#icon-person</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-play"></use>
+                </svg>
+                <div class="name">play</div>
+                <div class="code-name">#icon-play</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-right-2"></use>
+                </svg>
+                <div class="name">箭头</div>
+                <div class="code-name">#icon-arrow-right-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-chart1"></use>
+                </svg>
+                <div class="name">chart-5</div>
+                <div class="code-name">#icon-chart1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone-"></use>
+                </svg>
+                <div class="name">phone-2</div>
+                <div class="code-name">#icon-phone-</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-clock"></use>
+                </svg>
+                <div class="name">clock</div>
+                <div class="code-name">#icon-clock</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-build"></use>
+                </svg>
+                <div class="name">build</div>
+                <div class="code-name">#icon-build</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone-1"></use>
+                </svg>
+                <div class="name">phone-1</div>
+                <div class="code-name">#icon-phone-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-company-1"></use>
+                </svg>
+                <div class="name">company</div>
+                <div class="code-name">#icon-company-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone-2"></use>
+                </svg>
+                <div class="name">phone-3</div>
+                <div class="code-name">#icon-phone-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-power"></use>
+                </svg>
+                <div class="name">power</div>
+                <div class="code-name">#icon-power</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-tips"></use>
+                </svg>
+                <div class="name">tips</div>
+                <div class="code-name">#icon-tips</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-chart"></use>
+                </svg>
+                <div class="name">chart</div>
+                <div class="code-name">#icon-chart</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-diamond"></use>
+                </svg>
+                <div class="name">diamond</div>
+                <div class="code-name">#icon-diamond</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-content"></use>
+                </svg>
+                <div class="name">content</div>
+                <div class="code-name">#icon-content</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-crown"></use>
+                </svg>
+                <div class="name">crown</div>
+                <div class="code-name">#icon-crown</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-company"></use>
+                </svg>
+                <div class="name">company</div>
+                <div class="code-name">#icon-company</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-device"></use>
+                </svg>
+                <div class="name">device</div>
+                <div class="code-name">#icon-device</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-duty"></use>
+                </svg>
+                <div class="name">duty</div>
+                <div class="code-name">#icon-duty</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-family"></use>
+                </svg>
+                <div class="name">family</div>
+                <div class="code-name">#icon-family</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-file"></use>
+                </svg>
+                <div class="name">file</div>
+                <div class="code-name">#icon-file</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-gis"></use>
+                </svg>
+                <div class="name">gis</div>
+                <div class="code-name">#icon-gis</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-heart"></use>
+                </svg>
+                <div class="name">heart</div>
+                <div class="code-name">#icon-heart</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-handshake"></use>
+                </svg>
+                <div class="name">handshake</div>
+                <div class="code-name">#icon-handshake</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-index"></use>
+                </svg>
+                <div class="name">index</div>
+                <div class="code-name">#icon-index</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-home"></use>
+                </svg>
+                <div class="name">home</div>
+                <div class="code-name">#icon-home</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-moon"></use>
+                </svg>
+                <div class="name">moon</div>
+                <div class="code-name">#icon-moon</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-logo"></use>
+                </svg>
+                <div class="name">logo</div>
+                <div class="code-name">#icon-logo</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-monitor"></use>
+                </svg>
+                <div class="name">monitor</div>
+                <div class="code-name">#icon-monitor</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-register"></use>
+                </svg>
+                <div class="name">register</div>
+                <div class="code-name">#icon-register</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-organization"></use>
+                </svg>
+                <div class="name">organization</div>
+                <div class="code-name">#icon-organization</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-operation"></use>
+                </svg>
+                <div class="name">operation</div>
+                <div class="code-name">#icon-operation</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-service"></use>
+                </svg>
+                <div class="name">service</div>
+                <div class="code-name">#icon-service</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-star"></use>
+                </svg>
+                <div class="name">star</div>
+                <div class="code-name">#icon-star</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-supervise"></use>
+                </svg>
+                <div class="name">supervise</div>
+                <div class="code-name">#icon-supervise</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-sun"></use>
+                </svg>
+                <div class="name">sun</div>
+                <div class="code-name">#icon-sun</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-set"></use>
+                </svg>
+                <div class="name">set</div>
+                <div class="code-name">#icon-set</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-user"></use>
+                </svg>
+                <div class="name">user</div>
+                <div class="code-name">#icon-user</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-up"></use>
+                </svg>
+                <div class="name">arrow-up-b</div>
+                <div class="code-name">#icon-arrow-up</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-2"></use>
+                </svg>
+                <div class="name">箭头</div>
+                <div class="code-name">#icon-arrow-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-check-1"></use>
+                </svg>
+                <div class="name">check-1</div>
+                <div class="code-name">#icon-check-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-device-2"></use>
+                </svg>
+                <div class="name">device-2</div>
+                <div class="code-name">#icon-device-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-chart-2"></use>
+                </svg>
+                <div class="name">chart-1</div>
+                <div class="code-name">#icon-chart-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-person-2"></use>
+                </svg>
+                <div class="name">person-2</div>
+                <div class="code-name">#icon-person-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-flower"></use>
+                </svg>
+                <div class="name">花</div>
+                <div class="code-name">#icon-flower</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-rule"></use>
+                </svg>
+                <div class="name">尺子</div>
+                <div class="code-name">#icon-rule</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-store"></use>
+                </svg>
+                <div class="name">商店</div>
+                <div class="code-name">#icon-store</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-telephone"></use>
+                </svg>
+                <div class="name">电话</div>
+                <div class="code-name">#icon-telephone</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-calendar"></use>
+                </svg>
+                <div class="name">日历</div>
+                <div class="code-name">#icon-calendar</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-chart-3"></use>
+                </svg>
+                <div class="name">图表-3</div>
+                <div class="code-name">#icon-chart-3</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-pie"></use>
+                </svg>
+                <div class="name">饼图</div>
+                <div class="code-name">#icon-pie</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-chart-4"></use>
+                </svg>
+                <div class="name">折线图</div>
+                <div class="code-name">#icon-chart-4</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-package"></use>
+                </svg>
+                <div class="name">公文包</div>
+                <div class="code-name">#icon-package</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-device-3"></use>
+                </svg>
+                <div class="name">device-4</div>
+                <div class="code-name">#icon-device-3</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-accident"></use>
+                </svg>
+                <div class="name">unusual</div>
+                <div class="code-name">#icon-accident</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-calendar-1"></use>
+                </svg>
+                <div class="name">日历-1</div>
+                <div class="code-name">#icon-calendar-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-headset"></use>
+                </svg>
+                <div class="name">耳机</div>
+                <div class="code-name">#icon-headset</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-download"></use>
+                </svg>
+                <div class="name">下载</div>
+                <div class="code-name">#icon-download</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-lookup"></use>
+                </svg>
+                <div class="name">查岗</div>
+                <div class="code-name">#icon-lookup</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-forewarning-2"></use>
+                </svg>
+                <div class="name">预警-2</div>
+                <div class="code-name">#icon-forewarning-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-down-1"></use>
+                </svg>
+                <div class="name">arrow</div>
+                <div class="code-name">#icon-arrow-down-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-up-1"></use>
+                </svg>
+                <div class="name">arrow</div>
+                <div class="code-name">#icon-arrow-up-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-order-1"></use>
+                </svg>
+                <div class="name">订单</div>
+                <div class="code-name">#icon-order-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-join"></use>
+                </svg>
+                <div class="name">接入</div>
+                <div class="code-name">#icon-join</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-unlock-1"></use>
+                </svg>
+                <div class="name">unlock</div>
+                <div class="code-name">#icon-unlock-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-lock-1"></use>
+                </svg>
+                <div class="name">lock</div>
+                <div class="code-name">#icon-lock-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-accident-1"></use>
+                </svg>
+                <div class="name">故障</div>
+                <div class="code-name">#icon-accident-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-log"></use>
+                </svg>
+                <div class="name">日志</div>
+                <div class="code-name">#icon-log</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-menu-1"></use>
+                </svg>
+                <div class="name">菜单</div>
+                <div class="code-name">#icon-menu-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-offline-1"></use>
+                </svg>
+                <div class="name">离线</div>
+                <div class="code-name">#icon-offline-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-online-1"></use>
+                </svg>
+                <div class="name">在线</div>
+                <div class="code-name">#icon-online-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-tips-1"></use>
+                </svg>
+                <div class="name">叹号</div>
+                <div class="code-name">#icon-tips-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-eye-close"></use>
+                </svg>
+                <div class="name">eye-close</div>
+                <div class="code-name">#icon-eye-close</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-eye-open"></use>
+                </svg>
+                <div class="name">eye-open</div>
+                <div class="code-name">#icon-eye-open</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-folder-close"></use>
+                </svg>
+                <div class="name">文件夹</div>
+                <div class="code-name">#icon-folder-close</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone-line"></use>
+                </svg>
+                <div class="name">电话</div>
+                <div class="code-name">#icon-phone-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-mail-line"></use>
+                </svg>
+                <div class="name">邮件</div>
+                <div class="code-name">#icon-mail-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-user-line"></use>
+                </svg>
+                <div class="name">用户</div>
+                <div class="code-name">#icon-user-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-idcard-line"></use>
+                </svg>
+                <div class="name">身份证</div>
+                <div class="code-name">#icon-idcard-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-exit-1"></use>
+                </svg>
+                <div class="name">退出</div>
+                <div class="code-name">#icon-exit-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-add-1"></use>
+                </svg>
+                <div class="name">Add</div>
+                <div class="code-name">#icon-add-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-document"></use>
+                </svg>
+                <div class="name">文档</div>
+                <div class="code-name">#icon-document</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-user-info"></use>
+                </svg>
+                <div class="name">个人资料</div>
+                <div class="code-name">#icon-user-info</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-data"></use>
+                </svg>
+                <div class="name">数据</div>
+                <div class="code-name">#icon-data</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-phone-02"></use>
+                </svg>
+                <div class="name">电话</div>
+                <div class="code-name">#icon-phone-02</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-video"></use>
+                </svg>
+                <div class="name">视频</div>
+                <div class="code-name">#icon-video</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-full-screen"></use>
+                </svg>
+                <div class="name">全屏</div>
+                <div class="code-name">#icon-full-screen</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-min-screen"></use>
+                </svg>
+                <div class="name">小屏</div>
+                <div class="code-name">#icon-min-screen</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-video-line"></use>
+                </svg>
+                <div class="name">视频-line</div>
+                <div class="code-name">#icon-video-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-mis-home"></use>
+                </svg>
+                <div class="name">首页</div>
+                <div class="code-name">#icon-mis-home</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-duihao"></use>
+                </svg>
+                <div class="name">对号</div>
+                <div class="code-name">#icon-duihao</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-content-manage"></use>
+                </svg>
+                <div class="name">内容管理</div>
+                <div class="code-name">#icon-content-manage</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-help-center"></use>
+                </svg>
+                <div class="name">帮助中心</div>
+                <div class="code-name">#icon-help-center</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-transfer"></use>
+                </svg>
+                <div class="name">转换</div>
+                <div class="code-name">#icon-transfer</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-user-2"></use>
+                </svg>
+                <div class="name">用户</div>
+                <div class="code-name">#icon-user-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-service-1"></use>
+                </svg>
+                <div class="name">服务</div>
+                <div class="code-name">#icon-service-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-compensation"></use>
+                </svg>
+                <div class="name">赔付</div>
+                <div class="code-name">#icon-compensation</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-money"></use>
+                </svg>
+                <div class="name">钱</div>
+                <div class="code-name">#icon-money</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-insurance"></use>
+                </svg>
+                <div class="name">保证</div>
+                <div class="code-name">#icon-insurance</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-clock-2"></use>
+                </svg>
+                <div class="name">时钟</div>
+                <div class="code-name">#icon-clock-2</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-exit-line"></use>
+                </svg>
+                <div class="name">退出</div>
+                <div class="code-name">#icon-exit-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-save-line"></use>
+                </svg>
+                <div class="name">保存</div>
+                <div class="code-name">#icon-save-line</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-zu"></use>
+                </svg>
+                <div class="name">组 4115430</div>
+                <div class="code-name">#icon-zu</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-store-1"></use>
+                </svg>
+                <div class="name">形状 35</div>
+                <div class="code-name">#icon-store-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-data-1"></use>
+                </svg>
+                <div class="name">数据</div>
+                <div class="code-name">#icon-data-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-alarm-handle"></use>
+                </svg>
+                <div class="name">火警处理</div>
+                <div class="code-name">#icon-alarm-handle</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-left-1"></use>
+                </svg>
+                <div class="name">arrow</div>
+                <div class="code-name">#icon-arrow-left-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-right-1"></use>
+                </svg>
+                <div class="name">arrow</div>
+                <div class="code-name">#icon-arrow-right-1</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-3-copy"></use>
+                </svg>
+                <div class="name">箭头</div>
+                <div class="code-name">#icon-arrow-3-copy</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-arrow-4-copy-copy"></use>
+                </svg>
+                <div class="name">箭头</div>
+                <div class="code-name">#icon-arrow-4-copy-copy</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-action"></use>
+                </svg>
+                <div class="name">动作</div>
+                <div class="code-name">#icon-action</div>
+            </li>
+          
+            <li class="dib">
+                <svg class="icon svg-icon" aria-hidden="true">
+                  <use xlink:href="#icon-verify"></use>
+                </svg>
+                <div class="name">verify</div>
+                <div class="code-name">#icon-verify</div>
+            </li>
+          
+          </ul>
+          <div class="article markdown">
+          <h2 id="symbol-">Symbol 引用</h2>
+          <hr>
+
+          <p>这是一种全新的使用方式，应该说这才是未来的主流，也是平台目前推荐的用法。相关介绍可以参考这篇<a href="">文章</a>
+            这种用法其实是做了一个 SVG 的集合，与另外两种相比具有如下特点：</p>
+          <ul>
+            <li>支持多色图标了，不再受单色限制。</li>
+            <li>通过一些技巧，支持像字体那样，通过 <code>font-size</code>, <code>color</code> 来调整样式。</li>
+            <li>兼容性较差，支持 IE9+，及现代浏览器。</li>
+            <li>浏览器渲染 SVG 的性能一般，还不如 png。</li>
+          </ul>
+          <p>使用步骤如下：</p>
+          <h3 id="-symbol-">第一步：引入项目下面生成的 symbol 代码：</h3>
+<pre><code class="language-html">&lt;script src="./iconfont.js"&gt;&lt;/script&gt;
+</code></pre>
+          <h3 id="-css-">第二步：加入通用 CSS 代码（引入一次就行）：</h3>
+<pre><code class="language-html">&lt;style&gt;
+.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+&lt;/style&gt;
+</code></pre>
+          <h3 id="-">第三步：挑选相应图标并获取类名，应用于页面：</h3>
+<pre><code class="language-html">&lt;svg class="icon" aria-hidden="true"&gt;
+  &lt;use xlink:href="#icon-xxx"&gt;&lt;/use&gt;
+&lt;/svg&gt;
+</code></pre>
+          </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+  $(document).ready(function () {
+      $('.tab-container .content:first').show()
+
+      $('#tabs li').click(function (e) {
+        var tabContent = $('.tab-container .content')
+        var index = $(this).index()
+
+        if ($(this).hasClass('active')) {
+          return
+        } else {
+          $('#tabs li').removeClass('active')
+          $(this).addClass('active')
+
+          tabContent.hide().eq(index).fadeIn()
+        }
+      })
+    })
+  </script>
+</body>
+</html>

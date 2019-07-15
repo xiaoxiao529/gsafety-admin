@@ -1,0 +1,57 @@
+.hardware-container {
+  height: calc(100vh);
+}
+
+.Crumbs {
+  height: 60px;
+  line-height: 60px;
+}
+
+.main-wrap {
+  background: #fff;
+  border: 1px solid #e1e5eb;
+  padding: 0 20px 20px 20px;
+  height: calc(100vh);
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.main-wrap .location {
+  padding-left: 25px;
+  margin: 0 -25px;
+  height: 65px;
+  line-height: 65px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #25282e;
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.el-form {
+  padding: 20px 0;
+}
+
+.el-form .el-form-item .el-form-item__label {
+  font-size: 16px;
+  font-weight: 400;
+  color: #525c66;
+}
+
+.el-form .el-input__inner {
+  height: 36px;
+  border: 1px solid #e1e5eb;
+  border-radius: 4px;
+}
+
+.el-select {
+  width: 100%;
+}
+
+.el-pagination {
+  text-align: right;
+  margin-top: 25px;
+}
+
+.el-table__header-wrapper .has-gutter th {
+  background: #e3e5e8;
+}

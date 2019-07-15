@@ -1,0 +1,180 @@
+<template>
+  <div class="downlinkControlRecord">
+    <div class="list-wrap">
+      <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+        <el-table-column label="下行时间" prop="createdTime" show-overflow-tooltip />
+        <el-table-column label="操作人" prop="createdBy" show-overflow-tooltip />
+        <el-table-column label="返回结果" prop="returnResult" show-overflow-tooltip />
+        <el-table-column label="变更前后参数" show-overflow-tooltip />
+        <el-table-column label="变更前后参数" show-overflow-tooltip align="center">
+          <template slot-scope="scope" v-show="scope.row.onlineState==1">
+            <div>
+              <el-link type="primary" @click="look(scope.row)">查看</el-link>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+
+    <el-dialog title="变更前后参数" :visible.sync="outerVisible" width="600px">
+      <div class="parameter-wrap">
+        <div class="block before">
+          <h3>
+            <span>变更前</span>
+          </h3>
+          <div class="parameter-box" v-if="beforeChangeData">
+            <div class="parameter-box-item" v-for="(item,index) in beforeChangeData" :key="index">
+              <span class="red">*</span>
+              <span>{{item.flagName}}:</span>
+              <span class="number">{{item.measurement}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="line"></div>
+        <div class="block after">
+          <h3>
+            <span>变更后</span>
+          </h3>
+          <div class="parameter-box" v-if="afterChangeData">
+            <div class="parameter-box-item" v-for="(item,index) in afterChangeData" :key="index">
+              <span class="red">*</span>
+              <span>{{item.flagName}}:</span>
+              <span class="number">{{item.measurement}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="outerVisible = false">取 消</el-button>
+        <el-button type="primary" @click="outerVisible = false">确认</el-button>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+import Pagination from "~/components/Pagination";
+export default {
+  components: {
+    Pagination
+  },
+  data() {
+    return {
+      isLoading: false,
+      tableData: [],
+      outerVisible: false,
+      afterChangeData: [],
+      beforeChangeData: [],
+      widgetInfo: {
+        pageSize: 10,
+        pageNo: 1,
+        total: 0
+      }
+    };
+  },
+  mounted() {},
+  methods: {
+    getTableData() {
+      this.isLoading = true;
+      this.$axios
+        .$POST({
+          api_name: "findHardwareDeviceControlRecordList",
+          params: {
+            pageNo: this.widgetInfo.pageNo,
+            pageSize: this.widgetInfo.pageSize
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            this.isLoading = false;
+            var data = res.data.data;
+            this.tableData = data.rows;
+            this.widgetInfo.total = data.total === null ? 0 : data.total;
+          } else {
+            this.tableData = [];
+            this.widgetInfo.list = res.data.rows;
+            this.widgetInfo.total = 0;
+            console.log("没有数值。。。。。");
+          }
+        });
+    },
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    },
+    look(row) {
+      debugger;
+      this.outerVisible = true;
+      console.log(row.beforeChangeData);
+      if (row.beforeChangeData) {
+        this.beforeChangeData = JSON.parse(row.beforeChangeData);
+      }
+      if (row.afterChangeData) {
+        this.afterChangeData = JSON.parse(row.afterChangeData);
+      }
+    },
+    sonHandleCurrentChange(widgetInfo) {
+      //分页
+      this.widgetInfo.pageSize = widgetInfo.pageSize
+        ? parseInt(widgetInfo.pageSize)
+        : this.widgetInfo.pageSize;
+      this.widgetInfo.pageNo = widgetInfo.pageNo
+        ? parseInt(widgetInfo.pageNo)
+        : this.widgetInfo.pageNo;
+      this.getTableData();
+    }
+  }
+};
+</script>
+<style lang="scss" scoped>
+@import "~/assets/css/list.scss";
+.parameter-wrap {
+  position: relative;
+  .red {
+    color: red;
+  }
+  .block {
+    display: inline-block;
+    width: 210px;
+    width: 220px;
+    margin-left: 20px;
+    &.after {
+      margin-left: 50px;
+    }
+    h3 {
+      text-align: center;
+      font-weight: 400;
+      color: rgba(28, 119, 255, 1);
+      margin: 10px 0;
+      span {
+        padding-bottom: 5px;
+        display: inline-block;
+        border-bottom: 2px solid rgba(28, 119, 255, 1);
+      }
+    }
+  }
+  .parameter-box-item {
+    padding: 5px 10px;
+    font-size: 16px;
+    font-family: MicrosoftYaHei;
+    font-weight: 400;
+    color: #a5adb8;
+    .number {
+      color: #25282e;
+    }
+  }
+  .line {
+    position: absolute;
+    width: 1px;
+    left: 42%;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.16);
+  }
+}
+</style>
+

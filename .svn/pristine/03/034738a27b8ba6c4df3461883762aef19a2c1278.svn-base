@@ -1,0 +1,15 @@
+<template>
+  <div class="login-wrapper">
+    login
+  </div>
+</template>
+
+<script>
+import md5 from 'js-md5';
+export default {
+  layout: "login",
+}
+</script>
+
+<style lang="scss" scoped>
+</style>

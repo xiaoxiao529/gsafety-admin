@@ -1,0 +1,177 @@
+html,
+body {
+  font-family: 'microsoft yahei';
+  margin: 0;
+  width: 100%;
+  min-width: 1280px;
+  height: 100%;
+  background: #f5f8fc;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(28, 119, 255, 0.5);
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: rgba(28, 119, 255, 0.2);
+  -webkit-box-shadow: inset 0 0 3px rgba(28, 119, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(28, 119, 255, 0.7);
+}
+
+.hardware-container {
+  height: calc(100vh);
+  font-size: 16px;
+}
+
+.Crumbs {
+  height: 64px;
+  line-height: 64px;
+}
+
+.Crumbs .el-breadcrumb {
+  line-height: 64px;
+  font-size: 16px;
+  color: #a5adb8;
+}
+
+.main-wrap {
+  background: #fff;
+  border: 1px solid #e1e5eb;
+  height: calc(100vh - 90px - 64px - 20px);
+  overflow: hidden;
+}
+
+.main-wrap .location {
+  padding-left: 25px;
+  height: 65px;
+  line-height: 65px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #25282e;
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.hardware-form {
+  padding-top: 20px;
+}
+
+.hardware-form .el-form-item {
+  margin-bottom: 20px;
+}
+
+.hardware-form .el-form-item .el-form-item__label {
+  font-size: 16px;
+  font-weight: 400;
+  color: #525c66;
+  line-height: 36px;
+}
+
+.hardware-form .el-form-item .el-date-editor--daterange.el-input__inner,
+.hardware-form .el-form-item .el-date-editor {
+  width: 100%;
+}
+
+.hardware-form .el-form-item .el-form-item__content {
+  flex-grow: 1;
+  line-height: 36px;
+}
+
+.hardware-form .el-input__inner {
+  height: 36px;
+  border: 1px solid #e1e5eb;
+  border-radius: 4px;
+}
+
+.el-pagination {
+  text-align: right;
+  margin-top: 25px;
+}
+
+.el-table__header-wrapper .has-gutter th {
+  background: #e3e5e8;
+}
+
+.el-dialog__wrapper .el-dialog {
+  border-radius: 4px;
+}
+
+.el-dialog__wrapper .el-dialog__header {
+  border-bottom: 1px solid #e1e5eb;
+}
+
+.el-dialog__wrapper .el-dialog__body {
+  height: auto;
+  max-height: calc(100vh - 60px - 200px);
+  overflow-y: auto;
+  padding: 10px 20px;
+}
+
+.del-dialog-wrap .el-dialog__header {
+  border-bottom: none;
+}
+
+.del-dialog-wrap .el-dialog__headerbtn {
+  display: none;
+}
+
+.del-dialog-wrap .del-dialog-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.del-dialog-wrap .del-dialog-main .icon-wrap {
+  font-size: 46px;
+  color: #1c77ff;
+  margin-right: 10px;
+}
+
+.del-dialog-wrap .del-dialog-main .p-wrap .title-p {
+  font-size: 18px;
+  font-weight: 400;
+  color: #25282e;
+}
+
+.del-dialog-wrap .del-dialog-main .p-wrap .tips-p {
+  font-size: 15px;
+  font-weight: 400;
+  color: #525c66;
+}
+
+.del-dialog-wrap .el-dialog__footer {
+  display: flex;
+  justify-content: center;
+}
+
+.dialog-form-style {
+  padding: 0;
+}
+
+.dialog-form-style .el-form-item {
+  padding: 0 9px;
+}
+
+.dialog-form-style .el-form-item__label {
+  padding: 0;
+}
+
+.el-pagination {
+  padding-right: 25px;
+}
+
+@media screen and (max-width: 1680px) {
+  .main-wrap {
+    height: calc(100vh - 90px - 60px);
+  }
+}

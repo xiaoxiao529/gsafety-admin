@@ -1,0 +1,247 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">系统配置</el-breadcrumb-item>
+        <el-breadcrumb-item>角色管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>角色管理</h3>
+        </el-col>
+        <el-col :span="12" class="add-btn-style">
+          <el-button type="primary" icon="el-icon-plus" @click="addNewRole()">新增角色</el-button>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="角色ID:" label-width="80px">
+            <el-input placeholder="请输入" v-model="formData.roleId"></el-input>
+          </el-form-item>
+          <el-form-item label="角色名称:"  label-width="">
+            <el-input placeholder="请输入" v-model="formData.roleName"></el-input>
+          </el-form-item>
+          <el-form-item label=" ">
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset('formData')">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="角色ID" prop="roleId" show-overflow-tooltip ></el-table-column>
+            <el-table-column label="角色名称" prop="roleName" show-overflow-tooltip></el-table-column>
+            <el-table-column label="备注" prop="remarks" show-overflow-tooltip></el-table-column>
+            <el-table-column label="操作" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="delete(scope.row, scope.$index)">删除</el-link>
+                <el-link type="primary" @click="edit(scope.row, scope.$index)">编辑</el-link>
+                <el-link type="primary" @click="editRole(scope.row, scope.$index)">编辑权限</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+        </div>
+      </div>
+    </div>
+
+    <!--新增角色-->
+    <!--<el-dialog title="新增/编辑" :visible.sync="dialogVisible" width="530px">
+      <div class="dialog-body-diy-wrapper">
+        <el-form
+           :model="ruleForm" 
+           ref="ruleForm" 
+           :rules="rules" 
+           label-width="80px" 
+           class="demo-ruleForm"
+        >
+          <el-form-item label="角色名称" prop="roleName">
+				    <el-input v-model="ruleForm.roleName"></el-input>
+				  </el-form-item>
+          <el-form-item label="备注" prop="">
+            <el-input  v-model="ruleForm.remarks" type="textarea" :rows="4"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+        <el-button @click="cancelForm('ruleForm')">取 消</el-button>
+      </span>
+    </el-dialog>-->
+    
+    <!--编辑权限-->
+    <el-dialog title="编辑权限" :visible.sync="dialogVisible" width="530px">
+      <div class="dialog-body-diy-wrapper">
+        
+      </div>
+      <span slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="">确 定</el-button>
+        <el-button @click="">取 消</el-button>
+      </span>
+    </el-dialog>
+    
+  </div>
+</template>
+<script>
+import Pagination from "~/components/Pagination";
+export default {
+  components: {
+    Pagination
+  },
+
+  data() {
+    return {
+      isLoading: false,
+      formData: {}, //查询的formData
+      tableData: [], //table查询结果
+      loading: true,
+      widgetInfo: {
+        pageSize: 10,
+        pageNo: 1,
+        total: 0,
+      },
+      onlineStates: [
+      	{
+          value: "",
+          label: "全部"
+        },
+        {
+          value: 0,
+          label: "离线"
+        },
+        {
+          value: 1,
+          label: "在线"
+        }
+      ],
+      dialogVisible: false,
+      ruleForm:{
+      	roleName:"",
+      	remarks:""
+      },
+      rules: {
+	      roleName: [
+	        { required: true, message: '请输入角色名称', trigger: 'blur' }
+	      ]
+      }
+    }
+  },
+  mounted() {
+  },
+  computed: {
+		transformOnlineState(state) {
+      //设备状态
+      return function(state) {
+        if (state == 0) {
+          return "离线";
+        } else if (state == 1) {
+          return "在线";
+        }
+      };
+    },
+  },
+  methods: {
+  	addNewRole(){
+  		this.dialogVisible = true;
+  	},
+    // 硬件类别管理的列表
+    getRoleListPage() {
+      const that = this;
+      that.isLoading = true;
+      that.$axios.$POST({
+        api_name: "findRoleListBySysCodeAndPager",
+        params: {
+          sysCode:'manager'
+        }
+      }).then(res => {
+        if (res.data.code == 'success') {
+          that.isLoading = false;
+          let data = res.data.data;
+          that.tableData = data.rows;
+          that.widgetInfo.total = data.total === null ? 0 : data.total;
+        } else {
+          that.tableData = [];
+          that.widgetInfo.list = data.rows;
+          that.widgetInfo.total = 0;
+          console.log('没有数值。。。。。')
+        }
+
+      })
+
+    },
+		submitForm(formName) {
+	    this.$refs[formName].validate((valid) => {
+	      if (valid) {
+	        alert('submit!');
+	      } else {
+	        console.log('error submit!!');
+	        return false;
+	      }
+	    });
+	  },
+	  cancelForm(formName){
+	  	this.ruleForm = {};
+	  	this.dialogVisible = false;
+	  },
+
+    //分页
+    sonHandleCurrentChange(widgetInfo) {
+      this.widgetInfo.pageSize = (widgetInfo.pageSize ? parseInt(widgetInfo.pageSize) : this.widgetInfo.pageSize);
+      this.widgetInfo.pageNo = (widgetInfo.pageNo ? parseInt(widgetInfo.pageNo) : this.widgetInfo.pageNo);
+      this.getRoleListPage();
+    },
+    reset(formName) {//重置
+      this.formData = {};
+      this.getRoleListPage();
+    },
+    lookFor() {//查询
+      this.getRoleListPage();
+    }
+  },
+
+
+}
+</script>
+<style lang="scss" scoped="scoped">
+	.record-table{
+		height: 400px;
+	}
+	
+  .add-btn-style{
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+.list-wrap {
+  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+  height: calc(100vh - 90px - 64px - 20px - 65px - 132px);
+  overflow-y: scroll;
+  width: 100%;
+  .el-table{
+    padding: 0;
+    overflow: hidden;
+    th {
+      background: rgba(240, 243, 247, 1);
+    }
+    .el-table__body-wrapper {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+      overflow-y: auto;
+    }
+  }
+}
+.hardware-form .el-form-item{
+	width: 23%;
+}
+.hardware-form{
+	padding-left: 25px;
+}
+</style>
+<style type="text/css">
+	.el-scrollbar__wrap{
+		overflow-x: hidden;
+	}
+</style>

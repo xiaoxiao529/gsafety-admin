@@ -1,0 +1,377 @@
+<template>
+  <div>
+
+  	<div class="user-data-statistics">
+  		
+  		<el-row :gutter="20">
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">总用户量 <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>	
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>	  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">新增用户量 <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>		  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">总企业数 <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>	  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">新增企业数 <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>
+			</el-row>
+			<el-row :gutter="20">
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">总接入面积(万平米) <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>
+			  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">新增接入面积(万平米) <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>
+			  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">托管面积(万平米) <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>
+			  
+			  <el-col :span="6">
+			  	<div class="grid-content">
+			  		<p class="users-title">新托管面积(万平米) <span class="iconfont icon-info"></span></p>
+			  		<p class="users-number">126,560</p>
+			  		<div class="users-rate">
+			  			<el-row :gutter="20">
+			  				<el-col :span="6">周同比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u203.png" width="8"/></i> 12%</el-col>
+			  				<el-col :span="6">日环比</el-col>
+			  				<el-col :span="6"><i><img src="../assets/img/u210.png" width="8"/></i> 12%</el-col>
+			  			</el-row>
+			  		</div>
+						<p class="add-rate">
+							日均增长量：<span>423</span>
+						</p>
+			  	</div>
+			  </el-col>
+			</el-row>
+			
+			
+  	</div>
+  	
+  	
+  	<div class="company-service-type">
+  		<el-row :gutter="20">
+			  <el-col :span="15">
+			  		<div class="new-add-company">
+			  			<h4>新增企业趋势</h4>
+			  			<el-row :gutter="20">
+			  				<el-col :span="4">
+			  					<ul>
+			  						<li>
+			  							<p>8,846</p>
+			  							<span>昨日新增</span>
+			  						</li>
+			  						<li>
+			  							<p>17.1%</p>
+			  							<span>较前一日</span>
+			  						</li>
+			  					</ul>
+			  				</el-col>
+			  				<el-col :span="20">
+			  					<div class="" id="fire-steward" :style="{width: '100%', height: '300px'}"></div>
+			  				</el-col>
+			  			</el-row>
+			  			
+			  		</div>
+			  </el-col>
+			  <el-col :span="9">
+			  	<div  class="service-type-place">
+			  		<h4>服务模式分布</h4>
+			  	</div>
+			  </el-col>
+			</el-row>  
+  	</div>
+  	
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations, mapActions, mapGetters } from 'vuex';
+import echarts from 'echarts'
+export default {
+	data(){
+		return {
+			input:'',
+			activeName: 'first'
+		}
+	},
+	computed:{
+		count(){
+        return this.$store.state.count
+    },
+	},
+	methods: {
+	  handleNodeClick(data) {
+	    console.log(data);
+	  },
+	  handleClick(tab, event) {
+	    console.log(tab, event);
+	  },
+	  createdFireSteward(){
+	  	let myChart = echarts.init(document.getElementById('fire-steward'));
+      let option = {
+        color: ['#f44'],
+        tooltip : {
+          trigger: 'axis',
+          axisPointer : {
+            type : 'shadow'
+          }
+        },
+        xAxis : [
+          {
+            type : 'category',
+            data : ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月',],
+            axisTick: {
+              alignWithLabel: true
+            }
+          }
+        ],
+        yAxis : [
+          {
+            type : 'value'
+          }
+        ],
+        series : [
+          {
+            name:'每月花费',
+            type:'bar',
+            barWidth: '60%',
+            data:[995,666,444,858,654,236,645,546,846,225,547,356]
+          }
+        ]
+      };
+      myChart.setOption(option);
+ 
+      //建议加上以下这一行代码，不加的效果图如下（当浏览器窗口缩小的时候）。超过了div的界限（红色边框）
+	  window.addEventListener('resize',function() {myChart.resize()});
+
+	  }
+	},
+  components: {
+
+
+  },
+  mounted(){
+  	this.createdFireSteward();
+  }
+}
+</script>
+
+<style lang="scss">
+	.company-service-type{
+
+		.new-add-company,.service-type-place{
+			background: #fff;
+			padding: 20px;
+			h4{
+				height: 35px;
+				border-bottom: 1px solid #e6e9ee;
+			}
+			
+		}
+
+	}
+	.location1 {		
+		margin-bottom: 10px;
+    height: 65px;
+    line-height: 65px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #25282e;
+    border-bottom: 1px solid #e1e5eb;
+}
+.el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+
+  }
+  
+  .el-aside {
+    color: #333;
+    text-align: center;
+  }
+  
+  .el-main {
+    color: #333;
+    padding: 20px 20px 20px 0;
+  }
+  
+  body > .el-container {
+    margin-bottom: 40px;
+  }
+  .user-data-statistics{
+
+  	position: relative;
+  	padding-top: 20px;
+  	.add-rate{
+  		position: absolute;
+  		right: 0px;
+  		top: 36px;
+  		color:#525C66 ;
+  		font-size: 14px;
+  		background: #F3F7FD;
+  		width: 138px;
+  		height: 32px;
+  		text-align: center;
+  		line-height: 32px;
+  		border-radius: 20px 0 0 20px;
+  		span{
+  			color: #525C66;
+  			font-size: 16px;
+  			font-weight: bold;
+  		}
+  	}
+  	.el-row{
+  		margin-bottom: 12px;
+  	}
+  }
+  .user-data-statistics .title{
+  	padding-left: 26px;
+  	font-weight: bold;
+  	padding-bottom: 20px;
+  	width: 150px;
+  	border-bottom: 1px solid #e9e9e9;
+  	margin-bottom: 10px;
+  }
+  .user-data-statistics .grid-content{
+  	border: 1px solid #e9e9e9;
+  	border-radius: 4px;
+  	padding:24px;
+  	position: relative;
+  	background-color: #fff;
+  }
+  .user-data-statistics .grid-content .users-title{
+  	color: #525C66;
+  	font-size: 16px;
+  	padding-bottom: 16px;
+  }
+  .user-data-statistics .grid-content .users-title i{
+  	float: right;
+  }
+  .user-data-statistics .grid-content .users-number{
+  	color: #000;
+  	font-size: 26px;
+  	padding-bottom: 20px;
+  	font-weight: bold;
+  }
+  .user-data-statistics .grid-content .users-rate{
+  	color: #000;
+  	font-size: 14px;
+  }
+  .user-data-statistics .grid-content .users-rate span{ 
+  	margin-right: 10px;
+  }
+  .user-data-statistics .more-btn{
+  	position: absolute;
+  	right: 0;
+  	top: 0;
+  }
+  .user-data-statistics .more-btn a{
+  	text-decoration: none;
+  	color: #3399ff;
+  }
+</style>
+

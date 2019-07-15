@@ -1,0 +1,325 @@
+<template>
+  <el-table
+    :data="formatData"
+    :row-style="showRow"
+    v-bind="$attrs"
+    border
+    style="width: 100%"
+    class="table-column"
+    v-loading="loading"
+    stripe
+    element-loading-text="拼命加载中"
+    id="el-table-container"
+    ref="tableContainer"
+  >
+    <el-table-column v-if="columns.length===0" width="150">
+      <template slot-scope="scope">
+        <span v-for="space in scope.row._level" :key="space" class="ms-tree-space" />
+        <span v-if="iconShow(0,scope.row)" class="tree-ctrl" @click="toggleExpanded(scope.$index)">
+          <i v-if="!scope.row._expanded" class="el-icon-plus" />
+          <i v-else class="el-icon-minus" />
+        </span>
+        {{ scope.$index }}
+      </template>
+    </el-table-column>
+    <el-table-column
+      v-for="(column, index) in columns"
+      v-else
+      :key="column.value"
+      :label="column.text"
+      :width="calculateWith(index)"
+      align="center"
+      :class-name="'tableList-item'"
+      :label-class-name="'tableList-header'"
+    >
+      <template slot-scope="scope">
+        <!--:width="column.width" -->
+        <!-- Todo -->
+        <!-- eslint-disable-next-line vue/no-confusing-v-for-v-if -->
+        <span
+          v-for="space in scope.row._level"
+          v-if="index === 1"
+          :key="space"
+          class="ms-tree-space"
+        />
+        <span
+          v-if="iconShow(index,scope.row)"
+          class="tree-ctrl"
+          @click="toggleExpanded(scope.$index)"
+        >
+          <i v-if="!scope.row._expanded" class="el-icon-plus" />
+          <i v-else class="el-icon-minus" />
+        </span>
+        <span v-if="index===9" class="tree-del">
+          <span class="margin-l" @click="showMsgBox(scope.row)">编辑</span>
+          <span class="margin-all">|</span>
+          <!-- <span class="margin-l">删除</span> -->
+          <el-button type="text" @click="deleteInfo(scope.row)">删除</el-button>
+          <span class="margin-all">|</span>
+          <span
+            class="margin-l"
+            @click="isVisibled(scope.row)"
+          >{{scope.row.isVisibled==='0'?'不可见':'可见'}}</span>
+        </span>
+        {{ scope.row[column.value] | changeName(index)}}
+      </template>
+    </el-table-column>
+    <slot />
+  </el-table>
+</template>
+
+
+<script>
+import treeToArray from "./treeToArray";
+import msgBox from "~/components/resourceManage/msgbox";
+export default {
+  name: "TreeTable",
+  props: {
+    /* eslint-disable */
+    data: {
+      type: [Array, Object],
+      required: true
+    },
+    columns: {
+      type: Array,
+      default: () => []
+    },
+    evalFunc: Function,
+    evalArgs: Array,
+    expandAll: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      loading: false
+    };
+  },
+  mounted() {
+    this.formatData;
+    //this.expandAllCol();
+    console.log("this.formatData=mounted", this.formatData);
+    console.log("this.expandAll", this.expandAll);
+  },
+  computed: {
+    // 格式化数据源
+    formatData: function() {
+      let tmp;
+      if (!Array.isArray(this.data)) {
+        tmp = [this.data];
+      } else {
+        tmp = this.data;
+      }
+      const func = this.evalFunc || treeToArray;
+      const args = this.evalArgs
+        ? Array.concat([tmp, this.expandAll], this.evalArgs)
+        : [tmp, this.expandAll];
+      return func.apply(null, args);
+    }
+  },
+  methods: {
+    //是否可见
+    isVisibled(item) {
+      this.loading = true;
+      let num = item.isVisibled === "0" ? "1" : "0";
+      // axios({
+      //   method:'post',
+      //  // url:'http://192.168.90.250:9898/res/updateVisibled',
+      //   url:api.forent_url.res_url+'/updateVisibled',
+      //   params:{
+      //     id:item.id,
+      //     sysCode:item.sysCode,
+      //     isVisibled:num,
+      //     timeout:3000
+      //   }
+      // })
+
+      this.$axios
+        .$POST({
+          api_name: "updateVisibled",
+          params: {
+            id: item.id,
+            sysCode: item.sysCode,
+            isVisibled: num,
+            timeout: 3000
+          }
+        })
+        .then(res => {
+          if (res.code === "success") {
+            this.loading = false;
+            const h = this.$createElement;
+            this.$message({
+              showClose: true,
+              message: res.message,
+              type: "success"
+            });
+            this.$bus.emit("refresh");
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    calculateWith(index) {
+      if (index === 1 || index === 9 || index === 2) {
+        let width = this.columns;
+        return width[index].width;
+      }
+    },
+    showMsgBox(item) {
+      this.$bus.emit("showMsg", "modify", item.sysCode, item);
+    },
+    //是否删除
+    deleteInfo(item) {
+      let { id, sysCode } = item;
+      this.$confirm("确认删除资源?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        this.loading = true;
+        return this.$axios
+          .$POST({
+            api_name: "deleteResource",
+            params: {
+              id: id,
+              sysCode: sysCode
+            }
+          })
+          .then(res => {
+            this.loading = false;
+            let type = "success";
+            if (res.data.code === "success") {
+              this.$bus.emit("refresh");
+            } else {
+              type = "warning";
+            }
+            this.$message({
+              type: type,
+              message: res.data.message
+            });
+          });
+      });
+    },
+    showRow: function(row) {
+      const show = row.row.parent
+        ? row.row.parent._expanded && row.row.parent._show
+        : true;
+      row.row._show = show;
+      return show
+        ? "animation:treeTableShow 1s;-webkit-animation:treeTableShow 1s; "
+        : "display:none;";
+    },
+    // 切换下级是否展开
+    toggleExpanded: function(trIndex) {
+      const record = this.formatData[trIndex];
+      record._expanded = !record._expanded;
+      console.log("this.formatData");
+    },
+    // 图标显示
+    iconShow(index, record) {
+      return index === 1 && record.children && record.children.length > 0;
+    }
+    // expandAll() {
+    //   debugger;
+    //   const els = this.$el.getElementsByClassName("tree-ctrl");
+    //   for (let i = 0; i < els.length; i++) {
+    //     els[i].lclick();
+    //   }
+    // }
+  },
+  filters: {
+    changeName(val, index) {
+      let arr = ["目录", "菜单", "按钮"];
+      if (index === 8) {
+        if (val === "0") return "可见";
+        else return "不可见";
+      } else if (index === 3) {
+        return arr[val];
+      } else {
+        return val;
+      }
+    }
+  },
+  watch: {
+    data() {
+      // let table=$('#el-table-container')
+      // table.removeAttr('style')
+      // table.height(table.height()+1)
+    }
+  },
+  components: {
+    msgBox
+  }
+};
+</script>
+<style rel="stylesheet/css" scoped>
+#el-table-container {
+  overflow: auto;
+}
+.el-table .cell {
+  line-height: 0 !important;
+  padding: 10px 0;
+}
+@keyframes treeTableShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes treeTableShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+</style>
+
+<style lang="scss" rel="stylesheet/scss" scoped>
+$color-blue: #2196f3;
+$space-width: 18px;
+.ms-tree-space {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  width: $space-width;
+  height: 14px;
+  &::before {
+    content: "";
+  }
+}
+.processContainer {
+  width: 100%;
+  height: 100%;
+}
+
+.tree-ctrl {
+  position: relative;
+  cursor: pointer;
+  color: $color-blue;
+  margin-left: -$space-width;
+}
+.tree-del {
+  color: #34aefc;
+  margin: 0 auto;
+  .margin-l {
+    margin-left: 5px;
+    cursor: pointer;
+  }
+  .margin-all {
+    margin: 0 5px;
+  }
+}
+/deep/.el-table__row--striped {
+  //display: none;
+}
+</style>
+

@@ -1,0 +1,21 @@
+<template>
+  <div>
+    <el-dialog custom-class="del-dialog-wrap"  :visible.sync="dialogDelVisible" width="280px">
+      <div class="del-dialog-main">
+        <div class="icon-wrap">
+          <i class="el-icon-s-opportunity"></i>
+        </div>
+        <div class="p-wrap">
+          <p class="title-p">是否确定删除？</p>
+          <p class="tips-p">删除后将不可恢复</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+         <el-button @click="dialogVisible = false">取 消</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+</script>

@@ -1,0 +1,49 @@
+.list-wrap {
+  width: 100%;
+  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+  //height: calc(100vh - 90px - 64px - 20px - 65px - 150px);
+  overflow: hidden;
+
+  /deep/.el-table {
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+
+    th {
+      background: rgba(240, 243, 247, 1);
+    }
+
+    .el-table__body-wrapper {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+      // height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 30px);
+      overflow-y: auto;
+    }
+  }
+}
+
+.hardware-form {
+  font-size: 0;
+  padding: 20px 20px 0 20px;
+
+  .el-form-item {
+    width: 20%;
+    display: inline-flex;
+    margin-right: 0;
+
+    .el-select {
+      width: 100%;
+    }
+  }
+
+  .serch-btn {
+    button:first-child {
+      margin-left: 10px;
+    }
+  }
+}
+
+/deep/.el-pagination {
+  margin: 0;
+  padding-top: 20px;
+}

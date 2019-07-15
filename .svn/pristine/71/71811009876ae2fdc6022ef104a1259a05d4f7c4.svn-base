@@ -1,0 +1,226 @@
+<!--
+ * @Descripttion: 应用资源管理
+ * @version: 
+ * @Author: yangxq
+ * @Date: 2019-07-08 15:22:52
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2019-07-09 11:44:42
+ -->
+
+<template>
+  <el-container class="resourceManage-container" id="resourceManage-container">
+    <el-container class="backgd backgd-container">
+      <el-container class="backgd">
+        <!-- <el-header class="resourceManage-header"> -->
+        <!-- <el-button type="primary">查询</el-button> -->
+        <!-- <el-button type="primary" @click="addResources">新增</el-button> -->
+        <!-- </el-header> -->
+        <el-main class="backgd" v-loading="loading" style="width:100%">
+          <el-button type="primary" @click="addResources">新增</el-button>
+          <!-- // <el-button type="primary" @click="addResources">新增</el-button> -->
+          <table-list :data="test" :columns="columns"></table-list>
+          <!-- <el-pagination background
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="pageNo"
+                  :page-size="pageSize"
+                  layout="total, prev, pager, next"
+                  :total="total">
+          </el-pagination>-->
+          <Pagination
+            :widgetInfo="widgetInfo"
+            v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+          />
+        </el-main>
+      </el-container>
+    </el-container>
+    <msg-box></msg-box>
+  </el-container>
+</template>
+
+<script>
+import tableList from "~/components/resourceManage/tableList";
+import msgBox from "~/components/resourceManage/msgbox";
+import addResources from "~/components/resourceManage/addResources";
+import { columns } from "~/components/resourceManage/treeToArray";
+import Pagination from "~/components/Pagination";
+
+export default {
+  data() {
+    return {
+      test: [],
+      num: 0,
+      columns: columns,
+      info: {},
+      menu: [],
+      sysCode: "manager",
+      loading: false,
+      widgetInfo: {
+        total: null,
+        pageSize: 6,
+        pageNo: 1
+      }
+    };
+  },
+  created() {
+    this.getListData();
+  },
+  mounted() {
+    this.$bus.on("refresh", this.getListData);
+  },
+  methods: {
+    handleSizeChange() {},
+    handleCurrentChange(index) {
+      this.getListData(index);
+    },
+    sonHandleCurrentChange(widgetInfo) {
+      this.widgetInfo.pageSize = widgetInfo.pageSize
+        ? parseInt(widgetInfo.pageSize)
+        : this.widgetInfo.pageSize;
+      this.widgetInfo.pageNo = widgetInfo.pageNo
+        ? parseInt(widgetInfo.pageNo)
+        : this.widgetInfo.pageNo;
+      this.getListData();
+    },
+    // getSystemList(){//api.forent_url.system_url+'/getSystemListNoPage'
+    // return  api.get(api.forent_url.system_url+'/getSystemListNoPage')
+    //   .then((res)=>{
+    //     if(res && res.code === "success"){
+    //     this.menu=res.data
+    //     this.sysCode=res.data[0].sysCode
+    //     }
+    //   })
+    // },
+    getListData(num) {
+      this.loading = true; //api.forent_url.res_url+'/findAllResourceBySysCode'
+
+      //获取全部资源列表信息
+      this.$axios
+        .$POST({
+          api_name: "findAllResourceBySysCode", //查询列表
+          params: {
+            sysCode: this.sysCode,
+            pageNo: this.widgetInfo.pageNo,
+            pageSize: this.widgetInfo.pageSize
+          }
+        })
+        .then(res => {
+          if (res && res.data.code == "success") {
+            let data = res.data.data;
+            this.test = data.rows;
+            console.log("this.test", this.test);
+            this.widgetInfo.pageNo = data.pageNo;
+            this.widgetInfo.total = data.total;
+            this.widgetInfo.pageSize = data.pageSize;
+            this.loading = false;
+          }
+          this.loading = false;
+        });
+    },
+    changeData(item, num) {
+      num += 1;
+      item.forEach((item, index) => {
+        item.num = num;
+        if (item.children) {
+          this.changeData(item.children, num);
+        }
+      });
+    },
+
+    addResources() {
+      debugger;
+      this.$bus.emit("showMsg", "add", this.sysCode);
+    }
+  },
+  watch: {
+    sysCode() {
+      this.getListData();
+    }
+  },
+  components: {
+    msgBox,
+    tableList,
+    addResources,
+    Pagination
+  }
+};
+</script>
+
+
+<style lang="scss" scoped>
+.backgd-container {
+  border: 1px solid #ececec;
+  overflow: hidden;
+}
+.backgd {
+  background: white;
+}
+
+.el-table .cell {
+  line-height: 20px !important;
+}
+</style>
+
+
+<style lang="scss" scoped>
+#resourceManage-container .el-menu-item {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.resourceManage-container {
+  height: calc(100vh - 80px);
+  // overflow: auto;
+  // background:white;
+  .el-menu-vertical-demo {
+    overflow: auto;
+    background: white;
+  }
+}
+.resourceManage_aside {
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  z-index: 9;
+  .el-menu-item {
+    font-size: 16px;
+    text-align: left;
+    &:hover {
+      background: #f7f7f7 !important;
+    }
+    &:hover span {
+      background: none !important;
+    }
+  }
+}
+.el-menu-item.is-active {
+  background: #f7f7f7 !important;
+}
+.el-menu-item.is-active span {
+  color: black !important;
+  background: none !important;
+}
+.resourceManage_title {
+  text-align: left;
+  font-size: 20px;
+  padding: 10px;
+  margin: 0 10px;
+  border-bottom: 1px solid #ececec;
+}
+.resourceManage-container .el-button {
+  float: right;
+  width: 86px;
+  height: 32px;
+  padding: 9px 15px;
+  font-size: 12px;
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+.resourceManage_header-title {
+  height: 40px !important;
+  box-shadow: none;
+  background: #edf0f7;
+  margin: 0;
+  .bread_crumb {
+    line-height: 40px;
+  }
+}
+</style>

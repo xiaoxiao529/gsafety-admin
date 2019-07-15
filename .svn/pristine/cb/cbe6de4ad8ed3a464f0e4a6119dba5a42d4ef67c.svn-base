@@ -1,0 +1,570 @@
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog
+      title="入库"
+      :visible.sync="dialogOutStockVisible"
+      :lock-scroll="lockScroll"
+      width="768px">
+      <div class="stock-mian">
+        <el-form :rules="rules" ref="outStockFormData" :label-position="labelPosition" :model="outStockFormData" label-width="120px">
+          <div class="panel-wrap" >
+            <el-form-item label="入库类型:"  class="el-form-item-first" prop="repositoryType">
+              <el-radio-group v-model="outStockFormData.repositoryType" @change="inStockType">
+                <el-radio  v-for="item of repositoryTypeList" :key="item.value" :label="item.value">{{item.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </div>
+          <div class="panel-wrap">
+              <h4 class="dialog-h3">申请信息</h4>
+              <div>
+                <el-form-item label="申请类型:"  class="el-form-item-first" required prop="">
+                  <el-radio-group v-model="outStockFormData.applyType" @change="changeTipsClose">
+                    <el-radio  v-for="item of applyTypeList" :key="item.value" :label="item.value">{{item.label}}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+                <el-row :gutter="20" v-if="outStockFormData.repositoryType == 0">
+                  <el-col :span="8" v-if="showButton([0,1,2],outStockFormData.applyType) ">
+                    <el-form-item label="申请人:" prop="">
+                      <el-input v-model="outStockFormData.applyPerson" placeholder="申请人"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
+                    <el-form-item label="运营中心:" prop="">
+                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" placeholder="请选择">
+                        <el-option
+                          v-for="item of orgList"
+                          :key="item.orgCode"
+                          :label="item.orgName"
+                          :value="item.orgCode">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
+                    <el-form-item label="申请单位:" prop="">
+                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择">
+                        <el-option
+                          v-for="item of unitList"
+                          :key="item.unitId"
+                          :label="item.unitName"
+                          :value="item.unitId">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([1,2],outStockFormData.applyType) ">
+                    <el-form-item label="申请项目:" prop="">
+                      <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row :gutter="20" v-else-if="outStockFormData.repositoryType == 1">
+                  <el-col :span="8" v-if="showButton([0,1,2],outStockFormData.applyType) ">
+                    <el-form-item label="申请人:" prop="applyPerson">
+                      <el-input v-model="outStockFormData.applyPerson" placeholder="申请人"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
+                    <el-form-item label="运营中心:" prop="orgCode">
+                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" placeholder="请选择">
+                        <el-option
+                          v-for="item of orgList"
+                          :key="item.orgCode"
+                          :label="item.orgName"
+                          :value="item.orgCode">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
+                    <el-form-item label="申请单位:" prop="applyUnit">
+                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择">
+                        <el-option
+                          v-for="item of unitList"
+                          :key="item.unitId"
+                          :label="item.unitName"
+                          :value="item.unitId">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([1],outStockFormData.applyType) ">
+                    <el-form-item label="申请项目:" prop="applyProject">
+                      <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8"  v-if="showButton([2],outStockFormData.applyType) ">
+                    <el-form-item label="申请项目:" prop="">
+                      <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </div>
+          </div>
+          <div class="panel-wrap">
+              <h4 class="dialog-h3">出库硬件列表</h4>
+              <div>
+                <el-row :gutter="20">
+                  <el-col :span="8">
+                    <el-form-item label="硬件父类:"  prop="deviceSysVal" >
+                      <el-select v-model.trim="outStockFormData.deviceSysVal" placeholder="请选择"  @change="getChildrenHardwareType">
+                        <el-option v-for="item of deviceSys" :key="item.value" :label="item.label" :value="item.value" >
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="硬件子类:"  prop="device">
+                      <el-select v-model.trim="outStockFormData.device" placeholder="请选择" >
+                        <el-option v-for="item in optsTemp" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="硬件名称:" prop="deviceName">
+                      <el-input placeholder="请输入硬件名称" v-model="outStockFormData.deviceName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="数量:" prop="count">
+                      <el-input placeholder="请输入数量" v-model="outStockFormData.count"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="厂家:"  prop="factory">
+                      <el-input placeholder="请输入厂家" v-model="outStockFormData.factory"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="型号:" prop="model">
+                      <el-input placeholder="请输入型号" v-model="outStockFormData.model"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="品牌:" prop="brand">
+                      <el-input placeholder="请输入品牌" v-model="outStockFormData.brand"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="协议号:" prop="protocol">
+                      <el-input placeholder="请输入协议号" v-model="outStockFormData.protocol"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="供应商:" prop="supplier">
+                      <el-input placeholder="请输入供应商" v-model="outStockFormData.supplier"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="计量单位:" prop="measurementUnit">
+                      <el-input placeholder="请输入计量单位" v-model="outStockFormData.measurementUnit"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="单价(元):" prop="price">
+                      <el-input placeholder="请输入单价(元)" v-model="outStockFormData.price"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="税率(%):" prop="taxRate">
+                      <el-input placeholder="请输入税率(%)" v-model="outStockFormData.taxRate"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="网络信号:" prop="netSignal">
+                      <el-input placeholder="请输入网络信号" v-model="outStockFormData.netSignal"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="流量卡年限:" prop="flowYear">
+                      <el-input placeholder="请输入流量卡年限" v-model="outStockFormData.flowYear"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="备注:" prop="remarks">
+                      <el-input placeholder="请输入备注" v-model="outStockFormData.remarks"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </div>
+            </div>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelHandel()">取 消</el-button>
+        <el-button type="primary" @click="submitHandel()">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        dialogOutStockVisible: false, //出库
+        labelPosition:'top',//对齐方式
+        outStockFormData:{//表单data
+          applyType:0,
+          applyProject:'',
+          applyPerson:'',
+          orgCode:'',
+          applyOrg:'',
+          applyUnit:'',
+          repositoryType:0,
+          deviceSysVal: '',
+          device: '',
+          deviceName:'',
+          count:'',
+          factory:'',
+          model:'',
+          brand:'',
+          protocol:'',
+          supplier:'',
+          measurementUnit:'',
+          price:'',
+          taxRate:'',
+          netSignal:'',
+          flowYear:'',
+          remarks:''
+        },
+        lockScroll:true,
+        deviceSys: [],
+        optsTemp: [],
+        hardwareTypeTreeList:[],
+        parentTypeNameList:[],//父类型树
+        orgList:[],//运营中心列表
+        unitList:[],//申请单位列表
+        repositoryTypeList:[{
+          value:0,
+          label:'仓库入库'
+        },{
+          value:1,
+          label:'直发采购入库'
+        }],
+        applyTypeList:[{
+          value:0,
+          label:'运营中心'
+        },{
+          value:1,
+          label:'企业项目'
+        },{
+          value:2,
+          label:'其它'
+        }],
+        rules:{
+          applyPerson:[
+            { required: true, message: '申请人不能为空', trigger: 'blur' }
+          ],
+          orgCode:[
+            { required: true, message: '运营中心不能为空', trigger: 'change' },
+          ],
+          applyProject:[
+            { required: true, message: '申请项目不能为空', trigger: 'blur' },
+          ],
+          applyUnit:[
+            { required: true, message: '申请单位不能为空', trigger: 'change' },
+          ],
+          repositoryType:[
+            { required: true, message: '入库类型不能为空', trigger: 'change' },
+          ],
+          deviceSysVal:[
+            { required: true, message: '硬件父类不能为空', trigger: 'change' },
+          ],
+          device:[
+            { required: true, message: '硬件子类不能为空', trigger: 'change' },
+          ],
+          deviceName:[
+            { required: true, message: '设备名称不能为空', trigger: 'blur' },
+          ],
+          count:[
+            { required: true, message: '数量不能为空', trigger: 'blur' },
+          ],
+          factory:[
+            { required: true, message: '厂家不能为空', trigger: 'blur' },
+          ],
+          brand:[
+            { required: true, message: '品牌不能为空', trigger: 'blur' },
+          ],
+          model:[
+            { required: true, message: '型号不能为空', trigger: 'blur' },
+          ],
+          protocol:[],
+          supplier:[
+            { required: true, message: '供应商不能为空', trigger: 'blur' },
+          ],
+          measurementUnit:[
+            { required: true, message: '计量单位不能为空', trigger: 'blur' },
+          ],
+          price:[
+            { required: true, message: '单价(元)不能为空', trigger: 'blur' },
+          ],
+          taxRate:[
+            { required: true, message: '税率(%)不能为空', trigger: 'blur' },
+          ],
+          netSignal:[
+            { required: true, message: '网络信号不能为空', trigger: 'blur' },
+          ],
+          flowYear:[
+            { required: true, message: '流量卡年限不能为空', trigger: 'blur' },
+          ],
+          remarks:[
+            { required: true, message: '备注不能为空', trigger: 'blur' },
+          ]
+        }
+      };
+    },
+    mounted() {
+      const that = this;
+      that.getAllOrgInfo();
+      that.getHardwareTypeTree();
+    },
+    computed: {},
+    methods: {
+      /**
+       * 初始化 弹框显示
+       */
+      initInStock(){
+        const that = this;
+        that.dialogOutStockVisible=true;
+        that.repositoryType='0'
+        that.outStockFormData.applyType = 0;
+        that.outStockFormData.repositoryType = 0;
+        that.$nextTick(() => {
+          that.$refs["outStockFormData"].resetFields();
+        });
+      },
+      /**
+       * 硬件类型全部数据
+       */
+      getHardwareTypeTree(){
+        const that = this;
+        that.$axios.$GET({api_name: "getHardwareTypeTree"})
+          .then(res => {
+            if (res.data.code == "success") {
+              that.hardwareTypeTreeList=res.data.data;
+              //加载分类
+              if(null!=that.hardwareTypeTreeList && that.hardwareTypeTreeList.length>0){
+                that.hardwareTypeTreeList.forEach(item=>{
+                  let obj={};
+                  obj.label=item.typeName;
+                  obj.value=item.code;
+                  that.deviceSys.push(obj);
+                })
+              }
+            }
+          });
+      },
+      /**
+       * 联动硬件类型下级
+       * @param val
+       */
+      getChildrenHardwareType(val){
+        const that = this;
+        that.outStockFormData.device='';
+        that.optsTemp=[];
+        if(null!=that.hardwareTypeTreeList && that.hardwareTypeTreeList.length>0){
+          for(let i=0;i<that.hardwareTypeTreeList.length;i++){
+            if(val===that.hardwareTypeTreeList[i].code){
+              let children=that.hardwareTypeTreeList[i].children;
+              if(null!=children && children.length>0){
+                let codes=[];
+                children.forEach(item=>{
+                  let obj={};
+                  obj.label=item.typeName;
+                  obj.value=item.code;
+                  that.optsTemp.push(obj);
+                  codes.push(item.code);
+                });
+              }
+              break;
+            }
+          }
+        }
+      },
+      /**
+       * 入库类型切换
+       */
+      inStockType(){
+        const that = this;
+        that.outStockFormData.applyProject='';
+        that.outStockFormData.applyPerson='';
+        that.outStockFormData.orgCode='';
+        that.outStockFormData.applyUnit='';
+        that.outStockFormData.applyOrg='';
+      },
+      /**
+       * 获取所有运营中心
+       */
+      getAllOrgInfo(){
+        const that = this;
+        that.$axios.$GET({api_name: "getAllOrgInfo"})
+          .then(res => {
+            if (res.data.code == "success") {
+              that.orgList=res.data.data;
+            }
+          });
+      },
+      /**
+       * 联动运营中心下的单位信息
+       */
+      getUnitInfoByOrgCode(val){
+        const that = this;
+        that.unitList=[];
+        that.outStockFormData.applyUnit=null;
+        that.$axios.$GET({api_name: "getUnitInfoByOrgCode",params:{orgCode:val}})
+          .then(res => {
+            if (res.data.code == "success") {
+              that.unitList=res.data.data;
+            }
+          });
+      },
+      /**
+       * 类型申请显示
+       * @param arr
+       * @param value
+       * @returns {boolean}
+       */
+      showButton(arr, value) {
+        const that= this;
+        if(value === 0){
+          that.outStockFormData.applyProject ='';
+        }
+        if(value === 1 || value === 2){
+          that.outStockFormData.orgCode ='';
+          that.outStockFormData.applyUnit ='';
+        }
+        return arr.indexOf(value*1) > -1;
+      },
+      /**
+       * 入库确定按钮
+       */
+      submitHandel(){
+        const that = this;
+        that.isLoading = true;
+        that.$refs.outStockFormData.validate((valid) => {
+          if (valid) {
+            if(that.outStockFormData.orgCode){
+              debugger
+              that.outStockFormData.applyOrg= that.orgList.find(item => item.orgCode == that.outStockFormData.orgCode).orgName;
+            }
+            that.$axios
+              .$POST({
+                api_name: "putInRepository",//出库接口
+                params: {
+                  repositoryType:that.outStockFormData.repositoryType,
+                  applyType: that.outStockFormData.applyType,
+                  applyPerson: that.outStockFormData.applyPerson,
+                  applyOrg: that.outStockFormData.applyOrg,
+                  orgCode: that.outStockFormData.orgCode,
+                  applyUnit: that.outStockFormData.applyUnit,
+                  applyProject:that.outStockFormData.applyProject,
+                  deviceTypeCode:that.outStockFormData.device,
+                  deviceName:that.outStockFormData.deviceName,
+                  count:that.outStockFormData.count,
+                  factory:that.outStockFormData.factory,
+                  brand:that.outStockFormData.brand,
+                  model:that.outStockFormData.model,
+                  protocol:that.outStockFormData.protocol,
+                  supplier:that.outStockFormData.supplier,
+                  measurementUnit:that.outStockFormData.measurementUnit,
+                  price:that.outStockFormData.price,
+                  netSignal:that.outStockFormData.netSignal,
+                  taxRate:that.outStockFormData.taxRate,
+                  flowYear:that.outStockFormData.flowYear,
+                  remarks:that.outStockFormData.remarks,
+                  userId:'2c938c586bb68c66016bcf685be200cc'//当前操作人id， 暂时没有登录 为空
+                }
+              })
+              .then(res => {
+                that.isLoading = false;
+                if(res.data.code == "success") {
+                  that.isLoading = false;
+                  that.dialogOutStockVisible = false
+                  that.$message({
+                    message: res.data.rspMsg,
+                    type: 'success'
+                  });
+                  that.$emit('sureHandel');//父组件调用方法刷新列表
+                } else {
+                  that.isLoading = false;
+                  that.$message.error(res.data.rspMsg);
+                }
+              }).catch(()=>{
+              this.$message({
+                message: '这里是异常',
+                type: 'warning'
+              });
+            });
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
+      },
+      /**
+       * 入库取消按钮
+       */
+      cancelHandel(){
+        const that = this;
+        that.outStockFormData={
+          applyType:0,
+          applyProject:'',
+          applyPerson:'',
+          orgCode:'',
+          applyUnit:'',
+        }
+        that.dialogOutStockVisible = false
+      },
+      /**
+       * 切换时提示关闭
+       */
+      changeTipsClose(){
+        const that = this;
+        that.dialogVisible = false;
+        that.$nextTick(() => {
+          that.$refs["outStockFormData"].resetFields();
+        });
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .DialogStockWrap{
+    font-family:MicrosoftYaHei;
+    .stock-mian{
+      height: auto;
+      max-height: 450px;
+    }
+    .panel-wrap{
+      margin-top: 16px;
+      .dialog-h3{
+        font-size:18px;
+        color:rgba(37,40,46,1);
+        font-weight:400;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(225,229,235,1);
+        margin-bottom: 10px;
+      }
+    }
+    /deep/.el-form--label-top{
+      .el-form-item-first{
+        margin-bottom: 0;
+      }
+      .el-form-item__label{
+        padding: 0;
+        color:#525C66;
+        font-size: 16px;
+      }
+      .el-radio__label{
+        font-size: 16px;
+        font-weight:400;
+        /*color: rgba(37,40,46,1);*/
+      }
+      .el-select{
+        width: 100%;
+      }
+    }
+  }
+</style>
