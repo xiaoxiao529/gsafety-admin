@@ -1,0 +1,101 @@
+
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog
+      title="关联应用"
+      :visible.sync="dialogSetupInfoVisible"
+      width="324px">
+      <div class="stock-mian">
+        <div class="stepInfo-wrap">
+          <p class="stepInfo-p"><span class="title">应用：</span><span class="info">{{stepInfo.system}}</span></p>
+          <p class="stepInfo-p"><span class="title">角色：</span><span class="info">{{stepInfo.roleName}}</span></p>
+        </div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  /**
+   * @Description:实际用户--关联应用弹出层
+   * @author liuxin
+   * @date 2019-07-18
+   */
+  export default {
+    data() {
+      return {
+        dialogSetupInfoVisible: false, //安装信息
+        stepInfo:{
+          roleName:'',
+          system:'',
+        }
+      };
+    },
+    mounted() {
+
+    },
+    computed: {},
+    methods: {
+      /**
+       * @Description:关联应用信息
+       * @param val
+       */
+      initStupInfo(val){
+        const that= this;
+        that.dialogSetupInfoVisible=true;
+        that.isLoading = true;
+        that.$axios
+          .$POST_NEW({
+            api_name: "getAuthSystemList",
+            params: {
+              userId: val,//设备主键id
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              that.stepInfo={
+                roleName:'',
+                system:'',
+              };
+              let data = res.data.data[0];
+              that.stepInfo.system = data.system.sysName ||'--';
+              if( !data.roles[0]){
+                that.stepInfo.roleName = '--'
+                return;
+              }
+              that.stepInfo.roleName = data.roles[0].roleName;
+
+            } else {
+              that.$message.error(res.data.message);
+              return;
+            }
+          }).catch(err=>{
+          that.$message.error(err);
+        });
+
+      }
+
+
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .DialogStockWrap{
+    font-family:MicrosoftYaHei;
+    .stepInfo-wrap{
+      margin: 5px 0;
+      .stepInfo-p{
+        font-size:16px;
+        line-height: 32px;
+        font-family:MicrosoftYaHei;
+        .title{
+          color:rgba(165,173,184,1);
+        }
+        .info{
+          color:rgba(37,40,46,1);
+        }
+      }
+    }
+
+  }
+</style>

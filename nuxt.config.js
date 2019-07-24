@@ -1,7 +1,7 @@
 import pkg from './package'
 import ApiConfig from './config/api'
 // const webpack = require('webpack')
-
+global.HTMLElement = typeof window === 'undefined' ? Object : window.HTMLElement;
 export default {
   mode: 'universal',
 
@@ -43,10 +43,6 @@ export default {
       type: 'image/x-icon',
       href: '/favicon.ico'
     }],
-    script: [
-      { src: '/js/jquery.min.js' },
-      { src: '/js/qrcode.min.js' }
-    ]
   },
 
   /*
@@ -83,7 +79,6 @@ export default {
     // '@/plugins/element-ui'
     {
       src: '@/plugins/element-ui',
-
       ssr: true
     },
     // '@/plugins/lodash'
@@ -96,9 +91,18 @@ export default {
       ssr: true
     },
     {
-      src: '~/plugins/vue-bus.js',
+      src: '@/plugins/vue-bus.js',
+      ssr: false
+    },
+    {
+      src: '@/plugins/route.js',
+      ssr: false
+    },
+    {
+      src: '~/plugins/qriously.js',
       ssr: false
     }
+
   ],
 
   /*
@@ -119,6 +123,10 @@ export default {
     prefix: '/gsafetyclound',
     credentials: true
   },
+
+  generate: {
+    dir: 'manage' //打包时 将 dist 文件夹名称 改成 manage
+  },
   /*
    ** proxy module configuration
    */
@@ -131,10 +139,21 @@ export default {
         '^/gsafetyclound': ''
       }
     },
+
+    '/test': {
+      // target: "http://www.gsafetycloud.com/api/v1.1/operation-management", //线上
+      target: "http://172.19.12.24:8099/operationManagement/",
+      changeOrigin: true,
+      secure: false,
+      pathRewrite: {
+        '^/test': ''
+      }
+    },
   },
 
   router: {
-    //base: '/manage' //打包加
+//  base: '/manage', //打包加
+    middleware: "limitConfig",
 
   },
 

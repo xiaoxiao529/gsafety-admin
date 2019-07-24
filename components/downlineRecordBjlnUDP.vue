@@ -11,8 +11,12 @@
       >
         <el-form-item label="剩余电流报警设置值" class="switch-show" prop="wdbjzA">
           <div class="item-warpper">
-            <el-input placeholder="请输入剩余电流报警设置值" v-model="configParameter.sydlbjz">
-              <!-- <i slot="suffix" class="test-icon-diy">mA</i> -->
+            <el-input
+              placeholder="请输入剩余电流报警设置值"
+              v-model="configParameter.sydlbjz"
+              @change="changeOrBlur"
+            >
+              <i slot="suffix" class="test-icon-diy">mA</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -23,14 +27,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="A相温度" class="switch-show" prop="wdbjzA">
           <div class="item-warpper">
-            <el-input placeholder="请输入A相温度" v-model="configParameter.wdbjzA">
-              <!-- <i slot="suffix" class="test-icon-diy">℃</i> -->
+            <el-input placeholder="请输入A相温度" v-model="configParameter.wdbjzA" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">℃</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -41,14 +46,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="B相温度" class="switch-show" prop="wdbjzB">
           <div class="item-warpper">
-            <el-input placeholder="请输入B相温度" v-model="configParameter.wdbjzB">
-              <!-- <i slot="suffix" class="test-icon-diy">℃</i> -->
+            <el-input placeholder="请输入B相温度" v-model="configParameter.wdbjzB" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">℃</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -59,14 +65,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="C相温度" class="switch-show" prop="wdbjzC">
           <div class="item-warpper">
-            <el-input placeholder="请输入C相温度" v-model="configParameter.wdbjzC">
-              <!-- <i slot="suffix" class="test-icon-diy">℃</i> -->
+            <el-input placeholder="请输入C相温度" v-model="configParameter.wdbjzC" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">℃</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -77,14 +84,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="N相温度" class="switch-show" prop="wdbjzN">
           <div class="item-warpper">
-            <el-input placeholder="请输入N相温度" v-model="configParameter.wdbjzN">
-              <!-- <i slot="suffix" class="test-icon-diy">℃</i> -->
+            <el-input placeholder="请输入N相温度" v-model="configParameter.wdbjzN" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">℃</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -95,14 +103,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="A相电流" class="switch-show" prop="dlbjzA">
           <div class="item-warpper">
-            <el-input placeholder="请输入A相电流" v-model="configParameter.dlbjzA">
-              <!-- <i slot="suffix" class="test-icon-diy">A</i> -->
+            <el-input placeholder="请输入A相电流" v-model="configParameter.dlbjzA" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">A</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -113,14 +122,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="B相电流" class="switch-show" prop="dlbjzB">
           <div class="item-warpper">
-            <el-input placeholder="请输入B相电流" v-model="configParameter.dlbjzB">
-              <!-- <i slot="suffix" class="test-icon-diy">A</i> -->
+            <el-input placeholder="请输入B相电流" v-model="configParameter.dlbjzB" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">A</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -131,14 +141,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="C相电流" class="switch-show" prop="dlbjzC">
           <div class="item-warpper">
-            <el-input placeholder="请输入C相电流" v-model="configParameter.dlbjzC">
-              <!-- <i slot="suffix" class="test-icon-diy">A</i> -->
+            <el-input placeholder="请输入C相电流" v-model="configParameter.dlbjzC" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">A</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -149,14 +160,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="A相电压" class="switch-show" prop="dybjzA">
           <div class="item-warpper">
-            <el-input placeholder="请输入A相电压" v-model="configParameter.dybjzA">
-              <!-- <i slot="suffix" class="test-icon-diy">V</i> -->
+            <el-input placeholder="请输入A相电压" v-model="configParameter.dybjzA" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">V</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -167,14 +179,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="B相电压" class="switch-show" prop="dybjzB">
           <div class="item-warpper">
-            <el-input placeholder="请输入B相电压" v-model="configParameter.dybjzB">
-              <!-- <i slot="suffix" class="test-icon-diy">V</i> -->
+            <el-input placeholder="请输入B相电压" v-model="configParameter.dybjzB" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">V</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -185,14 +198,15 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
         <el-form-item label="C相电压" class="switch-show" prop="dybjzC">
           <div class="item-warpper">
-            <el-input placeholder="请输入C相电压" v-model="configParameter.dybjzC">
-              <!-- <i slot="suffix" class="test-icon-diy">V</i> -->
+            <el-input placeholder="请输入C相电压" v-model="configParameter.dybjzC" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">V</i>
             </el-input>
             <div class="el-switch-wrap">
               <el-switch
@@ -203,74 +217,97 @@
                 inactive-value="0"
                 active-text="开"
                 inactive-text="关"
+                @change="changeOrBlur"
               ></el-switch>
             </div>
           </div>
         </el-form-item>
-        <el-form-item label="报警时有无输出" class="switch-show two-line" prop="jdq">
-          <el-radio v-model="configParameter.jdq" label="1">有动作</el-radio>
-          <el-radio v-model="configParameter.jdq" label="0">无动作</el-radio>
+        <el-form-item label="报警时有无输出" class="switch-show" prop="jdq">
+          <el-radio v-model="configParameter.jdq" label="1" @change="changeOrBlur">有动作</el-radio>
+          <el-radio v-model="configParameter.jdq" label="0" @change="changeOrBlur">无动作</el-radio>
         </el-form-item>
-        <el-form-item label="报警或者故障时蜂鸣器响不响" class="switch-show two-line" prop="fmq">
-          <el-radio v-model="configParameter.fmq" label="1">响</el-radio>
-          <el-radio v-model="configParameter.fmq" label="0">不响</el-radio>
+        <el-form-item label="报警或者故障时蜂鸣器响不响" class="switch-show" prop="fmq">
+          <el-radio v-model="configParameter.fmq" label="1" @change="changeOrBlur">响</el-radio>
+          <el-radio v-model="configParameter.fmq" label="0" @change="changeOrBlur">不响</el-radio>
         </el-form-item>
-        <el-form-item label="电压类型" class="switch-show two-line" prop="fmq two-line">
-          <el-radio v-model="configParameter.dylx" label="1">单相</el-radio>
-          <el-radio v-model="configParameter.dylx" label="0">三相</el-radio>
+        <el-form-item label="电压类型" class="switch-show" prop="dylx">
+          <el-radio v-model="configParameter.dylx" label="1" disabled @change="changeOrBlur">单相</el-radio>
+          <el-radio v-model="configParameter.dylx" label="0" disabled @change="changeOrBlur">三相</el-radio>
         </el-form-item>
         <el-form-item label="报警延时值" class="switch-show" prop="bjys">
           <div class="item-warpper">
-            <el-input placeholder="请输入报警延时值" v-model="configParameter.bjys">
-              <!-- <i slot="suffix" class="test-icon-diy">S</i> -->
+            <el-input placeholder="请输入报警延时值" v-model="configParameter.bjys" @change="changeOrBlur">
+              <i slot="suffix" class="test-icon-diy">S</i>
             </el-input>
             <div class="el-switch-wrap"></div>
           </div>
         </el-form-item>
         <el-form-item label="第一路电流变比" class="switch-show" prop="dlbbA">
           <div class="item-warpper">
-            <el-input placeholder="请输入第一路电流变比" v-model="configParameter.dlbbA"></el-input>
+            <el-input
+              placeholder="请输入第一路电流变比"
+              v-model="configParameter.dlbbA"
+              @change="changeOrBlur"
+            ></el-input>
             <div class="el-switch-wrap"></div>
           </div>
         </el-form-item>
         <el-form-item label="第二路电流变比" class="switch-show" prop="dlbbB">
           <div class="item-warpper">
-            <el-input placeholder="请输入第二路电流变比" v-model="configParameter.dlbbB"></el-input>
+            <el-input
+              placeholder="请输入第二路电流变比"
+              v-model="configParameter.dlbbB"
+              @change="changeOrBlur"
+            ></el-input>
             <div class="el-switch-wrap"></div>
           </div>
         </el-form-item>
         <el-form-item label="第三路电流变比" class="switch-show" prop="dlbbC">
           <div class="item-warpper">
-            <el-input placeholder="请输入第三路电流变比" v-model="configParameter.dlbbC"></el-input>
+            <el-input
+              placeholder="请输入第三路电流变比"
+              v-model="configParameter.dlbbC"
+              @change="changeOrBlur"
+            ></el-input>
             <div class="el-switch-wrap"></div>
           </div>
         </el-form-item>
         <template v-if="['0020','0021','0022','0023'].includes(fromParent.deviceVersion)">
           <!--      这里是第二种状态多的内容  % ↑-->
-          <el-form-item label="A相电流穿孔方向" class="switch-show two-line">
-            <el-radio v-model="isValidArr[6]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[6]" label="0">否</el-radio>
+          <el-form-item label="A相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[6]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[6]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
-          <el-form-item label="B相电流穿孔方向" class="switch-show two-line">
-            <el-radio v-model="isValidArr[5]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[5]" label="0">否</el-radio>
+          <el-form-item label="B相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[5]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[5]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
-          <el-form-item label="C相电流穿孔方向" class="switch-show two-line">
-            <el-radio v-model="isValidArr[4]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[4]" label="0">否</el-radio>
+          <el-form-item label="C相电流穿孔方向" class="switch-show">
+            <el-radio v-model="isValidArr[4]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[4]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
           <el-form-item label="实时值最小上传时间间隔" class="switch-show" prop="zdsy">
             <div class="item-warpper">
-              <el-input placeholder="请输入实时值最小上传时间间隔" v-model="configParameter.zdsy">
-                <!-- <i slot="suffix" class="test-icon-diy">分</i> -->
+              <el-input
+                placeholder="请输入实时值最小上传时间间隔"
+                v-model="configParameter.zdsy"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">分</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="A相电弧报警阈值" class="switch-show" prop="dhbjzA">
             <div class="item-warpper">
-              <el-input placeholder="请输入A相电弧报警阈值" v-model="configParameter.dhbjzA">
-                <!-- <i slot="suffix" class="test-icon-diy">↑</i> -->
+              <el-input
+                placeholder="请输入A相电弧报警阈值"
+                v-model="configParameter.dhbjzA"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">↑</i>
               </el-input>
               <div class="el-switch-wrap">
                 <el-switch
@@ -287,8 +324,13 @@
           </el-form-item>
           <el-form-item label="B相电弧报警阈值" class="switch-show" prop="dhbjzB">
             <div class="item-warpper">
-              <el-input placeholder="请输入B相电弧报警阈值" v-model="configParameter.dhbjzB">
-                <!-- <i slot="suffix" class="test-icon-diy">↑</i> -->
+              <el-input
+                placeholder="请输入B相电弧报警阈值"
+                v-model="configParameter.dhbjzB"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">↑</i>
               </el-input>
               <div class="el-switch-wrap">
                 <el-switch
@@ -299,14 +341,20 @@
                   inactive-value="0"
                   active-text="开"
                   inactive-text="关"
+                  @change="changeOrBlur"
                 ></el-switch>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="C相电弧报警阈值" class="switch-show" prop="dhbjzC">
             <div class="item-warpper">
-              <el-input placeholder="请输入C相电弧报警阈值" v-model="configParameter.dhbjzC">
-                <!-- <i slot="suffix" class="test-icon-diy">↑</i> -->
+              <el-input
+                placeholder="请输入C相电弧报警阈值"
+                v-model="configParameter.dhbjzC"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">↑</i>
               </el-input>
               <div class="el-switch-wrap">
                 <el-switch
@@ -317,14 +365,20 @@
                   inactive-value="0"
                   active-text="开"
                   inactive-text="关"
+                  @change="changeOrBlur"
                 ></el-switch>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="三相电压平衡度报警阈值" class="switch-show" prop="sxdyphdbjz">
             <div class="item-warpper">
-              <el-input placeholder="请输入三相电压平衡度报警阈值" v-model="configParameter.sxdyphdbjz">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入三相电压平衡度报警阈值"
+                v-model="configParameter.sxdyphdbjz"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap">
                 <el-switch
@@ -335,14 +389,20 @@
                   inactive-value="0"
                   active-text="开"
                   inactive-text="关"
+                  @change="changeOrBlur"
                 ></el-switch>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="三相电流平衡度报警阈值" class="switch-show" prop="sxdlphdbjz">
             <div class="item-warpper">
-              <el-input placeholder="请输入三相电流平衡度报警阈值" v-model="configParameter.sxdlphdbjz">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入三相电流平衡度报警阈值"
+                v-model="configParameter.sxdlphdbjz"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap">
                 <el-switch
@@ -353,62 +413,93 @@
                   inactive-value="0"
                   active-text="开"
                   inactive-text="关"
+                  @change="changeOrBlur"
                 ></el-switch>
               </div>
             </div>
           </el-form-item>
           <el-form-item label="电压实时值上传跃阶：额定值" class="switch-show" prop="dyjy">
             <div class="item-warpper">
-              <el-input placeholder="请输入电压实时值上传跃阶：额定值" v-model="configParameter.dyjy">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入电压实时值上传跃阶：额定值"
+                v-model="configParameter.dyjy"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="电流实时值上传跃阶：额定值" class="switch-show" prop="dljy">
             <div class="item-warpper">
-              <el-input placeholder="请输入电流实时值上传跃阶：额定值" v-model="configParameter.dljy">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入电流实时值上传跃阶：额定值"
+                v-model="configParameter.dljy"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="电弧周期" class="switch-show" prop="gzdhbjsjz">
             <div class="item-warpper">
-              <el-input placeholder="请输入电弧周期" v-model="configParameter.gzdhbjsjz">
-                <!-- <i slot="suffix" class="test-icon-diy">S</i> -->
+              <el-input
+                placeholder="请输入电弧周期"
+                v-model="configParameter.gzdhbjsjz"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">S</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="电流电压平衡度报警延时" class="switch-show" prop="sxphdbjsj">
             <div class="item-warpper">
-              <el-input placeholder="请输入电流电压平衡度报警延时" v-model="configParameter.sxphdbjsj">
-                <!-- <i slot="suffix" class="test-icon-diy">S</i> -->
+              <el-input
+                placeholder="请输入电流电压平衡度报警延时"
+                v-model="configParameter.sxphdbjsj"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">S</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="漏电实时值上传跃阶：额定值" class="switch-show" prop="ldjy">
             <div class="item-warpper">
-              <el-input placeholder="请输入漏电实时值上传跃阶：额定值" v-model="configParameter.ldjy">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入漏电实时值上传跃阶：额定值"
+                v-model="configParameter.ldjy"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="温度实时值上传跃阶：额定值" class="switch-show" prop="wdjy">
             <div class="item-warpper">
-              <el-input placeholder="请输入温度实时值上传跃阶：额定值" v-model="configParameter.wdjy">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入温度实时值上传跃阶：额定值"
+                v-model="configParameter.wdjy"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="电弧幅值：电流阙值" class="switch-show" prop="gzdhbjz">
             <div class="item-warpper">
-              <el-input placeholder="请输入电弧幅值" v-model="configParameter.gzdhbjz">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入电弧幅值"
+                v-model="configParameter.gzdhbjz"
+                disabled
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
@@ -418,41 +509,53 @@
         <template v-if="fromParent.deviceVersion == '0023'">
           <el-form-item label="短路电压下降百分比" class="switch-show" prop="dldyxjbfb">
             <div class="item-warpper">
-              <el-input placeholder="请输入短路电压下降百分比" v-model="configParameter.dldyxjbfb">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入短路电压下降百分比"
+                v-model="configParameter.dldyxjbfb"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="短路电流上升百分比" class="switch-show" prop="dldlssbfb">
             <div class="item-warpper">
-              <el-input placeholder="请输入短路电流下降百分比" v-model="configParameter.dldlssbfb">
-                <!-- <i slot="suffix" class="test-icon-diy">%</i> -->
+              <el-input
+                placeholder="请输入短路电流下降百分比"
+                v-model="configParameter.dldlssbfb"
+                @change="changeOrBlur"
+              >
+                <i slot="suffix" class="test-icon-diy">%</i>
               </el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="大功率负载值" class="switch-show" prop="dglfz">
             <div class="item-warpper">
-              <el-input placeholder="请输入大功率负载值" v-model="configParameter.dglfz"></el-input>
+              <el-input
+                placeholder="请输入大功率负载值"
+                v-model="configParameter.dglfz"
+                @change="changeOrBlur"
+              ></el-input>
               <div class="el-switch-wrap"></div>
             </div>
           </el-form-item>
           <el-form-item label="大功率负载" class="switch-show">
-            <el-radio v-model="isValidArr[3]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[3]" label="0">否</el-radio>
+            <el-radio v-model="isValidArr[3]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[3]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
           <el-form-item label="A相电压短路" class="switch-show">
-            <el-radio v-model="isValidArr[2]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[2]" label="0">否</el-radio>
+            <el-radio v-model="isValidArr[2]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[2]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
           <el-form-item label="B相电压短路" class="switch-show">
-            <el-radio v-model="isValidArr[1]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[1]" label="0">否</el-radio>
+            <el-radio v-model="isValidArr[1]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[1]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
           <el-form-item label="C相电压短路" class="switch-show">
-            <el-radio v-model="isValidArr[0]" label="1">是</el-radio>
-            <el-radio v-model="isValidArr[0]" label="0">否</el-radio>
+            <el-radio v-model="isValidArr[0]" label="1" @change="changeOrBlur">是</el-radio>
+            <el-radio v-model="isValidArr[0]" label="0" @change="changeOrBlur">否</el-radio>
           </el-form-item>
         </template>
       </el-form>

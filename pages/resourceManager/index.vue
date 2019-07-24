@@ -4,14 +4,14 @@
  * @Author: yangxq
  * @Date: 2019-07-08 15:22:52
  * @LastEditors: sueRimn
- * @LastEditTime: 2019-07-11 11:27:14
+ * @LastEditTime: 2019-07-19 16:54:05
  -->
 
 <template>
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">系统配置</el-breadcrumb-item>
+        <el-breadcrumb-item>系统配置</el-breadcrumb-item>
         <el-breadcrumb-item>资源管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -21,7 +21,12 @@
           <h3>资源管理</h3>
         </el-col>
         <el-col :span="12" class="add-btn-style">
-          <el-button type="primary" icon="el-icon-plus" @click="addResources">新增</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            @click="addResources"
+            v-show="btns[0].isShow"
+          >新增资源</el-button>
         </el-col>
       </el-row>
       <div class="main-container">
@@ -43,13 +48,20 @@
 <script>
 import tableList from "~/components/resourceManage/tableList";
 import msgBox from "~/components/resourceManage/msgbox";
-import addResources from "~/components/resourceManage/addResources";
+//import addResources from "~/components/resourceManage/addResources";
 import { columns } from "~/components/resourceManage/treeToArray";
 import Pagination from "~/components/Pagination";
 
 export default {
   data() {
     return {
+      currentBtns: [],
+      btns: [
+        {
+          name: "新增",
+          isShow: false
+        }
+      ],
       test: [],
       num: 0,
       columns: columns,
@@ -68,7 +80,10 @@ export default {
     this.getListData();
   },
   mounted() {
-    this.$bus.on("refresh", this.getListData);
+    const that = this;
+    that.$bus.on("refresh", that.getListData);
+    that.currentBtns = that._Storage.getObj("currentBtnArr", "currentBtnArr");
+    that.isBtnShow();
   },
   methods: {
     handleSizeChange() {},
@@ -128,9 +143,21 @@ export default {
         }
       });
     },
-
     addResources() {
       this.$bus.emit("showMsg", "add", this.sysCode);
+    },
+    //按钮权限
+    isBtnShow() {
+      const that = this;
+      let arr = that.currentBtns;
+      that.btns.forEach(element => {
+        arr.forEach(item => {
+          console.log(item);
+          if (item.name === element.name) {
+            element.isShow = item.isShow;
+          }
+        });
+      });
     }
   },
   watch: {
@@ -141,37 +168,19 @@ export default {
   components: {
     msgBox,
     tableList,
-    addResources,
+    //addResources,
     Pagination
   }
 };
 </script>
 
 <style lang="scss" scoped="scoped">
+@import "~/assets/css/list.scss";
 .list-wrap {
-  width: 100%;
-  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
-  height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
-  overflow: hidden;
-  .el-table__expanded-cell[class*="cell"] {
-    padding: 0;
-    th {
-      background: #f0f0f0;
-    }
-    tr {
-      background: rgba(245, 247, 252, 1);
-    }
-  }
-  .el-table {
-    width: 100%;
-    padding: 0;
-    overflow: hidden;
-    th {
-      background: rgba(240, 243, 247, 1);
-    }
+  /deep/.el-table {
     .el-table__body-wrapper {
       //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
-      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 38px);
       overflow-y: auto;
     }
   }
@@ -180,5 +189,16 @@ export default {
   text-align: right;
   padding-right: 25px;
   box-sizing: border-box;
+}
+@media screen and (max-width: 1680px) {
+  .list-wrap {
+    /deep/.el-table {
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 10px);
+        overflow-y: auto;
+      }
+    }
+  }
 }
 </style>

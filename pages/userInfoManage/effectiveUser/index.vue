@@ -1,0 +1,357 @@
+<template>
+  <div>
+    <div class="main-wrap main-wrap-other">
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form" >
+          <el-form-item label="手机号:" label-width="70px">
+            <el-input placeholder="请输入手机号" v-model="formData.tel" maxlength="11"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名:" label-width="55px">
+            <el-input placeholder="请输入姓名" v-model="formData.name"></el-input>
+          </el-form-item>
+          <el-form-item label="所属单位:" label-width="95px">
+            <el-select v-model="formData.unitId" @change="findOrgBySysCode" placeholder="请选择" filterable clearable>
+              <el-option
+                v-for="item of unitList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="所属应用:" label-width="95px">
+            <el-select v-model="formData.appId" @change="getSystemList" placeholder="请选择" filterable clearable>
+              <el-option
+                v-for="item of appList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="状态:" label-width="55px">
+            <el-select v-model="formData.status" placeholder="请选择" filterable clearable>
+              <el-option
+                v-for="item of statusList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label=" ">
+            <el-button type="primary" size="small" @click="actualUsersPage('search')">查询</el-button>
+            <el-button size="small" @click="reset">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表-->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="姓名" show-overflow-tooltip min-width="7%">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="setupInfo(scope.$index,scope.row)">
+                  {{scope.row.userName}}
+                </el-link>
+              </template>
+            </el-table-column>
+            <el-table-column label="用户名" prop="loginName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="手机号" prop="userTelphone" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="角色" prop="roleName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="所属应用" prop="sysName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="所属单位" prop="orgName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="状态" prop="userAuthStatusName" show-overflow-tooltip min-width="5%"></el-table-column>
+            <el-table-column label="创建时间" prop="createTime" show-overflow-tooltip min-width="8%"></el-table-column>
+<!--            <el-table-column label="最后登录时间" prop="lastLoginTime" show-overflow-tooltip min-width="8%"></el-table-column>-->
+
+            <el-table-column label="操作" show-overflow-tooltip align="center" min-width="5%">
+              <template slot-scope="scope">
+                <el-link type="primary" v-if="scope.row.userAuthStatus == 0" @click="lockHandel(scope.$index,scope.row)">锁定</el-link>
+                <el-link type="primary" v-if="scope.row.userAuthStatus == 2" @click="unlockHandel(scope.$index,scope.row)">解锁</el-link>
+                <el-link type="primary" v-if="scope.row.userAuthStatus == 1" :disabled="lookFlag">--</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination
+            :widgetInfo="widgetInfo"
+            v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+          />
+        </div>
+      </div>
+    </div>
+    <!--    关联应用-->
+    <user-info ref="stepInfo"></user-info>
+    <!--    提示弹框-->
+    <tips-dialog  ref="tipDiloag" @loadData="tipsHandel"></tips-dialog>
+  </div>
+</template>
+<script>
+  /**
+   * @Description:运营中心--有效用户
+   * @author liuxin
+   * @date 2019-07-22
+  */
+  import Pagination from "~/components/Pagination";
+  import TipsDialog from "~/pages/userInfoManage/effectiveUser/tipsDialog";
+  import UserInfo from "~/pages/userInfoManage/effectiveUser/userInfo";
+  export default {
+    components: {
+      Pagination,
+      TipsDialog,
+      UserInfo
+    },
+    data() {
+      return {
+        isLoading: false,
+        lookFlag:true,
+        formData: {//查询的formData
+          tel:null,
+          name:null,
+          unitId:null,
+          appId:null,
+          status:null
+        },
+        unitList:[],
+        appList:[],
+        statusList:[
+          {value: 0, label: '正常'},
+          {value: 2, label: '锁定'},
+          {value: 1, label: '注销'},
+          {value: 3, label: '删除'}
+        ],
+        tableData:[],
+        loading: true,
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        message: {
+          setType: "",
+          operateType: ""
+        }
+      };
+    },
+    mounted() {
+      const that = this;
+      that.findOrgBySysCode();
+      that.getSystemList();
+    },
+    computed: {},
+    methods: {
+      /**
+       * @Description:所属单位下拉
+       */
+      findOrgBySysCode(){
+        const that = this;
+        that.$axios
+          .$POST_NEW({
+            api_name: "findUserOrgBySysCode",
+            params: {
+              unitName: that.formData.unitId
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              that.unitList = data;
+            } else {
+              that.unitList = [];
+              that.$message({
+                message: res.data.message,
+                type: 'warning'
+              });
+            }
+          })
+          .catch(()=>{
+            that.$message({
+              message: '所属单位下拉数据获取异常',
+              type: 'warning'
+            });
+          });
+      },
+      /**
+       * @Description:所属应用下拉
+       */
+      getSystemList(){
+        const that = this;
+        that.$axios
+          .$POST_NEW({
+            api_name: "getAppSystemListNoPage"
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              that.appList = data;
+            } else {
+              that.appList = [];
+              that.$message({
+                message: res.data.message,
+                type: 'warning'
+              });
+            }
+          })
+          .catch(()=>{
+            that.$message({
+              message: '所属应用下拉数据获取异常',
+              type: 'warning'
+            });
+          });
+      },
+      /**
+       *  @Description:锁定和解锁确定事件
+       * @param row(子组件向父组件传值) 该行全部信息
+       */
+      tipsHandel() {
+        const that = this;
+        that.actualUsersPage("load");
+      },
+      /**
+       *  @Description:锁定按钮
+       * @param index 索引值
+       * @param row
+       */
+      lockHandel(index, row) {
+        const that = this;
+        that.message.setType = "lock";
+        that.message.operateType = 2;
+        that.$refs.tipDiloag.showDialog(index, row,that.message);
+      },
+      /**
+       *  @Description:解锁按钮
+       * @param index
+       * @param row
+       */
+      unlockHandel(index, row) {
+        const that = this;
+        that.message.setType = "unlock";
+        that.message.operateType = 1;
+        that.$refs.tipDiloag.showDialog(index, row,that.message);
+      },
+
+      /**
+       * @Description:有效用户的列表
+       * @param pagenoFlag
+       */
+      actualUsersPage(pagenoFlag) {
+        const that = this;
+        that.isLoading = true;
+        if(pagenoFlag=='search'){
+          that.widgetInfo.pageNo = 1;
+        }
+        that.$axios
+          .$POST_NEW({
+            api_name: "findUserInfoListBySysCodeAndOrgCode",
+            params: {
+              userTelphone: that.formData.tel,
+              userName: that.formData.name,
+              orgCode:that.formData.unitId,
+              sysCode:that.formData.appId,
+              authStatus:that.formData.status,
+              pageNo: that.widgetInfo.pageNo,
+              pageSize: that.widgetInfo.pageSize
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              that.tableData = data.rows;
+              that.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              that.tableData = [];
+              that.widgetInfo.list = data.rows;
+              that.widgetInfo.total = 0;
+              console.log("没有数值。。。。。");
+            }
+          });
+      },
+
+      /**
+       * @Description:分页
+       * @param widgetInfo
+       */
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.actualUsersPage('load');
+      },
+      /**
+       * @Description:查询重置
+       */
+      reset() {
+        this.formData = {};
+        this.actualUsersPage('search');
+      },
+      /**
+       * @Description:关联应用
+       * @param index
+       * @param row
+       */
+      setupInfo(index,row){
+        const that = this;
+        that.$refs.stepInfo.initStupInfo(row);
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .main-wrap-other{
+    border: none;
+  }
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+  @media screen and (max-width: 1857px) {
+    .list-wrap {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132
+      height: calc(100vh - 90px - 64px - 20px - 65px - 132px);
+      /deep/.el-table {
+
+        .el-table__body-wrapper {
+          //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132 分页85 头部高度48px
+          height: calc(100vh - 90px - 64px - 20px - 65px - 132px - 85px - 48px);
+        }
+      }
+    }
+  }
+  @media screen and (max-width: 1680px) {
+    .list-wrap {
+      //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单132
+      height: calc(100vh - 60px - 64px - 20px - 65px - 132px);
+      /deep/.el-table {
+        .el-table__body-wrapper {
+          //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单132 分页85 头部高度48px
+          height: calc(100vh - 60px - 64px - 20px - 65px - 132px - 85px - 48px);
+        }
+      }
+    }
+  }
+
+</style>

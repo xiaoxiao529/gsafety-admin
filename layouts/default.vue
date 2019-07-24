@@ -86,7 +86,7 @@
                 <span slot="title">系统配置</span>
               </template>
               <el-menu-item-group>
-                <el-menu-item index="/userManager/userManagerControl"><span class="dot">·</span> 用户管理</el-menu-item>
+                <el-menu-item index="/userManager"><span class="dot">·</span> 用户管理</el-menu-item>
               </el-menu-item-group>
               <el-menu-item-group>
                 <el-menu-item index="/roleManager"><span class="dot">·</span> 角色管理</el-menu-item>
@@ -98,29 +98,46 @@
           </el-menu>-->
           
 
-	          <el-menu class="el-menu-vertical-demo"  @open="handleOpen" @close="handleClose"
+	         <el-menu class="el-menu-vertical-demo"  @open="handleOpen" @close="handleClose"
 	            :unique-opened=true @select="handleselect" :collapse="isCollapse" 
 	            :collapse-transition="false" >
 	
-	            <template v-for="(item,index) in listAll">
-	              <el-menu-item class="noChild index-page" :key="index" :index="index+''" v-if="item.children.length==0" @click='changeMenu(item,item.resUrl,"",index)'>
-									<i class="iconfont" :class="icons[index]"></i>
-	                <span slot="title" :title="item.resName">{{item.resName}}</span>
+
+	            	<!--一级菜单没有子节点-->
+	              <!--<el-menu-item v-for="(item,index) in listAll" class="index-page" :key="index" @click='changeMenu(item,item.resUrl,"",index)' :index="index+''" v-if="item.children.length==0" >
+									
+	              </el-menu-item>-->
+	              <el-menu-item @click='changeMenu("/","/","")' class="index-page">
+	              	<i class="iconfont icon-shouye " ></i>
+	                <span slot="title" title="首页">首页</span>
 	              </el-menu-item>
-	
-	              <el-submenu :index="index+''" :key="index" v-if=" item.children && item.children.length != 0"
-	                popper-class="popperClass">
-	                <template v-if="item.children !=0 " slot="title">
+	              <!--一级菜单有子节点-->         	              
+	              <el-submenu :index="index+''" v-for="(item,index) in listAll" :key="index" v-if=" item.children && item.children.length != 0" popper-class="popperClass">
+	                <!--二级菜单没有子节点-->
+	                <el-menu-item class="index-page" v-for="(item1,index) in item.children" :key="index" :index="index+''" v-if="item1.children.length==0" @click='changeMenu(item1,item.resUrl,"",index)'>
+		                <span slot="title" :title="item1.resName"><strong class="dot">·</strong>{{item1.resName}}</span>
+		              </el-menu-item>
+		              <template  slot="title" v-if="item.children.length!=0">
 										<i class="iconfont" :class="icons[index]"></i>
 	                  <span slot="title" :title="item.resName">{{item.resName}}</span>
 	                </template>
-	                <el-menu-item-group v-if="item.children !=0 " class="scroll-min">
-	                  <el-menu-item v-for="(itt,index1) in item.children" :key="index1" :index="index+'-'+index1" @click='changeMenu(item.children[index1],itt.resUrl,item.resUrl,index)'>
-	                    <span slot="title" :title="itt.resName"><strong class="dot">·</strong>{{itt.resName}}</span>
-	                  </el-menu-item>
-	                </el-menu-item-group>
+	                <!--二级菜单有子节点-->
+	                <el-submenu v-for="(item1,index) in item.children" :key="index" :index="index+'1'" v-if="item1.children.length!=0" >
+	                	<template  slot="title">
+		                  <span slot="title" :title="item1.resName"><strong class="dot">·</strong>{{item1.resName}}</span>
+		                </template>
+		                <!--判断是否为三级菜单-->
+		                <el-menu-item-group >
+		                  <el-menu-item class="third-item" v-for="(itt,index1) in item1.children" :key="index1" :index="index+'-'+index1" @click='changeMenu(itt,itt.resUrl,itt.resUrl,index)'>
+		                    <span slot="title" :title="itt.resName"><strong class="dot">·</strong>{{itt.resName}}</span>
+		                  </el-menu-item>
+		                </el-menu-item-group>
+	                	
+	                </el-submenu>
+	                
+	                
 	              </el-submenu>
-	            </template>
+
 	          </el-menu>
 
           
@@ -170,9 +187,10 @@ export default {
       },
       navlist: [],
       list: [],
+      resourceData:[],
       linkName: "",
       changePswVis: false,
-      icons:["icon-shouye","icon-yingjian","icon-gongju","icon-zu1"]
+      icons:["icon-shouye","icon-yingjian","icon-gongju","icon-zu1","icon-shouye","icon-yingjian","icon-gongju","icon-zu1"]
     };
   },
   methods: {
@@ -216,15 +234,17 @@ export default {
     },
     //页面跳转
 	  changeMenu: function (item, pathName, parName,index) {
-			if( index == 2 ){
+	  	var that = this;
+			if( item.resName == "电子档案" ){
 				window.open("http://172.19.12.128/e-record","_blank");  
 				this.$router.push({
 		      name: "index",
 		    })
 				return false;
 			}
+
 	    var url = item.resUrl;
-	    this.$router.push({
+			this.$router.push({
 	      name: (url ? url : "index"),
 	    })
 
@@ -248,8 +268,23 @@ export default {
 			      })
 			    .then(res => {
 			      if (res.data.code == "success") {
-			        console.log(res.data,"res")
-			        this.list = res.data.data
+                this._Storage.setObj("jurisdictionList", "jurisdictionList", res.data.data);
+			        	this.resourceData = res.data.data;
+
+			        function queryList(json) {
+							    for (var i = 0; i < json.length; i++) {
+							    	if (json[i].resType == "2") {
+											json.splice(i,1)
+											i--;
+							    	} else {
+							    		queryList(json[i].children);
+							    	}
+							    }
+							    return json
+							}
+			        this.list = queryList(this.resourceData)
+
+             
 			      } else {
 			        that.logining = false;
 			        that.$message({
@@ -275,18 +310,19 @@ export default {
   	},
   	listAll: function () {
 	    return this.list
+	    
 	  },
   },
   mounted() {
   	if(this.userObj){
   		this.sysUserName = this.userObj.loginName;
   		var userId = this.userObj.id;
-  		
+  		this.findUserResource();
   	}else{
   		this.sysUserName = ""
   		this.$router.push("/login");
   	}
-    this.findUserResource();
+    
   },
   watch: {
     "this.$route.matched": function(newVal, oldVal) {}
@@ -328,7 +364,10 @@ export default {
     	color: #1577ff;
     }
 }
-.el-submenu__title:hover,.el-submenu__title:focus,.index-page:hover,.index-page:focus {
+.third-item{
+	    color: #25282E !important;
+}
+.el-submenu__title:hover,.el-submenu__title:focus,.index-page:hover,.index-page:focus,.third-item:hover {
     outline: 0;
     background-color: #1C77FF;
     color: #fff;
@@ -357,6 +396,10 @@ export default {
 }
 </style>
 <style  scoped lang="scss">
+
+.is-active{
+	color: #409EFF !important;
+}
 
 .el-dropdown-menu{
 	top: 70px !important;

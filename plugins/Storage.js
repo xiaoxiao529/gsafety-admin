@@ -6,7 +6,7 @@ import Vue from 'vue';
 import _Storage from '../utils/Storage';
 
 export default () => {
-    // Vue.use(_)
-    // Window.$http = Vue.prototype.$http = _http;
-    Window._Storage = Vue.prototype._Storage = _Storage;
+  // Vue.use(_)
+  // Window.$http = Vue.prototype.$http = _http;
+  Window._Storage = Vue.prototype._Storage = _Storage;
 }

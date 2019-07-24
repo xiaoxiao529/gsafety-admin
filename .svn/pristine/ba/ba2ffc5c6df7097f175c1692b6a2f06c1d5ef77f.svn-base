@@ -1,0 +1,131 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>运营中心</el-breadcrumb-item>
+        <el-breadcrumb-item>用户类型配置</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+<!--      免费模式  基础安全模式 初级安全模式  高级安全模式 全托管模式-->
+      <el-tabs v-model="activeNameType" @tab-click="handleClick">
+        <el-tab-pane label="免费模式" name="first">
+          <free-mode></free-mode>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </div>
+</template>
+<script>
+  import FreeMode from "~/pages/userTypeConfig/tabs/freeMode";
+  export default {
+    components: {
+      FreeMode,
+    },
+    data() {
+      return{
+        activeNameType:'first'
+      };
+    },
+    created(){
+      const that = this;
+      that.activeNameType = 'first'
+    },
+    mounted() {
+      const that = this;
+      if(localStorage.getItem('activeNameType')){
+        that.activeNameType =localStorage.getItem('activeNameType')
+      }else{
+        that.activeNameType = 'first'
+      }
+    },
+    methods: {
+      /**
+       * 切换tabs的事件
+       * @param tab
+       * @param event
+       */
+      handleClick(tab, event) {
+        const that = this;
+        let indexName = event.target.getAttribute('id').substring(4) || 'first';
+        localStorage.setItem('indexName',indexName);
+      }
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  /deep/.main-wrap{
+    .el-tabs__nav {
+      margin-left: 25px;
+      height: 65px;
+      line-height: 65px;
+    }
+    .el-tabs__header{
+      margin-bottom: 0;
+    }
+    .el-tabs__item {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(37, 40, 46, 1);
+      &.is-active {
+        color: rgba(28, 119, 255, 1);
+      }
+    }
+    .el-tabs__active-bar {
+      background-color: rgba(28, 119, 255, 1);
+    }
+    .tab-content {
+      padding: 0 40px;
+      .title {
+        font-size: 18px;
+        font-weight: 400;
+        color: rgba(37, 40, 46, 1);
+        margin: 5px 0 10px 0;
+      }
+    }
+  }
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+  @media screen and (max-width: 1680px) {
+    .list-wrap {
+      //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+      height: calc(100vh - 60px - 64px - 20px - 65px - 76px);
+      overflow: hidden;
+      /deep/.el-table {
+        padding: 0;
+        overflow: hidden;
+        th {
+          background: rgba(240, 243, 247, 1);
+        }
+        .el-table__body-wrapper {
+          //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+          height: calc(100vh - 60px - 64px - 20px - 65px - 76px - 85px - 48px);
+          overflow-y: auto;
+        }
+      }
+    }
+  }
+</style>

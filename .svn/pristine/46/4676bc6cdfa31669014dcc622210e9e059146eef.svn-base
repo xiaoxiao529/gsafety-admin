@@ -1,0 +1,184 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>下行控制</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-tabs v-model="activeName" class="top-tab">
+        <el-tab-pane label="下行" name="downLine">
+          <div class="tab-content" v-if="activeName === 'downLine'">
+            <!-- 基础信息 -->
+            <h3 class="title" style="margin-top:20px;">基础信息</h3>
+            <div class="tab-content-detail">
+              <el-form
+                :model="fromParent"
+                class="basic-information"
+                label-width="100%"
+                :label-position="labelPosition"
+              >
+                <el-form-item label="设备ID" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.deviceId"></el-input>
+                </el-form-item>
+                <el-form-item label="运营中心" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.subCenterName"></el-input>
+                </el-form-item>
+                <el-form-item label="业主单位" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.unitName"></el-input>
+                </el-form-item>
+                <el-form-item label="设备名称" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.deviceName"></el-input>
+                </el-form-item>
+                <el-form-item
+                  label="协议号"
+                  :rules="[{ required: true}]"
+                  v-show="fromParent.sourceId == 'bjlnUDP'"
+                >
+                  <el-input :disabled="true" v-model.trim="fromParent.deviceVersion"></el-input>
+                </el-form-item>
+                <el-form-item label="品牌" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.brand"></el-input>
+                </el-form-item>
+                <el-form-item label="型号" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.model"></el-input>
+                </el-form-item>
+                <el-form-item label="安装位置" :rules="[{ required: true}]">
+                  <el-input :disabled="true" v-model.trim="fromParent.deviceAddress"></el-input>
+                </el-form-item>
+              </el-form>
+            </div>
+
+            <!--配置参数 -->
+            <ConfigurationLA v-if="fromParent.sourceId == 'hnla'" :fromParent="fromParent"></ConfigurationLA>
+
+            <ConfigurationParameter
+              v-if="fromParent.sourceId == 'bjlnUDP'"
+              :fromParent="fromParent"
+            ></ConfigurationParameter>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="下行记录" name="record">
+          <downlinkControlRecord v-if="activeName === 'record'" />
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapState, mapMutations } from "vuex";
+import ConfigurationParameter from "~/components/ConfigurationParameter"; //下行参数配置--乐鸟
+import ConfigurationLA from "~/components/ConfigurationLA"; //下行参数配置--立安
+import downlinkControlRecord from "~/components/downlinkControlRecord"; //下行记录
+export default {
+  components: {
+    ConfigurationParameter,
+    ConfigurationLA,
+    downlinkControlRecord
+  },
+  data() {
+    return {
+      labelPosition: "top",
+      activeName: "downLine",
+      fromParent: {}
+    };
+  },
+  computed: {},
+  mounted() {
+    const that = this;
+    that.fromParent = that._Storage.getObj("downListRow", "obj");
+    setTimeout(() => {
+      that.activeName = "downLine";
+    }, 0);
+  },
+  methods: {}
+};
+</script>
+
+<style lang="scss"  scoped>
+/deep/.top-tab {
+  .el-tabs__nav {
+    margin-left: 25px;
+    height: 65px;
+    line-height: 65px;
+  }
+  .el-tabs__item {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(37, 40, 46, 1);
+    &.is-active {
+      color: rgba(28, 119, 255, 1);
+    }
+  }
+  .el-tabs__active-bar {
+    background-color: rgba(28, 119, 255, 1);
+  }
+  .tab-content {
+    padding: 0 40px;
+    .title {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(37, 40, 46, 1);
+      margin: 5px 0 10px 0;
+    }
+  }
+
+  .basic-information {
+    padding: 0;
+    .el-form-item__content {
+      width: 100%;
+    }
+    .el-form-item {
+      width: 20%;
+      display: inline-block;
+      margin-right: 20px;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(246, 26, 26, 1);
+      margin-bottom: 5px;
+      .el-form-item__label {
+        padding: 0;
+      }
+    }
+  }
+  //操作控制按钮
+  .control-operation {
+    margin-top: 20px;
+    height: 30px;
+    .el-button {
+      border: 1px solid rgba(28, 119, 255, 1);
+      color: rgba(28, 119, 255, 1);
+    }
+  }
+  .tab-content-detail {
+    margin-bottom: 30px;
+    display: flex;
+  }
+  .el-tabs__header {
+    margin: 0;
+  }
+}
+.main-wrap {
+  overflow-y: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

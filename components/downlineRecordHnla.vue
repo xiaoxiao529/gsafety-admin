@@ -57,33 +57,7 @@ export default {
   data() {
     var _this = this;
 
-    var validator_ip = function(rule, value, callback) {
-      /* 校验ip */
-      if (value === "") {
-        callback(new Error("ip地址不能为空"));
-      } else if (!new RegExp(_this.REG_IP).test(value)) {
-        callback(new Error("请输入正确格式的ip地址"));
-      } else {
-        callback();
-      }
-    };
-    var validator_port = function(rule, value, callback) {
-      /* 校验端口号 */
-      if (value === "") {
-        callback(new Error("端口号不能为空"));
-      } else if (!new RegExp(_this.REG_PORT).test(value)) {
-        callback(new Error("请输入正确格式的端口号"));
-      } else {
-        callback();
-      }
-    };
     return {
-      REG_IP:
-        "^(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|[1-9])\\." +
-        "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
-        "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)\\." +
-        "(1\\d{2}|2[0-4]\\d|25[0-5]|[1-9]\\d|\\d)$",
-      REG_PORT: "^[1-9][0-9]{0,4}$",
       ip: "",
       port: "",
       ipShow: false,
@@ -94,8 +68,6 @@ export default {
       rightRadio: ["", "", "", "", "", "4", "0", "0", "0", "", "3", "0", "0"],
       labelPosition: "top",
       isOpenArr: [],
-      measurement: 20,
-      data3: {},
       formData: {
         //双向绑定数据
         propData1: "",
@@ -112,96 +84,20 @@ export default {
         propData12: "",
         propData13: ""
       },
-      formOld: {
-        //存默认值  新旧数据对比
-        propData1: "",
-        propData2: "",
-        propData3: "",
-        propData4: "",
-        propData5: "",
-        propData6: "",
-        propData7: "",
-        propData8: "",
-        propData9: "",
-        propData10: "",
-        propData11: "",
-        propData12: "",
-        propData13: ""
-      },
-      allFormData: [],
-      nowType: "",
-      nowValue: "",
-      formDataString: [],
-      rules: {
-        ip: [{ required: true, validator: validator_ip, trigger: "blur" }],
-        port: [{ required: true, validator: validator_port, trigger: "blur" }]
-      }
+      allFormData: []
     };
   },
 
   computed: {
-    ipData() {
-      return this.ipForm.ip + ":" + this.ipForm.port;
-    },
     fromParent() {
       return this._Storage.getObj("downListRow", "obj");
     }
   },
   mounted() {
     this.findMonitorDeviceStateExtByMonitorId();
-    console.log("this.HnlaData", this.HnlaData);
     this.formDataString = Object.keys(this.formData);
   },
   methods: {
-    changeIP() {
-      this.ipShow = true;
-    },
-    reFresh() {
-      this.findMonitorDeviceStateExtByMonitorId();
-    },
-    sendCommand(type1, type2, dataValue) {
-      let that = this;
-      this.$axios
-        .$POST({
-          api_name: "hnlaSendDown",
-          params: {
-            monitorId: that.fromParent.id,
-            controlHost: that.fromParent.controlHost,
-            sourceId: that.fromParent.sourceId,
-            operationType: type1,
-            operationItemType: type2,
-            dataValue: dataValue
-          }
-        })
-        .then(res => {
-          if (res.data.code == "success") {
-            var data1 = res.data.data;
-            var returnTitle = data1.returnTitle;
-            var layMessage = returnTitle;
-            if (!returnTitle) {
-              layMessage = data1.message;
-            }
-            if (data1.statue == "1" && type1 != 9) {
-              this.$message({
-                message: layMessage,
-                type: "success"
-              });
-            } else if (data1.statue == "2") {
-              this.$message({
-                message: layMessage,
-                type: "error"
-              });
-            } else if (data1.statue == "3") {
-              this.$message({
-                message: layMessage,
-                type: "warning"
-              });
-            }
-          } else {
-            console.log("失败");
-          }
-        });
-    },
     findMonitorDeviceStateExtByMonitorId() {
       //硬件平台-根据监测设备ID获取设备阈值信息---立安
       this.flags = [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
@@ -210,59 +106,7 @@ export default {
       for (var i = 0; i < that.allFormData.length; i++) {
         var temp = that.allFormData[i];
         that.formData[Object.keys(that.formData)[i]] = temp.measurement;
-        that.formOld[Object.keys(that.formOld)[i]] = temp.measurement;
       }
-    },
-
-    inputFocus(i) {
-      //聚焦点击
-      this.flags = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
-      this.flags[i] = 0;
-    },
-    ok() {
-      //确认修改ip
-      this.sendCommand("9", "5", this.ipData);
-      this.ipShow = false;
-      this.ipForm.ip = "";
-      this.ipForm.port = "";
-    },
-    cancel() {
-      //确认修改ip
-      this.ipShow = false;
-      this.ipForm.ip = "";
-      this.ipForm.port = "";
-    },
-    resetForm() {
-      //取消
-      (this.flags = [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0]),
-        this.findMonitorDeviceStateExtByMonitorId();
-    },
-    submitForm() {
-      let that = this;
-      that.sendCommand(5, this.nowType, this.nowValue);
-      setTimeout(function() {
-        that.findMonitorDeviceStateExtByMonitorId();
-        that.flags = [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
-      }, 5000);
-    }
-  },
-  watch: {
-    formData: {
-      handler: function(nowVal, oldVal) {
-        var that = this;
-        for (let i in that.formData) {
-          if (nowVal[i] != this.formOld[i]) {
-            var nowValueIndex = that.formDataString.indexOf(i);
-            that.nowType = that.allFormData[nowValueIndex].flag;
-            that.nowValue = nowVal[i];
-            that.handleDisable = false;
-            break;
-          } else {
-            that.handleDisable = true;
-          }
-        }
-      },
-      deep: true
     }
   }
 };

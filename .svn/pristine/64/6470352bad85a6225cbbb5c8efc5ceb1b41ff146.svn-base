@@ -1,0 +1,190 @@
+<template>
+  <div class="configuration-parameter-wrapper">
+    <div class="tab-content-detail">
+      <el-form
+        :label-position="labelPosition"
+        label-width="100%"
+        :model="formData"
+        class="el-form-diy"
+      >
+        <el-form-item
+          v-for="(item,index)  in  allFormData"
+          :prop="Object.keys(formData)[index]"
+          :rules="[{ required: true , message: '请输入值', trigger: 'blur'}]"
+          :label="item.flagName"
+          class="switch-show"
+          :key="index"
+        >
+          <div class="item-warpper" v-if="item.flagPara==1">
+            <el-input
+              placeholder="请输入值"
+              v-model.trim="formData[Object.keys(formData)[index]]"
+              :disabled="flags[index]?true:false"
+              @input="inputFocus(index)"
+            ></el-input>
+          </div>
+          <div class="switch-show" v-if="item.flagPara==2" :prop="Object.keys(formData)[index]">
+            <el-radio-group
+              v-model="formData[Object.keys(formData)[index]]"
+              @change="inputFocus(index)"
+              :disabled="flags[index]?true:false"
+            >
+              <el-radio :label="leftRadio[index]">
+                <span v-if="item.flag=='5'">三</span>
+                <span
+                  v-if=" item.flag=='6' || item.flag=='7' || item.flag=='8' || item.flag=='9' || item.flag=='11' || item.flag=='12' "
+                >开</span>
+                <span v-if=" item.flag=='10'">单相</span>
+              </el-radio>
+              <el-radio :label="rightRadio[index]">
+                <span v-if="item.flag=='5'">四</span>
+                <span
+                  v-if="item.flag=='6' || item.flag=='7' || item.flag=='8' || item.flag=='9' || item.flag=='11' || item.flag=='12' "
+                >关</span>
+                <span v-if="item.flag=='10'">三相</span>
+              </el-radio>
+            </el-radio-group>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  props: ["HnlaData"],
+  data() {
+    var _this = this;
+
+    return {
+      ip: "",
+      port: "",
+      ipShow: false,
+      handleDisable: false,
+      ipForm: {},
+      flags: [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0], //是否可编辑   0可编辑  1不可编辑
+      leftRadio: ["", "", "", "", "", "3", "1", "1", "1", "", "1", "1", "1"],
+      rightRadio: ["", "", "", "", "", "4", "0", "0", "0", "", "3", "0", "0"],
+      labelPosition: "top",
+      isOpenArr: [],
+      formData: {
+        //双向绑定数据
+        propData1: "",
+        propData2: "",
+        propData3: "",
+        propData4: "",
+        propData5: "",
+        propData6: "",
+        propData7: "",
+        propData8: "",
+        propData9: "",
+        propData10: "",
+        propData11: "",
+        propData12: "",
+        propData13: ""
+      },
+      allFormData: []
+    };
+  },
+
+  computed: {
+    fromParent() {
+      return this._Storage.getObj("downListRow", "obj");
+    }
+  },
+  mounted() {
+    this.findMonitorDeviceStateExtByMonitorId();
+    this.formDataString = Object.keys(this.formData);
+  },
+  methods: {
+    findMonitorDeviceStateExtByMonitorId() {
+      //硬件平台-根据监测设备ID获取设备阈值信息---立安
+      this.flags = [0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0];
+      let that = this;
+      that.allFormData = that.HnlaData;
+      for (var i = 0; i < that.allFormData.length; i++) {
+        var temp = that.allFormData[i];
+        that.formData[Object.keys(that.formData)[i]] = temp.measurement;
+      }
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.configuration-parameter-wrapper {
+  width: auto;
+  max-width: 1200px;
+  /deep/.el-form-diy {
+    padding: 0;
+    .el-form-item {
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      margin-bottom: 0;
+      &.switch-show {
+        .item-warpper {
+          display: flex;
+          width: 100px;
+          padding-left: 5px;
+          .el-input {
+            .el-input__inner {
+              padding: 0;
+              border: 0;
+              height: auto;
+              line-height: normal;
+              background: transparent;
+              color: #606266;
+            }
+          }
+        }
+        .el-switch-wrap {
+          width: 120px;
+          text-align: right;
+          .el-switch__label--left {
+            margin-right: 5px;
+          }
+          .el-switch__label--right {
+            margin-left: 5px;
+          }
+        }
+        &.two-line {
+          display: block;
+          .el-form-item__label {
+            width: 100%;
+          }
+          .el-form-item__content {
+            width: 100%;
+          }
+        }
+      }
+
+      .el-form-item__content {
+        line-height: 36px;
+        .el-radio-group {
+          padding-left: 10px;
+          .el-radio {
+            margin-right: 15px;
+          }
+          .el-radio__input.is-disabled + span.el-radio__label {
+          }
+        }
+      }
+      .el-form-item__label {
+        padding: 0;
+        line-height: 36px;
+      }
+      .el-input--suffix .el-input__inner {
+        padding-right: 36px;
+      }
+      .test-icon-diy {
+        font-style: normal;
+        width: 36px;
+        text-align: center;
+        display: inline-block;
+      }
+    }
+  }
+}
+</style>

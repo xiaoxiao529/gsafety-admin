@@ -1,0 +1,661 @@
+<template>
+    <div class="admin_manage">
+        <div class="Crumbs">
+	      <el-breadcrumb separator-class="el-icon-arrow-right">
+	        <el-breadcrumb-item :to="{ path: '/' }">权限平台</el-breadcrumb-item>
+	        <el-breadcrumb-item>应用角色管理</el-breadcrumb-item>
+	      </el-breadcrumb>
+	    </div>
+        <div class="admin_manage_main">
+            <div class="admin_manage_aside">
+                <el-menu :default-active="default_active" class="el-menu-vertical-demo el-menu-origanizeUl">
+                    <el-menu-item v-for="item in systemList" :key="item.sysCode" :index="item.sysCode" @click="organize_change(item)" class="organizeSelect">
+                        <span slot="title">{{item.sysName}}</span>
+                    </el-menu-item>
+                </el-menu>
+
+            </div>
+            <div class="main_table" style="width:100%">
+                <el-button type="primary" class="add_btn" @click="dialogForm('add_form')">新增</el-button>
+
+                <el-table stripe :data="tableData" border style="width: 100%" class="sysAdmin_table" v-loading="loading">
+                    <el-table-column prop="roleOrder" label="序号" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column prop="roleName" label="角色名称" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column prop="roleAlias" label="角色别名" :show-overflow-tooltip="true"></el-table-column>
+                    <el-table-column prop="roleRemark" :show-overflow-tooltip="true" label="备注"></el-table-column>
+                    <el-table-column prop="createTime" label="创建时间"></el-table-column>
+                    <!-- <el-table-column prop="createUserId" label="操作人"></el-table-column> -->
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button @click="dialogForm('update_form',scope.row.id)" type="text" size="small">编辑</el-button>
+                            <span style="color: #409EFF">|</span>
+                            <el-button @click="dialogForm_delRows(scope.row)" type="text" size="small">删除</el-button>
+                            <span style="color: #409EFF">|</span>
+                            <el-button @click="authorize(scope.row)" type="text" size="small">授权</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+                <!--<div class="block">-->
+                    <!--<el-pagination background @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="currentPage1" :page-size="2" layout="total, prev, pager, next, jumper" :total="1000"></el-pagination>-->
+                <!--</div>-->
+                <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+
+                <el-dialog :title="dialogForm_title" :visible.sync="dialogFormAdmin" width="24%">
+                    <el-form :model="ruleForm_admin" :rules="rules" ref="ruleForm_admin" v-loading="loading">
+                        <el-form-item label="角色名称" prop="roleName" :label-width="formLabelWidth">
+                            <el-input v-model.trim="ruleForm_admin.roleName" autocomplete="off" placeholder="请输入角色名称"></el-input>
+                        </el-form-item>
+                        <el-form-item label="角色别名" prop="roleAlias" :label-width="formLabelWidth">
+                            <el-input v-model.trim="ruleForm_admin.roleAlias" autocomplete="off" placeholder="请输入角色别名"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="备注" prop="roleRemark" :label-width="formLabelWidth">
+                            <el-input type="textarea" v-model="ruleForm_admin.roleRemark" placeholder="请输入备注"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="适用范围" prop="optionsUser" :label-width="formLabelWidth">
+                            <el-select v-model="ruleForm_admin.valueUser" filterable multiple placeholder="请选择" class="formAdmin_select">
+                                <el-option
+                                        v-for="item in ruleForm_admin.optionsUser"
+                                        :key="item.orgCode"
+                                        :label="item.orgName"
+                                        :value="item.orgCode">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+
+                        <!-- <el-form-item :label-width="formLabelWidth">
+                            <el-checkbox v-model="checked" @change="copy_power">复制</el-checkbox>
+                            <el-select v-model="ruleForm_admin.valueAdmin" filterable multiple placeholder="请选择" :disabled="copyPower_disable">
+                                <el-option
+                                        v-for="item in ruleForm_admin.optionsAdmin"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                            <span>的角色</span>
+                        </el-form-item> -->
+
+                        <div class="msgbox-item">
+                            <div style="width: 85px" class="item-name"><b style="color: #f00;">* </b>序号: </div>
+                            <div style="display: flex;">
+                                <el-input-number v-model="ruleForm_admin.roleOrder" controls-position="right"  :min="1" ></el-input-number>
+                            </div>
+                        </div>
+
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormAdmin = false">取 消</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm_admin')">确 定</el-button>
+                    </div>
+                </el-dialog>
+
+                <el-dialog title="角色授权" :visible.sync="dialogFormAuthorize" width="24%">
+                    <el-form :model="ruleForm_authorize" :rules="rules" ref="ruleForm_authorize" v-loading="loading" style="max-height:300px;overflow: auto">
+                        <el-tree
+                                :data="ruleForm_authorize.data2"
+                                ref="auth_tree"
+                                show-checkbox
+                                node-key="id"
+                                :default-expanded-keys="ruleForm_authorize.orgTree_expanded"
+                                :default-checked-keys="ruleForm_authorize.orgTree_checked"
+                                :props="ruleForm_authorize.defaultProps">
+                        </el-tree>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="dialogFormAuthorize = false">取 消</el-button>
+                        <el-button type="primary" @click="submitForm('ruleForm_authorize')">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+//  import api from '~/config/http'
+	import {  admin_dataRes } from "~/config/conf";
+	var system_item;
+    import Pagination from "~/components/Pagination";
+
+    var update_rowId,authorize_row;
+
+   
+    export default {
+        components:{
+            //Title,
+            Pagination
+        },
+        data() {
+            return {
+//              useObj:api.getGlobalVal('useObj'),
+                loading:false,
+                //权限复制禁用
+                copyPower_disable:true,
+                default_active:'',
+                systemList:[],
+				userObj:{},
+                widgetInfo: {
+                    total: null,
+                    pageSize: 6,
+                    pageNo: 1
+                },
+
+                dialogFormAdmin: false,
+                dialogFormAuthorize: false,
+                dialogForm_title: '',
+
+                ruleForm_authorize:{
+                    data2: [],
+                    orgTree_checked:[],
+                    orgTree_expanded:[],
+                    defaultProps: {
+                        children: 'children',
+                        label: 'resName'
+                    },
+                },
+
+                checked: false,
+                ruleForm_admin: {
+                    roleName:'',
+                    roleAlias:'',
+                    roleRemark:'',
+                    optionsUser: [],
+                    valueUser: [],
+
+                    optionsAdmin: [{
+                        value: '选项1',
+                        label: '管理员'
+                    }, {
+                        value: '选项2',
+                        label: '超级管理员'
+                    }, {
+                        value: '选项3',
+                        label: '全部组织机构'
+                    }],
+                    valueAdmin: [],
+                    roleOrder:''
+                },
+
+                formLabelWidth: '85px',
+
+                rules: {
+                    roleName: [
+                        { required: true, message: '请填写角色名称', trigger: 'blur' },
+                        { min: 2, max:30, message: '角色名称字符需在2-30之间', trigger: 'blur' },
+
+                    ],
+                    roleAlias: [
+                        { required: true, message: '请填写角色别名', trigger: 'blur' },
+                        { min: 2, max:30, message: '角色别名字符需在2-30之间', trigger: 'blur' },
+
+                    ]
+                },
+
+                currentPage1: 1,
+                tableData: []
+            };
+            
+        },
+		mounted() {
+	  		this.userObj = this._Storage.getObj("userObj", "userObj");
+	  	},
+        created(){
+
+            this.loading = true;
+
+        	this.$axios.$GET({
+	          api_name: "getSystemListNoPage",
+	        }).then(res => {
+	        	console.log(res,"this.res")
+                if (res.data&&res.data.code == "success") {
+                    this.systemList = res.data.data;
+                    this.default_active = res.data.data[0].sysCode;
+                    system_item = res.data.data[0];
+                }
+            }).then(()=>{
+                this.loadData(system_item.sysCode);
+            })
+        },
+        methods: {
+            
+            loadData(sysCode){
+                this.$axios.$POST({
+		          api_name: "findRoleListBySysCodeAndPager",
+		          params: {
+		            sysCode: sysCode,
+		            pageSize: this.widgetInfo.pageSize,
+		            pageNo: this.widgetInfo.pageNo
+		          }
+		        }).then(res => {
+		        	console.log(res,"res")
+                    if (res.data&&res.data.code == "success") {
+                        this.widgetInfo.total = res.data.data.total == null ? 0 : res.data.data.total;
+                        this.widgetInfo.pageSize = res.data.data.pageSize;
+                        this.widgetInfo.pageNo = res.data.data.pageNo;
+                        this.tableData = res.data.data.rows;
+                    }
+                    this.loading = false;
+                })
+            },
+            submitForm(formName) {
+            	var that = this;
+                if(formName === 'ruleForm_admin'){
+                    if(this.ruleForm_admin.roleName.indexOf(' ') !== -1){
+                        this.$message.error('角色名称和别名中不能含有空格');
+                        return false;
+                    }
+                    //备注验证
+                    if(this.ruleForm_admin.roleRemark.length>0){
+                        if(this.ruleForm_admin.roleRemark.length<2||this.ruleForm_admin.roleRemark>50){
+                            this.$message.error('备注字符需在2-30之间');
+                            return false
+                        }
+                    }
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            if(this.ruleForm_admin.valueUser.length>0){
+                                var admin_roleType = '1'
+                            }else{
+                                var admin_roleType = '0'
+                            }
+                            if(this.dialogForm_title === '新建角色'){
+                                // console.log(getGlobalVal('useObj').id,"用户")
+                                this.$axios
+				                .$POST({
+				                  api_name: "addRole",
+				                  params: {
+				                    roleOrder:this.ruleForm_admin.roleOrder,
+                                    roleName:this.ruleForm_admin.roleName,
+                                    roleAlias:this.ruleForm_admin.roleAlias,
+                                    roleRemark:this.ruleForm_admin.roleRemark,
+                                    sysCode:system_item.sysCode,
+                                    dataRes:admin_dataRes,
+                                    createUserId: this.userObj.id,
+                                    //createUserId:this.ruleForm_admin.createUserId,
+                                    //updateUserId:this.ruleForm_admin.createUserId,
+                                    orgCodes:this.ruleForm_admin.valueUser.join(','),
+                                    roleType:admin_roleType,
+				                  }
+				                }).then(res=>{
+                                    console.log(res,"数据")
+                                    const code = res.data.code;
+                                    const message = res.data.message;
+                                    if (res&&code === 'success') {
+                                        this.dialogFormAdmin = false;
+                                        this.$message.success(message);
+                                        this.loadData(system_item.sysCode);
+                                        this.$refs[formName].resetFields();
+                                    } else {
+                                        this.$message.error(message);
+                                        this.$refs[formName].resetFields();
+                                    }
+                                })
+                                // console.log(createUserId,"id名")
+                            }else{
+                                this.$axios
+					                .$POST({
+					                  api_name: "updateRole",
+					                  params: {
+					                    id: update_rowId,
+					                    roleOrder: this.ruleForm_admin.roleOrder,
+					                    roleName: this.ruleForm_admin.roleName,
+					                    roleAlias: this.ruleForm_admin.roleAlias,
+					                    roleRemark: this.ruleForm_admin.roleRemark,
+					                    sysCode: system_item.sysCode,
+					                    dataRes: admin_dataRes,
+					                    updateUserId: this.userObj.id,
+					                    orgCodes:this.ruleForm_admin.valueUser.join(','),
+                                    	roleType:admin_roleType
+					                  }
+					             }).then(res=>{
+                                    const code = res.data.code;
+                                    const message = res.data.message;
+                                    if (res&&code === 'success') {
+                                        this.dialogFormAdmin = false;
+                                        this.$message.success(message);
+                                        this.loadData(system_item.sysCode);
+                                        this.$refs[formName].resetFields();
+                                    } else {
+                                        this.$message.error(message);
+                                        this.$refs[formName].resetFields();
+                                    }
+                                })
+                            }
+
+                        } else {
+                            console.log('error submit!!');
+                            return false;
+                        }
+                    });
+                }else if(formName === 'ruleForm_authorize'){
+                    var authTree_check = [];
+                    for(var i of this.$refs.auth_tree.getCheckedNodes(false,true)){
+                        authTree_check.push(i.id);
+                    }
+
+
+                	this.$axios
+			          .$POST({
+			            api_name: "giveRolesForResource",
+			            params: {
+			              sysCode: system_item.sysCode,
+			              roleId: authorize_row.id,
+			              resourceIds: authTree_check.join(","),
+			              createUserId: authorize_row.createUserId,
+			              dataRes: admin_dataRes,
+			              createDate: "",
+			              createUserId:that.userObj.id
+			            }
+			          }).then(res=>{
+                        const code = res.data.code;
+            			const message = res.data.message;
+                        if (res&&code === 'success') {
+                            this.$message.success(message);
+                            this.dialogFormAuthorize = false;
+                            this.$refs[formName].resetFields();
+                        } else {
+                            this.$message.error(message);
+                            this.$refs[formName].resetFields();
+                        }
+                    })
+                }
+            },
+
+            sonHandleCurrentChange(widgetInfo) {
+                this.widgetInfo.pageSize = (widgetInfo.pageSize ? parseInt(widgetInfo.pageSize) : this.widgetInfo.pageSize);
+                this.widgetInfo.pageNo = (widgetInfo.pageNo ? parseInt(widgetInfo.pageNo) : this.widgetInfo.pageNo);
+                if(system_item){
+                    this.loadData(system_item.sysCode);   
+                }
+            },
+
+            dialogForm(status,roleId){
+                this.dialogFormAdmin = true;
+                this.loading = true;
+                this.ruleForm_admin.roleOrder = '';
+                this.ruleForm_admin.roleName = '';
+                this.ruleForm_admin.roleAlias = '';
+                this.ruleForm_admin.roleRemark = '';
+                this.ruleForm_admin.optionsUser = [];
+                this.ruleForm_admin.valueUser = [];
+                if(status === 'add_form'){
+                    this.dialogForm_title = '新建角色';
+                    this.get_FormOrg();
+                }else{
+                    update_rowId = roleId;
+                    this.dialogForm_title = '编辑角色';
+                    var valueUser_checked = [];
+                    this.$axios
+			          .$POST({
+			            api_name: "findRoleById",
+			            params: {
+			              roleId: roleId
+			            }
+			          }).then(res=>{
+                        console.log(res,"88888888")
+                        if (res&&res.data.code === 'success') {
+                            const data = res.data.data;
+
+                            this.ruleForm_admin.roleName = data.roleName;
+                            this.ruleForm_admin.roleAlias = data.roleAlias;
+                            this.ruleForm_admin.roleRemark = data.roleRemark;
+                            this.ruleForm_admin.roleOrder = data.roleOrder;
+
+                            if(data.orgList.length > 0){
+                                for(let i in data.orgList){
+                                    valueUser_checked.push(data.orgList[i].orgCode)
+                                }
+                            }
+
+                        } else {
+                            this.$message.error(message);
+                        }
+                    }).then(()=>{
+                        this.get_FormOrg(valueUser_checked);
+                    })
+                }
+            },
+
+            get_FormOrg (value_check){
+                //api.post("http://192.168.91.138:9898/org/findOrgBySysCode", {
+                this.$axios
+		          .$POST({
+		            api_name: "findOrgBySysCode",
+		            params: {
+		              sysCode:system_item.sysCode,
+		            }
+		          }).then(res=>{
+                    const code = res.data.code;
+            		const message = res.data.message;
+                    if (res&&code === 'success') {
+                        this.ruleForm_admin.optionsUser = res.data;
+                        if(value_check){
+                            this.ruleForm_admin.valueUser = value_check;
+                        }
+                    } else {
+                        this.$message.error(message);
+                    }
+                })
+                this.loading = false;
+            },
+
+            dialogForm_delRows(row) {
+		      this.$confirm("确认删除角色?", "提示", {
+		        confirmButtonText: "确定",
+		        cancelButtonText: "取消",
+		        type: "warning"
+		      })
+		        .then(() => {
+		          this.loading = true;
+		          this.$axios
+		            .$POST({
+		              api_name: "deleteRole",
+		              params: {
+		                roleId: row.id
+		              }
+		            })
+		            .then(res => {
+		              const code = res.data.code;
+		              const message = res.data.message;
+		              if (res && code === "success") {
+		                this.$message.success(message);
+		                this.loadData(system_item.sysCode);
+		                this.loading = false;
+		              } else {
+		                this.$message.error(message);
+		                this.loading = false;
+		              }
+		            });
+		        })
+		        .catch(() => {
+		          this.$message("取消删除！");
+		          this.loading = false;
+		        });
+		    },
+            authorize(row) {
+		      authorize_row = row;
+		      console.log(row, "row");
+		      this.dialogFormAuthorize = true;
+		      this.loading = true;
+		      this.ruleForm_authorize.orgTree_checked = [];
+		      this.ruleForm_authorize.orgTree_expanded = [];
+		      //api.post("http://192.168.91.138:9898/res/findTreeBySysCode", {
+		      this.$axios
+		        .$POST({
+		          api_name: "findTreeBySysCode", //打开全部资源显示界面
+		          params: {
+		            sysCode: system_item.sysCode
+		          }
+		        })
+		        .then(res => {
+		          console.log(res, "333");
+		          const code = res.data.code;
+		          const message = res.data.message;
+		          if (res && code === "success") {
+		            var add_resAlias = function(alias_data) {
+		              for (let i in alias_data) {
+		                alias_data[i].resName += "（" + alias_data[i].resAlias + "）";
+		                if (alias_data[i].children.length > 0) {
+		                  add_resAlias(alias_data[i].children);
+		                }
+		              }
+		            };
+		            add_resAlias(res.data.data);
+		            this.ruleForm_authorize.data2 = res.data.data;
+		          } else {
+		            this.$message.error(message);
+		          }
+		        })
+		        .then(() => {
+		          this.$axios
+		            .$POST({
+		              api_name: "findResourceByRoleId", //通过角色roleId，确定用户已经拥有的权限
+		              params: {
+		                roleId: row.id
+		              }
+		            })
+		            .then(res => {
+		              const code = res.data.code;
+		              const message = res.data.message;
+		              const data = res.data.data;
+		              var adminTree_checked = [];
+		              if (res && code === "success") {
+		                var check_authTree = function(check_data) {
+		                  for (let i in check_data) {
+		                    if (check_data[i].children.length > 0) {
+		                      check_authTree(check_data[i].children);
+		                    } else {
+		                      adminTree_checked.push(check_data[i].id);
+		                    }
+		                  }
+		                };
+		                check_authTree(res.data.data);
+		                this.ruleForm_authorize.orgTree_checked = adminTree_checked;
+		              } else {
+		                this.$message.error(message);
+		              }
+		              this.loading = false;
+		            });
+		        });
+		    },
+            handleSizeChange(val) {
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val) {
+                console.log(`当前页: ${val}`);
+            },
+            organize_change(item) {
+                system_item = item;
+                this.loading = true;
+                this.loadData(item.sysCode);
+            },
+
+            //复制权限
+            copy_power(){
+                //权限复制禁用
+                this.copyPower_disable=!this.copyPower_disable;
+                if(this.checked === false && this.ruleForm_admin.valueAdmin.length > 0){
+                    this.ruleForm_admin.valueAdmin = []
+                }
+            }
+        }
+    }
+</script>
+<style scoped>
+    .admin_manage {
+        height: calc(100vh - 65px);
+        overflow: hidden;
+    }
+
+    .admin_manage .el-container.is-vertical {
+        background: #edf0f7;
+    }
+    .admin_manage .admin_manage_header {
+        height:40px !important;
+        box-shadow: none;
+        background: #edf0f7;
+        margin: 0;
+    }
+    .admin_manage .bread_crumb {
+        line-height: 40px;
+        box-shadow: none;
+    }
+    .admin_manage .admin_manage_main {
+        background: #eff3f5;
+        border: 1px solid #e1e4e6;
+    }
+    .admin_manage .main_table {
+        background: #fff;
+        /* box-shadow: 3px 0 0 #edf0f7 inset; */
+        height: calc(100vh - 105px);
+    }
+    .admin_manage .adminManage_title {
+        line-height: 60px;
+        height: 60px;
+    }
+    .admin_manage .organizeSelect {
+        height:56px;
+        width: 9%;
+        text-align: center;
+        line-height: 56px;
+        font-size: 16px;
+        float: left;
+    }
+    .admin_manage .organizeSelect.is-active {
+        background: #f7f7f7 !important;
+        color: #000;
+    }
+    .admin_manage .organizeSelect:hover {
+        background: #f7f7f7 !important;
+    }
+    .admin_manage .organizeSelect.is-active span {
+        background: none !important;
+    }
+    .admin_manage .organizeSelect:hover span {
+        background: none !important;
+    }
+    .admin_manage .adminManage_title {
+        font-size: 20px;
+        background: #fff;
+        border-bottom: 1px solid #e1e4e6;
+        padding-left: 20px;
+        text-align: left;
+    }
+    .admin_manage .main_table .add_btn {
+        float: right;
+        line-height: 10px;
+        margin-top: 10px;
+        margin-bottom: 16px;
+        width: 86px;
+        height: 32px;
+        margin-right: 20px;
+    }
+    .admin_manage .admin_manage_aside {
+        text-align: left;
+
+
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        z-index: 9;
+    }
+    .admin_manage .el-menu-origanizeUl {
+        overflow: auto
+    }
+
+    .el-dialog .el-dialog__header {
+        padding-top: 10px;
+        background: #254f85;
+    }
+    .formAdmin_select {
+        width: 100%;
+    }
+    .msgbox-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        margin: 10px 0;
+    }
+</style>

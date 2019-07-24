@@ -1,0 +1,85 @@
+<template>
+	<div>
+		<div class="Crumbs">
+	      <el-breadcrumb separator-class="el-icon-arrow-right">
+	        <el-breadcrumb-item>运营中心</el-breadcrumb-item>
+	        <el-breadcrumb-item>资讯管理</el-breadcrumb-item>
+	        <el-breadcrumb-item>预览资讯</el-breadcrumb-item>
+	      </el-breadcrumb>
+	    </div>
+		<div>
+			<input type="hidden" id="inforId"/>
+			<a href="javascript:;" class="yy-form-back" @click="backHandle"><i class="iconfont icon-arrow-2 backC"></i></a>
+			<div id="inforDetail" style="margin-top: 10px;"></div>
+		</div>
+	</div>
+</template>
+
+
+<script type="text/javascript">
+import $ from 'jquery'
+export default {
+	data: function () {
+	  return {
+	    inforId:""
+	  }
+	},
+	methods:{
+		showDetail(){
+			var that = this;
+			this.$axios.$POST_NEW({
+	              api_name: "queryInformationById",
+	              params: {
+	                "inforId":that.inforId
+	              }	
+	            })
+	            .then(res => {
+	            	console.log(res.data)
+	              if("success"==res.data.code&&res.data.data){
+					var obj = res.data.data;
+					var str = obj.informationContent;
+					if(obj.informationContent.indexOf("informationTitleDiv")<0){
+						str = '<div id="informationTitleDiv" style="font-size:24px;margin-bottom:40px;height:30px;font-weight:900">'+obj.informationTitle+'</div>'
+							+'<div style="font-size:14px;margin-top:40px;"><span style="padding-right:40px;">'+obj.informationSource+'</span><span>'+obj.publishDate+'</span></div>'
+							+'<div style="margin-top:25px;">'+obj.informationContent+'</div>';
+						$("#inforDetail").html(str);
+					}else{
+						$("#inforDetail").html(str);
+					}
+					}else{
+						$("#inforDetail").html("暂无数据。");
+					}
+	            });
+		},
+		backHandle(){
+			this.$router.push({
+		        name: "informationManager",
+		      });
+		}
+	},
+	mounted() {
+		this.inforId = localStorage.getItem('inforId');
+		this.showDetail();
+		
+	},
+}
+</script>
+
+<style scoped lang="scss">
+body{
+	color: red;
+}
+.yy-form-back{
+	text-decoration: none;
+}
+.yy-form-back .iconfont {
+    font-size: 26px;
+    color: #737373;
+}
+#inforDetail{
+	padding: 10px;
+	background: #fff;
+}
+</style>
+
+

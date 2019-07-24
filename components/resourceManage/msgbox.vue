@@ -42,7 +42,7 @@
           <!-- <el-form-item label="权限标识" prop="resIdent" class="msgbox-item-mb">
             <el-input v-model="formData.resIdent" placeholder="请输入权限标识"></el-input>
           </el-form-item>-->
-          <el-form-item label="请求方式" prop="resRequestType" class="msgbox-item-mb">
+          <!-- <el-form-item label="请求方式" prop="resRequestType" class="msgbox-item-mb">
             <el-select v-model="formData.resRequestType" placeholder="请选择" :size="'medium'">
               <el-option
                 v-for="item in options"
@@ -51,10 +51,10 @@
                 :value="item.value"
               ></el-option>
             </el-select>
-          </el-form-item>
-          <el-form-item label="图标" prop="resIcon" class="msgbox-item-mb">
+          </el-form-item>-->
+          <!-- <el-form-item label="图标" prop="resIcon" class="msgbox-item-mb">
             <el-input v-model="formData.resIcon" placeholder="请输入"></el-input>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item label="序号" prop="resOrder" class="msgbox-item-mb">
             <!-- <el-input v-model="formData.resOrder"></el-input> -->
             <el-input-number v-model="formData.resOrder" controls-position="right" :min="1"></el-input-number>
@@ -251,8 +251,8 @@ export default {
     },
     seedData() {
       this.formData.updateUserId = this._Storage.getObj(
-        "downListRow",
-        "obj"
+        "userObj",
+        "userObj"
       ).id;
       this.formData.sysCode = this.sysCode;
       this.formData.dataRes = admin_dataRes;

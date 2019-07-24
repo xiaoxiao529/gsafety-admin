@@ -1,21 +1,24 @@
 <template>
   <div>
-
-    <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="widgetInfo.pageNo" :page-sizes="[10, 15, 20,25]" :page-size="widgetInfo.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="widgetInfo.total">
-    </el-pagination>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="widgetInfo.pageNo"
+      :page-sizes="[10, 15, 20,25]"
+      :page-size="widgetInfo.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="widgetInfo.total"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
-
-
 export default {
   props: {
     widgetInfo: Object
   },
   data() {
-    return {
-    }
+    return {};
   },
   methods: {
     handleSizeChange(val) {
@@ -25,7 +28,7 @@ export default {
       });
     },
     handleCurrentChange(val) {
-      this.$emit('sonHandleCurrentChange', {
+      this.$emit("sonHandleCurrentChange", {
         pageNo: val
       });
     }
@@ -37,8 +40,7 @@ export default {
       pageNo: 1
     });
   }
-}
-
+};
 </script>
 
 

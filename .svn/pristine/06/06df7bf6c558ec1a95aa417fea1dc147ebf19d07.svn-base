@@ -1,0 +1,121 @@
+<!--
+ * @Descripttion: 运营中心管理--企业用户管--运营中心用户
+ * @version: 
+ * @Author: yangxq
+ * @Date: 2019-07-18 09:48:16
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2019-07-19 17:08:55
+ -->
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>运营中心</el-breadcrumb-item>
+        <el-breadcrumb-item>企业用户</el-breadcrumb-item>
+        <el-breadcrumb-item>运营中心用户</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <div class="location">运营中心用户</div>
+      <div class="main-container">
+        <div class="enterpriserUser-wrap">
+          <div class="left-tree">
+            <el-input placeholder="输入关键字进行过滤" v-model="filterText"></el-input>
+
+            <el-tree
+              class="filter-tree"
+              :data="treeData"
+              :props="defaultProps"
+              default-expand-all
+              :filter-node-method="filterNode"
+              ref="tree"
+            ></el-tree>
+          </div>
+          <div class="right-con">33</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      filterText: "",
+      treeData: [
+        {
+          id: 1,
+          label: "一级 1",
+          children: [
+            {
+              id: 4,
+              label: "二级 1-1"
+            }
+          ]
+        },
+        {
+          id: 2,
+          label: "一级 2"
+        }
+      ],
+      defaultProps: {
+        children: "childNodes",
+        label: "orgName"
+        // children: "childNodes",
+        // label: "orgName"
+      }
+    };
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    }
+  },
+  mounted() {
+    let that = this;
+    that.getOperationOrgTree();
+  },
+  methods: {
+    filterNode(value, data) {
+      if (!value) return true;
+      return data.orgName.indexOf(value) !== -1;
+    },
+    getOperationOrgTree() {
+      let that = this;
+      that.isLoading = true;
+      that.$axios
+        .$POST_NEW({
+          api_name: "getOperationOrgTree",
+          params: {}
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            that.isLoading = false;
+            that.treeData = res.data.data;
+            console.log(" that.treeData", that.treeData);
+          } else {
+          }
+        });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+.enterpriserUser-wrap {
+  padding: 20px;
+  display: flex;
+  .left-tree {
+    flex: 0 0 260px;
+    width: 236px;
+    transition: all 1s;
+    height: 700px;
+    overflow-y: auto;
+  }
+  .right-con {
+    flex: 1;
+    padding: 0 15px 0;
+  }
+}
+</style>

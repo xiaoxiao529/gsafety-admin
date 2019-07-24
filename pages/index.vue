@@ -255,6 +255,7 @@ var HOME_CHART = {}; //图表对象
 import { mapState, mapMutations, mapActions, mapGetters } from 'vuex';
 import echarts from 'echarts'
 export default {
+	name: "index",
 	data(){
 		return {
 			input:'',

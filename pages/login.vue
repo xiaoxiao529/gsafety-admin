@@ -6,7 +6,7 @@
       </div>
       <div class="loginForm-wrap">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="loginForm">
-          <h3 class="title">辰安天泽后台管理系统</h3>
+          <h3 class="title">辰安天泽BOSS系统</h3>
           <el-form-item prop="loginName">
             <el-input
               class="el-input-login"
@@ -54,6 +54,7 @@ import { mapMutations } from "vuex";
 
 export default {
   layout: "login",
+  name: "login",
   data() {
     return {
       logining: false,
@@ -120,7 +121,7 @@ export default {
                   })
                   .then(res => {
                     if (res.data.code == "success") {
-                      this._Storage.setObj("userObj", "userObj", res.data.data);
+                      this._Storage.setObj("userObj", "userObj", res.data.data);                  
                       this.$router.push({
                         name: "index"
                       });
@@ -129,10 +130,18 @@ export default {
                   });
               } else {
                 this.logining = false;
-                this.$message({
-                  type: "error",
-                  message: res.data.message
-                });
+                if (res.data.message == "用户被注销") {
+                  this.$message({
+                    type: "error",
+                    message: "该用户已被禁用"
+                  });
+                } else {
+                  this.$message({
+                    type: "error",
+                    message: res.data.message
+                  });
+                }
+
               }
             });
         } else {

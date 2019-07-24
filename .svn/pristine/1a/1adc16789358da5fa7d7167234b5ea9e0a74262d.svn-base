@@ -1,0 +1,63 @@
+<!--
+ * @Descripttion: 运营中心管理--企业用户管--运营中心用户
+ * @version: 
+ * @Author: yangxq
+ * @Date: 2019-07-18 09:48:16
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2019-07-19 10:15:26
+ -->
+<template>
+  <div class="enterpriserUser-wrap">
+    <div class="left-tree">
+      <button v-show="btns[0].isShow">{{btns[0].name}}</button>
+      <button v-show="btns[1].isShow">{{btns[1].name}}</button>
+      <button v-show="btns[2].isShow">{{btns[2].name}}</button>
+    </div>
+    <div class="right-con">22</div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      btns: [
+        {
+          name: "按钮1",
+          isShow: false
+        },
+        {
+          name: "按钮2",
+          isShow: false
+        },
+        {
+          name: "按钮3",
+          isShow: false
+        }
+      ],
+      currentBtns: [],
+      resName: "运营中心用户"
+    };
+  },
+  mounted() {
+    this.currentBtns = this._Storage.getObj("currentBtnArr", "currentBtnArr");
+    this.isBtnShow();
+  },
+  methods: {
+    isBtnShow() {
+      let arr = this.currentBtns;
+      this.btns.forEach(element => {
+        arr.forEach(item => {
+          console.log(item);
+          if (item.name === element.name) {
+            element.isShow = item.isShow;
+          }
+        });
+      });
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

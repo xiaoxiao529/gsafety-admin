@@ -1,0 +1,671 @@
+<template>
+  <div class="resourceManage">
+    <div class="Crumbs">
+	      <el-breadcrumb separator-class="el-icon-arrow-right">
+	        <el-breadcrumb-item :to="{ path: '/' }">权限平台</el-breadcrumb-item>
+	        <el-breadcrumb-item>应用系统管理</el-breadcrumb-item>
+	      </el-breadcrumb>
+	    </div>
+    <el-main class="content">
+      <el-row style="padding-top:10px">
+        <el-col :span="1" class="search_status">状态:</el-col>
+        <el-col :span="3">
+          <el-select v-model="sysStatus" @change="changeStatus" placeholder="请选择">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-col>
+        <el-col :span="16"></el-col>
+        <el-col :span="2" style="float: right;">
+          <el-button class="addButtonColor" type="primary" @click="addSystem">添加</el-button>
+        </el-col>
+      </el-row>
+    <section class="section-top">
+         <el-table
+            v-loading="loading"
+            :data="tableData"
+            border
+            stripe
+            style="width: 100%">
+            <el-table-column
+              width="70%"
+              label="序号"
+              type="index"
+              :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column
+            label="系统名称"
+            class="centerText"
+            :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span>{{scope.row.sysName ? scope.row.sysName : '--'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            label="系统简称"
+            class="centerText"
+            :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span>{{scope.row.sysAlias ? scope.row.sysAlias : '--'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            prop="systemCode"
+            label="系统code"
+            class="centerText"
+            :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span>{{scope.row.sysCode ? scope.row.sysCode : '--'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            prop="sysRemark"
+            label="备注"
+            class="centerText"
+            :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span>{{scope.row.sysRemark ? scope.row.sysRemark : '--'}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+            prop="sysStatus"
+            label="状态"
+            class="centerText"
+            :show-overflow-tooltip="true">
+             <template slot-scope="scope">
+                <!-- <span>{{scope.row.sysStatus ? scope.row.sysStatus : '--'}}</span> -->
+                <span>{{scope.row.sysStatus ? scope.row.sysStatus==='2'?'停用':scope.row.sysStatus==='1'?'已启用':'未启用' : '--'}}</span>
+              </template>
+            </el-table-column>
+             <el-table-column
+            prop="systemOperator"
+            label="操作"
+            class="centerText"
+            :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+                <el-button @click="stopOperator(scope.row)" type="text" size="small">{{scope.row.sysStatus==='1'?'停用':'启用'}} |</el-button>
+                <el-button v-show="scope.row.sysStatus!=='2'" @click="editOperator(scope.row)" type="text" size="small">编辑 |</el-button>
+                <el-button @click="deleterOperator(scope.row)" type="text" size="small">删除</el-button>
+            </template>
+            </el-table-column>
+        </el-table>
+    </section>
+    <!-- 分页部分start -->
+    <!-- <div class="block">
+      <el-pagination
+          @current-change="handleCurrentChange"
+          background
+          :page-sizes="[10]"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+      </el-pagination>
+    </div> -->
+    <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+     <!-- 分页部分end -->
+    </el-main>
+    <!-- 新增以及编辑 弹窗 start -->
+    <el-dialog :title="dialogTitle" :visible.sync="isShow" width="24%" @close="clearRule('ruleForm')">
+      <el-row>
+        <el-col :span="23">
+          <el-form :model="formData" :rules="rules" ref="ruleForm"  label-width="95px" class="demo-ruleForm">
+            <el-form-item label="系统名称:" prop="sysName">
+              <el-input v-model.trim="formData.sysName" clearable placeholder="请输入系统名称"></el-input>
+            </el-form-item>
+            <el-form-item label="系统简称:" prop="sysAlias">
+              <el-input v-model.trim="formData.sysAlias" clearable placeholder="请输入系统简称"></el-input>
+            </el-form-item>
+            <el-form-item label="系统code:" prop="sysCode">
+              <el-input v-model.trim="formData.sysCode" clearable :disabled="update_code" placeholder="请输入系统code"></el-input>
+            </el-form-item>
+            <el-form-item label="备注:" prop="sysRemark">
+              <el-input type="textarea" v-model.trim="formData.sysRemark" clearable placeholder="请输入备注"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-col>
+      </el-row>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="isShow = false">取 消</el-button>
+        <el-button type="primary" @click="onConfirm">确 定</el-button>
+      </span>
+    </el-dialog>
+    <!-- 新增以及编辑 弹窗 end -->
+    <div
+      class="shadeElement"
+      v-show="elementDisplay">
+      <!-- 停用start -->
+      <div
+        class="deleteContent"
+        v-show='StopCenter'>
+        <div class="deletaText">{{dialogForm_title}}</div>
+        <div class= "formButton formButtonTop">
+          <!-- <el-button type="info" @click="StopCancel">取消</el-button> -->
+          <el-button @click="elementDisplay = false">取 消</el-button>
+          <el-button
+              type="primary"
+              @click="StopSave">确认</el-button>
+        </div>
+      </div>
+      <!-- 停用end -->
+    </div>
+  </div>
+</template>
+<script>
+
+//import api from '~/config/http';
+import {  admin_dataRes } from "~/config/conf";
+import Pagination from "~/components/Pagination"
+
+var update_status;
+
+
+export default {
+  components:{
+      Pagination
+    },
+  data() {
+    return {
+      loading: false,
+      // pageNo: 1,
+      elementDisplay: false,
+      deleteElement: "",
+      addElement: false,
+      editElement:false,
+      StopCenter: false,
+      input:"",
+      // total:0,
+      tableData: [],
+      DeleteCenter: false,
+      dialogTitle: '新增应用系统',
+      isShow: false,
+      editId: null,
+      stopId: null,
+      deleteId: null,
+
+      dialogForm_title:'',
+      update_code:false,
+
+      widgetInfo: {
+        total: null,
+        pageSize: 6,
+        pageNo: 1
+      },
+      rules: {
+        sysName: [
+          { required: true,   trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+        ],
+        sysAlias: [
+          { required: true,   trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+        ],
+        sysCode: [
+          // { required: true, message: '请输入系统code', trigger: 'blur' }
+          { required: true,   trigger: 'blur' },
+          { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+        ],
+        // sysRemark: [
+        //   { required: true, message: '请输入备注', trigger: 'blur' }
+        // ],
+      },
+      formData: {},//新增或者编辑时候数据
+      options: [
+        {
+          value: "",
+          label: "全部"
+        },
+        {
+          value: "2",
+          label: "停用"
+        },
+        {
+          value: "1",
+          label: "已启用"
+        },
+        // {
+        //   value: "2",
+        //   label: "停用"
+        // }
+        // ,
+        // {
+        //   value: "3",
+        //   label: "删除"
+        // }
+      ],
+      sysStatus: "",
+//    screenWidth: document.body.clientWidth,  //设置的监听屏幕的变化
+      testspan: 12,   //监听media带来的页面缩放的问题，使其值改为：24
+    };
+  },
+
+  watch: {
+    screenWidth (val) {
+      if(val < 990){
+        this.testspan = 24;
+      }else{
+        this.testspan = 12;
+      }
+    }
+  },
+  mounted() {
+    // this.getList()
+    const that = this
+    /*window.onresize = () => {
+      return (() => {
+        window.screenWidth = document.body.clientWidth
+        that.screenWidth = window.screenWidth
+      })()
+    }*/
+  },
+  methods: {
+
+    handleCurrentChange (val) {
+      console.log('val', val)
+      this.pageNo = val
+      this.getList(val)
+    },
+    changeStatus (val) {
+      this.sysStatus = val
+      this.widgetInfo.pageNo = 1;
+      this.getList(val)
+    },
+    getList(val) {
+      this.loading = true;
+      // 进入页面默认请求全部列表
+      this.$axios.$POST({
+          api_name: "getSystemList",
+          params: {
+            // pageNo:this.pageNo, // 当前页码
+		        // pageSize:10, // 页码大小
+		        pageSize: this.widgetInfo.pageSize || 15,
+		        pageNo: this.widgetInfo.pageNo || 1,
+		        sysStatus:this.sysStatus // 系统状态： 0：未启用，1已启用，2停用，3删除   默认请求全部列表
+          }
+        }).then((res) =>{
+        this.loading = false;
+        console.log('应用权限列表---',res)
+        if (res.data && res.data.code === 'success') {
+          // this.total = res.data.total;
+          console.log(res.data);
+          this.tableData = res.data.data.rows;
+          // this.pageInfo.total = res.data.total;
+          // this.widgetInfo.total=res.data.total
+          this.widgetInfo.total = res.data.data.total == null ? 0 : res.data.data.total;
+          // this.widgetInfo.pageSize = res.data.pageSize;
+          // this.widgetInfo.pageNo = res.data.pageNo;
+        } else {
+          console.log('错误...')
+        }
+
+      })
+    },
+    sonHandleCurrentChange(widgetInfo) {
+      this.widgetInfo.pageSize = (widgetInfo.pageSize ? parseInt(widgetInfo.pageSize) : this.widgetInfo.pageSize);
+      this.widgetInfo.pageNo = (widgetInfo.pageNo ? parseInt(widgetInfo.pageNo) : this.widgetInfo.pageNo);
+      this.getList()
+    },
+    addSystem: function() { // 添加应用系统
+      // this.elementDisplay = true;
+      // this.addElement = true;
+      this.dialogTitle = '新增应用系统'
+      this.isShow = true;
+      this.formData = {};
+      this.editId = null;
+      this.update_code = false;
+    },
+     clearRule(ruleForm){
+      this.$refs[ruleForm].resetFields();
+      this.$refs[ruleForm].clearValidate();
+    },
+    onConfirm () {
+       this.$refs['ruleForm'].validate((valid) => {
+          if (valid) {
+            // alert('submit!');
+            this.$refs['ruleForm'].clearValidate();
+            console.log(this.formData)
+            if (this.editId) {
+              this.onEdit()
+            } else {
+              this.onAdd()
+            }
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+    },
+    onAdd () {
+      let param = this.formData;
+      // console.log(param.sysName.length)
+      
+      this.$axios.$POST({
+	      api_name: "addSystem",
+	      params: {
+	        sysCode:param.sysCode, // 系统code
+	        sysName:param.sysName, // 系统名称
+	        sysAlias:param.sysAlias, // 系统简称
+	        sysRemark:param.sysRemark, // 备注
+	        // dataRes:admin_dataRes, // 数据来源
+	        // createUserId:api.getGlobalVal('useObj').id // 创建人
+	        dataRes:'03',
+	        createUserId:'wangxi'// 创建人
+	      }
+	    }).then((res) =>{
+        console.log('新增系统保存按钮点击请求结果---',res)
+        if (res.data && res.data.code ==='success'){
+          this.isShow = false;
+          this.widgetInfo.total = res.data.data.total;
+          this.tableData = res.data.data.rows;
+          this.$message({
+            message: res.data.message,
+            type: 'success'
+          });
+          this.getList()
+        } else {
+          this.isShow = false;
+          this.$message.error(res.data.message);
+          console.log('error...',res.data.message)
+        }
+      })
+    },
+    onEdit () {
+      let param = this.formData;
+      
+      this.$axios.$POST({
+	      api_name: "updateSystem",
+	      params: {
+	        sysCode:param.sysCode, // 系统code
+	        sysName:param.sysName, // 系统名称
+	        sysAlias:param.sysAlias, // 系统简称
+	        sysRemark:param.sysRemark, // 备注
+	        dataRes:admin_dataRes, // 数据来源
+	        updateUserId:this.editId // 修改人id
+	      }
+	    }).then((res) =>{
+        console.log('编辑保存按钮点击请求结果---',res)
+        if (res.data && res.data.code === 'success') {
+          this.isShow = false;
+          this.widgetInfo.total = res.data.data.total;
+          this.tableData = res.data.data.rows;
+          this.$message({
+            message: res.data.message,
+            type: 'success'
+          });
+          this.getList()
+        } else {
+          this.isShow = false;
+          this.$message.error(res.data.message);
+          console.log('error...',res.data.message)
+        }
+      })
+    },
+    DeleteX: function(){ //隐藏关闭按钮
+      this.addElement = false;
+      this.elementDisplay = false;
+    },
+    stopOperator: function(row) { // 列表 停用
+        // alert(JSON.stringify(row))
+        this.elementDisplay = true;
+        this.StopCenter = true;
+
+        this.dialogForm_title = row.sysStatus !== '2' ? '确认停用？' : '确认启用？';
+        update_status = row.sysStatus;
+
+        this.DeleteCenter = false;
+        this.formData = {
+          sysName: row.sysName,
+          sysAlias: row.sysAlias,
+          sysCode: row.sysCode,
+          sysRemark:row.sysRemark
+        };
+        this.stopId = row.id
+    },
+    // StopCancel: function(){ // 停用的取消按钮
+    //    this.elementDisplay = false;
+    // },
+    StopSave: function(){ // 停用的确认按钮   请求的停用接口
+      let param = this.formData
+
+      let post_status = update_status === '1' ? '2' : '1';
+			
+			this.$axios.$POST({
+	      api_name: "updateSysStatus",
+	      params: {
+	        sysCode:param.sysCode, // 系统code
+        	sysStatus:post_status // 系统状态： 0：未启用，1已启用，2停用，3删除
+	      }
+	    }).then((res) =>{
+        console.log('停用按钮点击请求结果---',res)
+        if (res.data && res.data.code === 'success') {
+          this.elementDisplay = false;
+          this.StopCenter = false;
+          this.widgetInfo.total = res.data.data.total;
+          this.tableData = res.data.data.rows;
+          this.getList();
+          this.stopId = null;
+          this.$message({
+            message: res.data.message,
+            type: 'success'
+          });
+        } else {
+          this.elementDisplay = false;
+          this.StopCenter = false;
+          this.$message.error(res.data.message);
+          console.log('error...',res.data.message)
+        }
+      })
+    },
+    editOperator: function(row) { // 点击列表编辑
+    console.log(row)
+      this.dialogTitle = '编辑应用系统'
+      this.formData = {
+        sysName: row.sysName,
+        sysAlias: row.sysAlias,
+        sysCode: row.sysCode,
+        sysRemark:row.sysRemark
+      }
+      this.editId = row.id
+      this.isShow = true
+      this.update_code = true
+    },
+    deleterOperator: function(row) { // 删除
+      this.$confirm('确认删除资源?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+      }).then(() => {
+      	
+	      	this.$axios.$POST({
+			      api_name: "deleteSystem",
+			      params: {
+			        sysCode:row.sysCode // 系统code
+			      }
+			    }).then((res) =>{
+              const code = res.data.code;
+              const message = res.data.message;
+              if (res&&code === 'success') {
+                  this.$message.success(message);
+                  this.getList()
+              } else {
+                  this.$message.error(message);
+              }
+          })
+      })
+    }
+  }
+};
+</script>
+<style  scoped>
+
+	.content {
+    background-color: #fff !important;
+    /* margin-top: 10px; */
+    /* height: calc(100vh - 113px) !important; */
+  }
+  .system_manage_header {
+    height:40px !important;
+    box-shadow: none;
+    background: #edf0f7;
+    margin: 0;
+  }
+  .system_manage_header .bread_crumb {
+    line-height: 40px;
+    box-shadow: none;
+}
+  .el-main{
+    height: calc(100vh - 113px) !important;
+    border: 1px solid #e1e4e6;
+  }
+  .search_status {
+  	padding-top: 11px;
+    font-size: 16px;
+  }
+  .addbutton {
+    width: 90px;
+    height: 32px;
+    background-color: rgb(64, 158, 255);
+    color:#fff;
+    line-height: 32px;
+  }
+  .addButtonColor{
+    color: #fff !important;
+    background:  #409EFF !important;
+    float: right;
+    width: 86px;
+    height: 32px;
+    padding: 9px 15px;
+    /* margin-top: 10px; */
+    margin-bottom: 4px;
+  }
+  /* .centerConntent:nth-of-type(odd) {
+    background: red;
+  } */
+  /* .is-leaf{
+      background-color:aqua;
+      text-align: center;
+  } */
+  .shadeElement{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    top:0;
+    z-index: 900;
+  }
+  .formContent{
+    width:460px;
+    height: 320px;
+    background: #fff;
+    margin: 244px auto;
+  }
+  .formSystemName{
+    margin-top: 20px;
+  }
+  .titleName{
+    width: 100%;
+    height: 50px;
+    background: #254f85;
+  }
+  .titleName .edit{
+    width: 50%;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 300;
+    margin-left:20px;
+    float: left;
+  }
+  .titleName .deleteButton{
+    width: 10%;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 300;
+    float: right;
+  }
+  .formELement{
+    width: 100%;
+    height: 40px;
+  }
+  .formELement .leftsystemName{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .el-input{
+    width: 300px;
+    height: 32px;
+    margin-top: 4px;
+    margin-right: 30px;
+    float: right;
+  }
+  .formELement .leftsystemAddr{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .leftsystemCode{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .formsystemMark{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement i{
+    color: #f15f5f;
+  }
+  .formButton{
+    margin-top: 12px;
+  }
+  .el-button+.el-button{
+    margin-left: 0 ;
+  }
+  .section-top{
+    margin-top: 12px;
+  }
+  th .cell{
+    text-align: center;
+  }
+  td .cell{
+    text-align: center;
+  }
+  .deleteContent{
+    width: 340px;
+    height: 145px;
+    margin: 270px auto;
+    border-radius: 5px;
+    background: #fff;
+  }
+  .deletaText{
+    padding-top: 32px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 16px;
+  }
+  .formButtonTop{
+    margin-top: 30px;
+  }
+  .el-table__row:nth-of-type(odd){
+    background : #e7e7e7 !important;
+  }
+
+</style>
+

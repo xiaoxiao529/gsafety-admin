@@ -14,6 +14,7 @@
 
 import ApiConfig from '@/config/api'
 import qs from 'qs'
+import axios, {AxiosInstance} from 'axios';
 
 export default function({ $axios, redirect }) {
 
@@ -39,6 +40,7 @@ export default function({ $axios, redirect }) {
     })
 
     $axios.$GET = ({ api_name, params, time }) => {
+        $axios.defaults.baseURL = "/gsafetyclound";
         let url = ApiConfig.api[api_name];
         return $axios({
             method: 'get',
@@ -49,6 +51,7 @@ export default function({ $axios, redirect }) {
     };
 
     $axios.$POST = ({ api_name, params, time }) => {
+      $axios.defaults.baseURL = "/gsafetyclound";
         let url = ApiConfig.api[api_name];
         return $axios({
             method: 'post',
@@ -57,4 +60,50 @@ export default function({ $axios, redirect }) {
             timeout: time || 60000,
         })
     };
+
+    $axios.$GET_NEW = ({ api_name, params, time }) => {
+      $axios.defaults.baseURL = "/test";
+      let url = ApiConfig.api[api_name];
+      return $axios({
+        method: 'get',
+        url: url,
+        params: params,
+        timeout: time || 60000,
+      })
+    };
+
+    $axios.$POST_NEW = ({ api_name, params, time }) => {
+      $axios.defaults.baseURL = "/test";
+      let url = ApiConfig.api[api_name];
+      return $axios({
+        method: 'post',
+        url: url,
+        data: qs.stringify(params),
+        timeout: time || 60000,
+      })
+    };
+
+    $axios.$AllRequst = ({data,callback}) => {
+      axios.all(data).then((args)=>{
+        callback(args);
+      });
+    }
+
+    $axios.$POSTFile = ({api_name,fb,time}) => {
+      $axios.defaults.baseURL = "/test";
+      let url = ApiConfig.api[api_name];
+      let config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      };
+      return $axios({
+        method: 'post',
+        url: url,
+        data: fb,
+        config:config,
+        timeout: time || 100000,
+      })
+
+    }
 }

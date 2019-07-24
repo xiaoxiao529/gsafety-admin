@@ -1,0 +1,179 @@
+<template>
+  <div>
+    <div class="main-wrap">
+      <el-container class="main-body">
+        <el-aside width="220px" class="aside-wrap">
+           <div class="aside-main-header">
+             用户类型
+           </div>
+           <ul class="aside-main-panel">
+             <li v-for="item of userType"
+                 :key="item.id"
+                 :class="item.typeCode==currentCode ? 'type-item active' : 'type-item' "
+                 @click="changeHandel(item)">
+                 <span>{{item.typeName}}</span>
+             </li>
+           </ul>
+        </el-aside>
+        <el-container>
+          <el-header height="60px" style="text-align: right; padding: 10px 15px">
+            <el-button type="primary">保存</el-button>
+          </el-header>
+          <el-main>
+            <el-card class="box-card" v-for="(i,item) of 2" style="margin-bottom: 20px">
+              <div slot="header" class="clearfix">
+                <span>消防管家Web</span>
+                <el-checkbox  style="float: right; padding: 3px 0"
+                              :indeterminate="isIndeterminate"
+                              v-model="checkAll"
+                              @change="handleCheckAllChange">全选</el-checkbox>
+              </div>
+              <div style="margin: 15px 0;"></div>
+              <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                <el-checkbox v-for="item in gjWeb" :label="item.roleAlias" :key="item.id">{{item.roleName}}</el-checkbox>
+              </el-checkbox-group>
+            </el-card>
+          </el-main>
+        </el-container>
+      </el-container>
+    </div>
+  </div>
+</template>
+<script>
+  /**
+   * @Description:用户类型配置->免费模式
+   * @author liuxin
+   * @date 2019-07-23
+   */
+  //import Pagination from "~/components/Pagination";
+  export default {
+    components: {
+    },
+    data() {
+      return {
+        isLoading: false,
+        tabPosition:'left',
+        userType:[],//左侧用户类型树
+        gjApp:[],
+        gjWeb:[],
+        currentCode:"01",
+        checkAll: false,
+        checkedCities: ['上海', '北京'],
+        isIndeterminate: true
+      };
+    },
+    mounted() {
+      const that = this;
+      that.userTypeTree();
+      that.checkboxList();
+    },
+    computed: {},
+    methods: {
+      handleCheckAllChange(val) {
+        this.checkedCities = val ? this.gjWeb : [];
+        this.isIndeterminate = false;
+      },
+      handleCheckedCitiesChange(value) {
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.gjWeb.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.gjWeb.length;
+      },
+      /**
+       * @Description:用户类型树获取
+       */
+      userTypeTree(){
+        //
+        const that = this;
+        that.$axios
+          .$POST_NEW({
+            api_name: "queryUserType"
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              that.userType = data.userType;
+            } else {
+              that.userType = [];
+              console.log("没有数值。。。。。");
+            }
+          });
+      },
+      /**
+       * @Description:用户类型树切换事件
+       * @param data（item=>id,sysCode,typeCode,typeName）
+       */
+      changeHandel(data){
+        const that = this;
+        that.currentCode = data.typeCode;
+      },
+      /**
+       * @Description:右侧checkbox获取
+       */
+      checkboxList(){
+        //
+        const that = this;
+        that.$axios
+          .$POST_NEW({
+            api_name: "queryRole"
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              that.gjApp = data.gjApp;
+              that.gjWeb = data.gjWeb;
+            } else {
+              that.gjApp = [];
+              that.gjWeb = [];
+              that.$message({
+                message: '右侧checkbox获取失败',
+                type: 'error'
+              });
+              console.log("没有数值。。。。。");
+            }
+          }).catch(()=>{
+            that.$message({
+              message: '右侧checkbox获取异常',
+              type: 'warning'
+            });
+        });
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .main-body{
+    height: calc(100vh - 90px - 64px - 20px - 65px);
+    .el-main{
+      padding: 0px 15px 10px 15px;
+      .el-checkbox{
+        margin-bottom: 10px;
+      }
+    }
+    .aside-wrap{
+      border-right: 1px solid #dcdcdc;
+      .aside-main-header{
+        font-size: 16px;
+        padding: 15px 20px;
+        border-bottom: 1px solid #dcdcdc;
+        line-height: 30px;
+        font-weight: bold;
+      }
+      .type-item{
+        padding: 10px 20px;
+        height: 24px;
+        line-height: 24px;
+        font-size: 14px;
+        display: block;
+        border-left: 3px solid #fff;
+        user-select: none;
+        cursor: pointer;
+        &.active{
+          border-left: 3px solid #1970ed;
+          background: #f9f9f9;
+        }
+      }
+    }
+  }
+</style>

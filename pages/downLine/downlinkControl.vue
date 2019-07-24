@@ -3,7 +3,7 @@
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>硬件平台</el-breadcrumb-item>
         <el-breadcrumb-item>下行控制</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -97,14 +97,14 @@
                 <div>
                   <el-link
                     type="primary"
-                    v-show="scope.row.exist==0 && scope.row.onlineState==1"
+                    v-show="scope.row.exist==0 && scope.row.onlineState==1 && btns[0].isShow"
                     @click="getParameter(scope.row, scope.$index)"
                   >获取协议/参数</el-link>
                 </div>
                 <div>
                   <el-link
                     type="primary"
-                    v-show="scope.row.exist==1"
+                    v-show="scope.row.exist==1 && btns[1].isShow"
                     @click="toDetail(scope.$index, scope.row)"
                   >下行</el-link>
                 </div>
@@ -125,6 +125,17 @@ export default {
   },
   data() {
     return {
+      btns: [
+        {
+          name: "获取协议/参数",
+          isShow: false
+        },
+        {
+          name: "下行",
+          isShow: false
+        }
+      ],
+      currentBtns: [],
       flag: false,
       isLoading: false,
       labelWidth: "100px",
@@ -191,7 +202,6 @@ export default {
   },
   created() {
     this.findSubCenterValue(); //默认下拉运营中心
-    this.findUnitValue(); //业主单位
   },
   computed: {
     transformOnlineState(state) {
@@ -216,6 +226,11 @@ export default {
         }
       };
     }
+  },
+  mounted() {
+    const that = this;
+    that.currentBtns = that._Storage.getObj("currentBtnArr", "currentBtnArr");
+    that.isBtnShow();
   },
   methods: {
     changeSubCode() {
@@ -453,10 +468,23 @@ export default {
       //重置
       this.formData = {};
       this.findMonitorDeviceStateDownList();
+      this.widgetInfo.pageNo = 1;
     },
     lookFor() {
       //查询
       this.findMonitorDeviceStateDownList();
+    },
+    //按钮权限
+    isBtnShow() {
+      const that = this;
+      let arr = that.currentBtns;
+      that.btns.forEach(element => {
+        arr.forEach(item => {
+          if (item.name === element.name) {
+            element.isShow = item.isShow;
+          }
+        });
+      });
     }
   }
 };

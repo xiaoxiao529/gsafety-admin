@@ -8,25 +8,14 @@ body {
   background: #f5f8fc;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
+ul,
+li {
+  list-style: none;
 }
 
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(28, 119, 255, 0.5);
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  background: rgba(28, 119, 255, 0.2);
-  -webkit-box-shadow: inset 0 0 3px rgba(28, 119, 255, 0.5);
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-  background: rgba(28, 119, 255, 0.7);
+em,
+i {
+  font-style: normal;
 }
 
 .hardware-container {

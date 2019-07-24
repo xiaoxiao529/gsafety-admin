@@ -1,0 +1,438 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>附件管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>附件管理</h3>
+        </el-col>
+        <el-col :span="12" class="add-btn-style">
+          <el-button type="primary" icon="el-icon-plus" @click="addNewFileDiglog()">上传新附件</el-button>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="附件ID:" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model="formData.fileId"></el-input>
+          </el-form-item>
+          <el-form-item label="附件名称:"  :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model="formData.fileName"></el-input>
+          </el-form-item>
+          <el-form-item label="创建时间:"  label-width="180px">
+            <el-date-picker
+				      v-model="formData.createFileTime"
+				      format="yyyy-MM-dd HH:mm:ss"
+				      value-format="yyyy-MM-dd HH:mm:ss"
+				      type="datetimerange"
+				      range-separator="至"
+				      start-placeholder="开始日期"
+				      end-placeholder="结束日期"
+				      >
+				    </el-date-picker>
+          </el-form-item>
+          <el-form-item label=" " style="text-align: right;">
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset('formData')">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="附件ID" prop="id" show-overflow-tooltip ></el-table-column>
+            <el-table-column label="附件名称" prop="fileName" show-overflow-tooltip></el-table-column>
+            <el-table-column label="创建人" prop="createByUsername" show-overflow-tooltip></el-table-column>
+            <el-table-column label="创建时间" prop="createTime" show-overflow-tooltip></el-table-column>
+            <el-table-column label="备注" prop="remarks" show-overflow-tooltip></el-table-column>
+            <el-table-column label="操作" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="deleteAttachment(scope.row, scope.$index)">删除</el-link>
+                <el-link type="primary" @click="downloadAttachment(scope.row, scope.$index)">下载</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+        </div>
+      </div>
+    </div>
+    
+    <!--上传新文档弹框-->
+    <el-dialog title="附件上传" :visible.sync="dialogVisible" width="530px" @close='closeDialog'>
+      <div class="dialog-body-diy-wrapper">
+        <el-form
+           :model="ruleForm" 
+           :rules="rules" 
+           ref="ruleForm" 
+           label-width="80px" 
+           class="demo-ruleForm"
+        >
+          <el-form-item label="附件名称" prop="attachmentName">
+				    <el-input v-model="ruleForm.attachmentName"></el-input>
+				  </el-form-item>
+				  <el-form-item label="上传附件" prop="uploadFile">
+				    <el-upload
+						  class="upload-demo"
+						  action="/gsafetyclound/userCenter/enclosureManage/uploadfile"
+						  :before-remove="beforeRemove"
+						  :limit="1"
+						  :file-list="ruleForm.fileList"
+						  :on-preview="handlePreview"
+						  :on-remove="handleRemove"
+						  :on-error="handleFileError"
+              :on-success="handleFileSuccess"
+						  :on-exceed="handleExceed"
+						  >
+						  <el-button size="small" type="primary">点击上传</el-button>
+
+						</el-upload>
+				  </el-form-item>
+          <el-form-item label="备注" prop="remarks">
+            <el-input v-model="ruleForm.remarks" type="textarea" :rows="4"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+      	<el-button type="primary" @click="submitForm('ruleForm')">确 定</el-button>
+        <el-button @click="cancelForm('ruleForm')">取 消</el-button>
+      </span>
+    </el-dialog>
+    
+    <!--    删除  弹框-->
+    <el-dialog custom-class="del-dialog-wrap"  :visible.sync="dialogDelVisible" width="280px">
+      <div class="del-dialog-main">
+        <div class="icon-wrap">
+          <i class="el-icon-s-opportunity"></i>
+        </div>
+        <div class="p-wrap">
+          <p class="title-p">是否确定删除？</p>
+          <p class="tips-p">删除后将不可恢复</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureHandle">确 定</el-button>
+         <el-button @click="cancalHandle">取 消</el-button>
+      </span>
+    </el-dialog>
+    
+  </div>
+</template>
+<script>
+import Pagination from "~/components/Pagination";
+import ApiConfig from '@/config/api'
+export default {
+  components: {
+    Pagination
+  },
+
+  data() {
+    return {
+      isLoading: false,
+      labelPosition: "top",
+      userObj:{},
+      formData: { //查询的formData
+      	fileId:'',
+      	fileName:'',
+      	createFileTime:'',
+      	startTime:'',
+      	endTime:''
+      }, 
+      tableData: [], //table查询结果
+      loading: true,
+      labelWidth:"100px",
+      widgetInfo: {
+        pageSize: 10,
+        pageNo: 1,
+        total: 0,
+      },
+      dialogVisible: false,
+      dialogDelVisible:false,
+      delId:"",
+      ruleForm:{
+      	attachmentName:"",
+      	remarks:"",
+      	fileUrl:"",
+      	fileList:[]
+      },
+      rules: {
+	      attachmentName: [
+	        { required: true, message: '请输入附件名称', trigger: 'blur' }
+	      ]
+      },
+      
+    }
+  },
+  mounted() {
+  	this.userObj = this._Storage.getObj("userObj", "userObj");
+  },
+  computed: {
+  	
+  },
+  methods: {
+  	addNewFileDiglog(){
+  		this.dialogVisible = true;
+  	},
+  	
+  	//附件下载
+  	downloadAttachment(row,index){
+      this.$confirm("确定要下载吗?", "下载提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+      }).then(() => {
+          window.open("/gsafetyclound/userCenter/enclosureManage/downAttachment?fileId=" +row.id);
+       }).catch(err => {
+          this.$message({
+            type: "warning",
+            message: "取消下载!"
+          });
+        });
+      
+  	},
+  	
+  	//删除附件
+  	deleteAttachment(row,index){
+  		this.dialogDelVisible = true;
+  		this.delId = row.id;
+  	},
+  	
+  	//删除框的确定按钮
+  	sureHandle(){
+  		let that = this;
+			this.isLoading = true;
+  		this.$axios.$POST({
+        api_name: "deleteEnclosureManageInfoById",
+        params: {
+          id:this.delId
+        }
+      }).then(res => {
+        if (res.data.code == 'success') {
+        	that.isLoading = false;
+        	that.dialogDelVisible = false;
+          that.$message({
+            message: res.data.rspMsg,
+            type: "success"
+          });
+          that.getAttachmentListPage();
+        } else {
+        	that.isLoading = false;
+        	that.dialogDelVisible = false;
+          that.$message({
+            message: res.data.rspMsg,
+            type: "error"
+          });
+        }
+
+      })
+  	},
+  	
+  	//删除取消按钮
+    cancalHandle(){
+      const that = this;
+      that.dialogDelVisible = false;
+      this.$message('取消删除操作');
+    },
+  	
+    // 附件管理的列表
+    getAttachmentListPage() {
+      let that = this;
+      that.isLoading = true;
+      that.$axios.$POST({
+        api_name: "findEnclosureManageList",
+        params: {
+          fileId: that.formData.fileId,
+          fileName: that.formData.fileName,
+          startTime: that.formData.startTime,
+          endTime: that.formData.endTime,
+          pageNo: that.widgetInfo.pageNo,
+          pageSize: that.widgetInfo.pageSize,
+        }
+      }).then(res => {
+        if (res.data.code == 'success') {
+          that.isLoading = false;
+          let data = res.data.data;
+          that.tableData = data.rows;
+          that.widgetInfo.total = data.total === null ? 0 : data.total;
+        } else {
+          that.tableData = [];
+          that.widgetInfo.list = data.rows;
+          that.widgetInfo.total = 0;
+          console.log('没有数值。。。。。')
+        }
+
+      })
+    },
+    //分页
+    sonHandleCurrentChange(widgetInfo) {
+      this.widgetInfo.pageSize = (widgetInfo.pageSize ? parseInt(widgetInfo.pageSize) : this.widgetInfo.pageSize);
+      this.widgetInfo.pageNo = (widgetInfo.pageNo ? parseInt(widgetInfo.pageNo) : this.widgetInfo.pageNo);
+      this.getAttachmentListPage();
+    },
+    reset(formName) {//重置
+      this.formData = {};
+      this.getAttachmentListPage();
+    },
+    lookFor() {//查询
+      if (!this.formData.createFileTime) {
+        this.formData.startTime = "";
+        this.formData.endTime = "";
+      } else {
+        // 时间处理
+        this.formData.startTime = this.formData.createFileTime[0];
+        this.formData.endTime = this.formData.createFileTime[1];
+      }
+      this.getAttachmentListPage();
+    },
+    
+    //新增附件提交
+    submitForm(formName) {
+    	let that = this;
+    	that.isLoading = true;
+	    this.$refs[formName].validate((valid) => {
+	      if (valid && this.ruleForm.fileUrl) {
+	        
+	        that.$axios.$POST({
+		        api_name: "addEnclosureManageInfo",
+		        params: {
+		          fileUrl: that.ruleForm.fileUrl,
+		          userId: that.userObj.id,
+		          userName: that.userObj.userName,
+		          remarks: that.ruleForm.remarks,	         
+		        }
+		      }).then(res => {
+		        if (res.data.code == 'success') {
+		          that.isLoading = false;
+		          that.dialogVisible = false;
+		          that.ruleForm.remarks = "";
+		          that.ruleForm.attachmentName = "";
+		          that.ruleForm.fileList = [];
+		          that.ruleForm.fileUrl = "";
+		          that.$message({
+	                message: res.data.rspMsg,
+	                type: 'success'
+	            });
+	            that.getAttachmentListPage();
+		        } else {
+		          that.isLoading = false;
+		          that.dialogVisible = false;
+		          that.$message({
+	                message:  res.data.rspMsg,
+	                type: 'error'
+	            });
+		        }
+		
+		      })
+	        
+	      } else {
+	        that.$message({
+            message: "上传信息不完整!",
+            type: "error"
+          });
+          that.isLoading = false;
+	        return false;
+	      }
+	    });
+	  },
+	  cancelForm(formName){
+	  	this.ruleForm = {};
+	  	this.dialogVisible = false;
+	  	this.$message('取消上传操作');
+	  },
+	  handleRemove(file, fileList) {
+	    console.log(file, fileList);
+	    this.ruleForm.fileList = [];
+	    this.ruleForm.fileUrl = "";
+	  },
+	  handlePreview(file) {
+	    console.log(file);
+	  },
+	  handleExceed(files, fileList) {
+	    this.$message.warning(`每次最多上传 1 个文件!`);
+	  },
+	  beforeRemove(file, fileList) {
+	    return this.$confirm(`确定移除 ${ file.name }？`);
+	    this.ruleForm.fileList = [];
+	    this.ruleForm.fileUrl = "";
+	  },
+	  handleFileSuccess(res, file){
+	  	if(res.code == 'success'){
+	        this.ruleForm.fileUrl = res.data.url;
+	    }
+	  },
+	  handleFileError(err, file, fileList){
+	  	console.log(err, file, fileList)
+	  },
+	  closeDialog(){
+	  	this.ruleForm.remarks = "";
+		  this.ruleForm.attachmentName = "";
+		  this.ruleForm.fileList = [];
+		  this.ruleForm.fileUrl = "";
+	  }
+  },
+
+
+}
+</script>
+<style lang="scss" scoped="scoped">
+
+	.record-table{
+		height: 400px;
+	}
+	
+  .add-btn-style{
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+.list-wrap {
+  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+  overflow: hidden;
+  /deep/.el-table {
+    padding: 0;
+    overflow: hidden;
+    th {
+      background: rgba(240, 243, 247, 1);
+    }
+    .el-table__body-wrapper {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+      overflow-y: auto;
+    }
+  }
+}
+.hardware-form .el-form-item{
+		width: 24%;
+    display: -webkit-inline-box;
+    display: inline-flex;
+    margin-right: 0;
+}
+.hardware-form .el-form-item:nth-of-type(3){
+	width: 33%;
+}
+.hardware-form .el-form-item:last-of-type{
+	width: 15%;
+}
+.hardware-form{
+	padding-left: 25px;
+}
+@media screen and (max-width: 1680px) {
+	.list-wrap {
+		/deep/.el-table {
+    .el-table__body-wrapper {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+			height: calc(100vh - 60px - 64px - 65px - 78px - 48px - 100px);
+    }
+  }
+	}
+  
+}
+</style>
+<style type="text/css">
+	.el-scrollbar__wrap{
+		overflow-x: hidden;
+	}
+</style>

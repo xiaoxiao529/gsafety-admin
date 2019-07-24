@@ -2,7 +2,7 @@
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>硬件平台</el-breadcrumb-item>
         <el-breadcrumb-item>硬件类型</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -11,9 +11,9 @@
         <el-col :span="12">
           <h3>硬件类型</h3>
         </el-col>
-        <el-col :span="12" class="add-btn-style">
-          <el-button type="success" icon="el-icon-plus" @click="addOrEditDiglog('add')">新增</el-button>
-        </el-col>
+<!--        <el-col :span="12" class="add-btn-style">-->
+<!--          <el-button type="success" icon="el-icon-plus" @click="addOrEditDiglog('add')">新增</el-button>-->
+<!--        </el-col>-->
       </el-row>
       <div class="main-container">
         <!-- 查询 -->
@@ -21,7 +21,7 @@
           <el-form-item label="ID:" label-width="30px">
             <el-input placeholder="请输入" v-model="formData.id"></el-input>
           </el-form-item>
-          <el-form-item label="类型名称:" prop="unitName" label-width="95px">
+          <el-form-item label="硬件类型:" prop="unitName" label-width="95px">
             <el-input placeholder="请输入" v-model="formData.typeName"></el-input>
           </el-form-item>
           <el-form-item label="类型编号:" prop="unitName" label-width="95px">
@@ -40,12 +40,12 @@
             <el-table-column label="类型编号" prop="code" show-overflow-tooltip min-width="8%"></el-table-column>
             <el-table-column label="父类型" prop="parentTypeName" show-overflow-tooltip min-width="8%"></el-table-column>
             <el-table-column label="描述" prop="description" show-overflow-tooltip min-width="20%"></el-table-column>
-            <el-table-column label="操作" show-overflow-tooltip align="center"  min-width="8%">
-              <template slot-scope="scope">
+<!--            <el-table-column label="操作" show-overflow-tooltip align="center"  min-width="8%">-->
+<!--              <template slot-scope="scope">-->
 <!--                <el-link type="primary" @click="deleteHardwareType(scope.$index,scope.row)" >删除</el-link>-->
-                <el-link type="primary" @click="addOrEditDiglog('edit', scope.row)">编辑</el-link>
-              </template>
-            </el-table-column>
+<!--                <el-link type="primary" @click="addOrEditDiglog('edit', scope.row)">编辑</el-link>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
           </el-table>
           <Pagination
             :widgetInfo="widgetInfo"
@@ -297,13 +297,14 @@ export default {
           }
         })
         .then(res => {
-          that.isLoading = false;
+
           if (res.data.code == "success") {
+            that.isLoading = false;
             let data = res.data.data;
             that.tableData = data.rows;
             that.widgetInfo.total = data.total === null ? 0 : data.total;
           } else {
-
+            that.isLoading = false;
             that.tableData = [];
             that.widgetInfo.list = data.rows;
             that.widgetInfo.total = 0;
@@ -443,6 +444,25 @@ export default {
       //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
       height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
       overflow-y: auto;
+    }
+  }
+}
+@media screen and (max-width: 1680px) {
+  .list-wrap {
+    //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 60px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 60px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
     }
   }
 }

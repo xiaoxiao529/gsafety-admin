@@ -23,18 +23,13 @@
 </template>
 <script>
   export default {
-    props:{
-      message:{
-        type:Object,
-        required:true
-      }
-    },
     data() {
       return{
         dialogTipsVisible:false,//弹框是否显示
         isLoading:false,
         userObj:{},
-        handwareObj:{}
+        handwareObj:{},
+        message:{}
       }
     },
     mounted() {
@@ -43,10 +38,11 @@
     },
     computed: {},
     methods: {
-      showDialog(index,row){
+      showDialog(index,row,message){
         const that = this;
         that.handwareObj = row;
         that.dialogTipsVisible = true;
+        that.message = message;
       },
       /**
        * 提示确定按钮
@@ -66,7 +62,8 @@
             api_name: url,
             params: {
               deviceId: that.message.deviceId,
-              userId:that.userObj.id//这里的id随便填的
+              userId:that.userObj.id,//这里的id随便填的
+              userName:that.userObj.userName
             }
           })
           .then(res => {

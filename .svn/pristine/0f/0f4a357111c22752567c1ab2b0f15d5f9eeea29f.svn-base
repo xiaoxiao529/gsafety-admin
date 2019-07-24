@@ -1,0 +1,39 @@
+{
+  "name": "service-center-nuxt",
+  "version": "1.0.0",
+  "description": "My awe-inspiring Nuxt.js project",
+  "author": "cobra",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env milieu=dev nuxt",
+    "dev:test": "cross-env milieu=test nuxt",
+    "dev:pro": "cross-env milieu=pro nuxt",
+    "dev:pre": "cross-env milieu=pre nuxt",
+    "build": "cross-env baseUrl=https://api.douban.com nuxt build",
+    "start": "cross-env baseUrl=https://api.douban.com nuxt start",
+    "generate": "cross-env milieu=dev nuxt generate",
+    "generate:test": "cross-env milieu=test nuxt generate",
+    "generate:pro": "cross-env milieu=pro nuxt generate",
+    "generate:pre": "cross-env milieu=pre nuxt generate"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.6",
+    "cross-env": "^5.2.0",
+    "echarts": "^4.2.1",
+    "element-ui": "^2.7.2",
+    "js-cookie": "^2.2.0",
+    "js-md5": "^0.7.3",
+    "lodash": "^4.17.11",
+    "nuxt": "^2.4.0",
+    "qs": "^6.7.0",
+    "vue-bus": "^1.2.1"
+  },
+  "devDependencies": {
+    "axios": "^0.19.0",
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.18.9",
+    "sass-loader": "^7.1.0",
+    "scss-loader": "^0.0.1",
+    "vue-qriously": "^1.1.1"
+  }
+}

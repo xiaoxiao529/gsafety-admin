@@ -3,7 +3,7 @@
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item >系统配置</el-breadcrumb-item>
         <el-breadcrumb-item>用户管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -64,7 +64,7 @@
 <!--            <el-table-column label="备注" prop="model" show-overflow-tooltip align="center"></el-table-column>-->
             <el-table-column label="操作" show-overflow-tooltip align="center">
               <template slot-scope="scope">
-                <el-link type="primary" @click="dialogForm_delRows(scope.row)">删除</el-link>
+<!--                <el-link type="primary" @click="dialogForm_delRows(scope.row)">删除</el-link>-->
                 <el-link type="primary" @click="addOrEditDiglog('edit', scope.row)">编辑</el-link>
                 <el-link type="primary" @click="changeState(scope.row)">{{transformOnlineName(scope.row.userAuthStatus)}}</el-link>
                 <el-link type="primary" @click="pswReset(scope.row)">密码重置</el-link>
@@ -75,19 +75,19 @@
         </div>
       </div>
     </div>
-    <el-dialog :title="optTitle" :visible.sync="dialogVisible" width="630px" :close-on-click-modal="clickModal">
+    <el-dialog :title="optTitle" :visible.sync="dialogVisible" width="650px" :close-on-click-modal="clickModal">
       <div class="dialog-body-diy-wrapper">
         <el-form
           class="dialog-form-style"
           :label-position="labelPosition"
-          label-width="120px"
+          label-width="130px"
           :rules="rules"
           ref="plan"
           :model="plan" >
           <el-row>
             <el-col :span="12">
               <el-form-item label="登录账号" prop="loginName">
-                <el-input v-model.trim="plan.loginName" maxlength="16"></el-input>
+                <el-input v-model.trim="plan.loginName" placeholder="1-16位由英文、数字、下划线组成的账号" maxlength="16"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -134,7 +134,7 @@
     },
 
     data() {
-    	
+
     	var checkPhone = (rule, value, callback) => {
         if (!value) {
           return callback(new Error('手机号不能为空'));
@@ -148,7 +148,7 @@
           }
         }
       };
-    	
+
       return {
         flag: false,
         isLoading: false,
@@ -176,7 +176,7 @@
           },
           {
             value: 0,
-            label: "正常"
+            label: "启用"
           },
           {
             value: 1,
@@ -210,14 +210,18 @@
         rules:{
           loginName:[
             { required: true, message: '登录账号不能为空', trigger: 'blur' },
-            { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' }
+            { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' },
+            {
+                pattern: /^\w+$/,
+                message: "请输入英文、数字、下划线"
+            }
           ],
           id:[
             { required: true, message: '请选择系统角色', trigger: 'change' }
 
           ],
           userName:[
-            { required: true, message: '登录账号不能为空', trigger: 'blur' },
+            { required: true, message: '用户名称不能为空', trigger: 'blur' },
             { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' }
           ],
           userTelphone:[
@@ -241,7 +245,7 @@
         //设备状态
         return function(state) {
           if (state == 0) {
-            return "正常";
+            return "启用";
           } else if (state == 1) {
             return "禁用";
           }
@@ -251,7 +255,7 @@
         //设备状态名称
         return function(state) {
           if (state == 1) {
-            return "正常";
+            return "启用";
           } else if (state == 0) {
             return "禁用";
           }
@@ -330,7 +334,7 @@
       },
       //密码重置
       pswReset(row){
-        this.$confirm('确认重置该用户密码?', '提示', {
+        this.$confirm('确认重置该用户密码为a123456', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -414,7 +418,7 @@
               .then(res => {
                 this.isLoading = false;
                 if (res.data.code == "success") {
-                  this.$message.success(res.data.message);
+                  this.$message.success("禁用成功");
                   that.lookFor();
                 } else {
                   this.$message.error(res.data.message);
@@ -425,7 +429,7 @@
               })
         } else if (row.userAuthStatus == 1) {
           //注销=》正常
-          this.$confirm("确认解禁该用户?", '提示', {
+          this.$confirm("确认启用该用户?", '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -442,7 +446,7 @@
               .then(res => {
                 this.isLoading = false;
                 if (res.data.code == "success") {
-                  this.$message.success(res.data.message);
+                  this.$message.success("启用成功");
                   that.lookFor();
                 } else {
                   this.$message.error(res.data.message);
@@ -540,7 +544,7 @@
               var createUserId = that._Storage.getObj("userObj", "userObj").id;
               that.$axios
                 .$POST({
-                  api_name: "updateUser",
+                  api_name: "modifyUser",
                   params: {
                     userName: that.plan.userName,
                     loginName: that.plan.loginName,

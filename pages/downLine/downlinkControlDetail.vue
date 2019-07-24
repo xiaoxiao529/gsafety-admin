@@ -87,12 +87,6 @@ export default {
   },
   computed: {},
   mounted() {
-    // this.$store.commit("updateDownData", this.$route.params.row);
-    // this.fromParent = this.$store.state.downData;
-    // this.fromParent = this._Storage.getObj("downListRow", "obj");
-    // setTimeout(() => {
-    //   this.activeName = "downLine";
-    // }, 0);
     const that = this;
     that.fromParent = that._Storage.getObj("downListRow", "obj");
     setTimeout(() => {

@@ -1,0 +1,641 @@
+<!-- 下行列表页 -->
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item >硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>用户管理</h3>
+        </el-col>
+        <el-col :span="12" class="add-btn-style">
+          <el-button type="success" icon="el-icon-plus" @click="addOrEditDiglog('add')">新增</el-button>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="登录账号:" prop="loginName" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model.trim="formData.loginName"></el-input>
+          </el-form-item>
+          <el-form-item label="用户名称:" prop="userName" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model.trim="formData.userName"></el-input>
+          </el-form-item>
+          <el-form-item label="手机号:" prop="userTelphone" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model.trim="formData.userTelphone"></el-input>
+          </el-form-item>
+          <el-form-item label="用户状态:" :label-width="labelWidth">
+            <el-select placeholder="全部" filterable v-model.trim="formData.authStatus">
+              <el-option
+                v-for="item in onlineStates"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="" class="serch-btn">
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset()">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="用户ID" width="290" prop="id" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="登录账号" prop="loginName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="用户名称" prop="userName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="手机号" prop="userTelphone" show-overflow-tooltip align="center"></el-table-column>
+<!--            <el-table-column label="用户角色" prop="deviceAddress" show-overflow-tooltip align="center"></el-table-column>-->
+            <el-table-column label="创建时间" prop="createTime" show-overflow-tooltip align="center"></el-table-column>
+<!--            <el-table-column label="用户状态" prop="userAuthStatusName" show-overflow-tooltip align="center"></el-table-column>-->
+
+            <el-table-column label="用户状态" prop="userAuthStatus" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <div>{{transformOnlineState(scope.row.userAuthStatus) }}</div>
+              </template>
+            </el-table-column>
+
+<!--            <el-table-column label="备注" prop="model" show-overflow-tooltip align="center"></el-table-column>-->
+            <el-table-column label="操作" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="dialogForm_delRows(scope.row)">删除</el-link>
+                <el-link type="primary" @click="addOrEditDiglog('edit', scope.row)">编辑</el-link>
+                <el-link type="primary" @click="changeState(scope.row)">{{transformOnlineName(scope.row.userAuthStatus)}}</el-link>
+                <el-link type="primary" @click="pswReset(scope.row)">密码重置</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+        </div>
+      </div>
+    </div>
+    <el-dialog :title="optTitle" :visible.sync="dialogVisible" width="630px" :close-on-click-modal="clickModal">
+      <div class="dialog-body-diy-wrapper">
+        <el-form
+          class="dialog-form-style"
+          :label-position="labelPosition"
+          label-width="120px"
+          :rules="rules"
+          ref="plan"
+          :model="plan" >
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="登录账号" prop="loginName">
+                <el-input v-model.trim="plan.loginName" maxlength="16"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="用户名称" prop="userName">
+                <el-input v-model.trim="plan.userName" maxlength="16"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="手机号" prop="userTelphone">
+                <el-input v-model.trim="plan.userTelphone"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="系统角色" prop="id" required>
+                <el-select style="width: 100%;" v-model="plan.id" placeholder="请选择">
+                <el-option
+                  v-for="item of parentTypeNameList"
+                  :key="item.id"
+                  :label="item.roleName"
+                  :value="item.id">
+                </el-option>
+              </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="handleClose">取 消</el-button>
+        <el-button type="primary" @click="saveOrUpdateForm('plan')">确 定</el-button>
+      </span>
+    </el-dialog>
+
+  </div>
+</template>
+
+<script>
+  import Pagination from "~/components/Pagination";
+  export default {
+    components: {
+      Pagination,
+    },
+
+    data() {
+    	
+    	var checkPhone = (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error('手机号不能为空'));
+        } else {
+          const reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+          console.log(reg.test(value));
+          if (reg.test(value)) {
+            callback();
+          } else {
+            return callback(new Error('请输入正确的手机号'));
+          }
+        }
+      };
+    	
+      return {
+        flag: false,
+        isLoading: false,
+        labelWidth: "140px",
+        cancelUserId:{},
+        roles: [
+          {
+            value: "",
+            label: "全部"
+          }
+        ],
+
+        units: [
+          {
+            value: " ",
+            label: "全部"
+          }
+        ],
+
+        onlineStates: [
+          {
+            //设备状态
+            value: "",
+            label: "全部"
+          },
+          {
+            value: 0,
+            label: "启用"
+          },
+          {
+            value: 1,
+            label: "禁用"
+          }
+        ],
+
+        formData: {},
+
+        tableData: [],
+        loading: true,
+        pageNo: 1,
+        pageSize: 6,
+        total: 0,
+
+        widgetInfo: {
+          pageSize: 6,
+          pageNo: 1,
+          total: 0
+        },
+        indexNum: 0,
+        userId:null,//用户id
+        parentTypeNameList:[],//角色
+        plan:{},
+        dialogVisible: false, //新增弹出
+        clickModal:false,
+        labelPosition: "top",
+        optTitle:null,
+        optMode: null,
+
+        rules:{
+          loginName:[
+            { required: true, message: '登录账号不能为空', trigger: 'blur' },
+            { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' }
+          ],
+          id:[
+            { required: true, message: '请选择系统角色', trigger: 'change' }
+
+          ],
+          userName:[
+            { required: true, message: '用户名称不能为空', trigger: 'blur' },
+            { min: 1, max: 16, message: '长度在 1 到 16 个字符', trigger: 'blur' }
+          ],
+          userTelphone:[
+            { required: true, message: "手机号不能为空", trigger: "blur" },
+						{
+							pattern: /^1[3|4|5|7|8][0-9]\d{8}$/,
+							message: "请输入正确的手机号"
+						}
+          ]
+        }
+      };
+    },
+    created() {
+      this.format();
+    },
+    mounted(){
+      this.cancelUserId = this._Storage.getObj("userObj", "userObj");
+    },
+    computed: {
+      transformOnlineState(state) {
+        //设备状态
+        return function(state) {
+          if (state == 0) {
+            return "启用";
+          } else if (state == 1) {
+            return "禁用";
+          }
+        };
+      },
+      transformOnlineName(state) {
+        //设备状态名称
+        return function(state) {
+          if (state == 1) {
+            return "启用";
+          } else if (state == 0) {
+            return "禁用";
+          }
+        };
+      },
+    },
+    methods: {
+      changeSubCode() {
+
+      },
+      //获取数据
+      findMonitorDeviceStateDownList() {
+        this.isLoading = true;
+        this.$axios
+          .$POST({
+            api_name: "findUserListBySysCodeAndOrgCode",
+            params: {
+              sysCode: 'manager',
+              orgCode: "",
+              userTelphone: this.formData.userTelphone,
+              userName: this.formData.userName,
+              loginName: this.formData.loginName,
+              authStatus: this.formData.authStatus,
+              pageNo: this.widgetInfo.pageNo,
+              pageSize: this.widgetInfo.pageSize
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              this.isLoading = false;
+              var data = res.data.data;
+              this.tableData = data.rows;
+              this.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              this.tableData = [];
+              this.widgetInfo.list = data.rows;
+              this.widgetInfo.total = 0;
+            }
+          });
+      },
+      //分页
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.findMonitorDeviceStateDownList();
+      },
+      //删除
+      dialogForm_delRows(row) {
+        var that = this;
+        this.$confirm('确认删除该用户?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLoading = true;
+          this.$axios
+            .$POST({
+              api_name: "deleteUser",
+              params: {
+                userId: row.id
+              }
+            })
+            .then(res => {
+              this.isLoading = false;
+              this.$message.success(res.data.message);
+              if (res.data.code == 'success') {
+                that.lookFor();
+                that.$router.go(0)
+              }
+            });
+        })
+      },
+      //密码重置
+      pswReset(row){
+        this.$confirm('确认重置该用户密码为a123456', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLoading = true;
+          this.$axios
+            .$POST({
+              api_name: "resetPasswordByUserId",
+              params: {
+                userId: row.id
+              }
+            })
+            .then(res => {
+              this.isLoading = false;
+              this.$message.success(res.data.message);
+            });
+        }).catch((err)=>{
+              	console.log(err)
+              })
+      },
+      //新增用户
+      addOrEditDiglog(method, planObj){
+        const that = this;
+        that.dialogVisible = true;
+        that.optMode = method;
+        that.findRoleListBySysCodeAndPager();
+        if ("add" == method) {
+          that.optTitle = "新增";
+          that.$nextTick(() => {
+            that.plan = {};
+            that.$refs["plan"].resetFields();
+          });
+        } else {
+          that.$nextTick(() => {
+            that.plan = JSON.parse(JSON.stringify(planObj));
+            that.$refs["plan"].resetFields();
+          });
+          //编辑
+          that.optTitle = "编辑";
+          that.plan = JSON.parse(JSON.stringify(planObj));
+          that.userId = planObj.id;
+          that.$axios
+            .$POST({
+              api_name: "findUserByUserId",
+              params: {
+                userId: planObj.id
+              },
+              time: 30000
+            })
+            .then(res => {
+              if (res.data.code == "success") {
+                that.plan.id = res.data.data.userAuthList[0].authRoleList[0].roleId;
+              } else {
+                that.$message.error('查询用户系统角色失败');
+              }
+            });
+        }
+      },
+      //改变用户状态
+      changeState(row){
+        var that = this;
+        //var cancelUserId = this._Storage.getObj("userObj", "userObj").id;
+        if (row.userAuthStatus == 0){
+          //正常=》注销
+          this.$confirm("确认禁用该用户?", '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.isLoading = true;
+            var cancelTime = new Date().Format("yyyy-MM-dd HH:mm:ss");
+            this.$axios
+              .$POST({
+                api_name: "cancelUserByUserId",
+                params: {
+                  userId: row.id,
+                  cancelTime:cancelTime,
+                  cancelUserId:that.cancelUserId.id
+                }
+              })
+              .then(res => {
+                this.isLoading = false;
+                if (res.data.code == "success") {
+                  this.$message.success("禁用成功");
+                  that.lookFor();
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              });
+          }).catch((err)=>{
+              	console.log(err)
+              })
+        } else if (row.userAuthStatus == 1) {
+          //注销=》正常
+          this.$confirm("确认启用该用户?", '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            this.isLoading = true;
+            this.$axios
+              .$POST({
+                api_name: "restoreUserByUserId",
+                params: {
+                  userId: row.id,
+                  restoreUserId:that.cancelUserId.id
+                }
+              })
+              .then(res => {
+                this.isLoading = false;
+                if (res.data.code == "success") {
+                  this.$message.success("启用成功");
+                  that.lookFor();
+                } else {
+                  this.$message.error(res.data.message);
+                }
+              });
+          })
+        }
+      },
+      //获取所有的系统角色
+      findRoleListBySysCodeAndPager(){
+        const that = this;
+        that.isLoading = true;
+        that.$axios
+          .$POST({
+            api_name: "findRoleListBySysCodeAndPager",
+            params: {
+              sysCode: "manager",
+              orgCode: "03_DEFAULT",
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            if (res.data.code == "success") {
+              let data = res.data.data.rows;
+              that.parentTypeNameList = data;
+            } else {
+              that.parentTypeNameList = [];
+              that.$message.error(res.data.message);
+            }
+          }).catch(()=>{
+          that.$message.error('用户角色下拉异常');
+        });
+      },
+      //重置
+      reset() {
+        this.formData = {};
+        this.findMonitorDeviceStateDownList();
+      },
+      //查询
+      lookFor() {
+        this.findMonitorDeviceStateDownList();
+      },
+      //关闭弹框
+      handleClose(){
+        const that = this;
+        that.dialogVisible = false;
+        that.$nextTick(() => {
+          that.plan={}
+          that.$refs["plan"].resetFields();
+        });
+      },
+      //新增用户
+      saveOrUpdateForm(formName){
+        const that = this;
+        if (that.optMode == 'add'){
+          that.$refs[formName].validate((valid) => {
+            if (valid) {
+              var createUserId = that._Storage.getObj("userObj", "userObj").id;
+              that.$axios
+                .$POST({
+                  api_name: "addUser",
+                  params: {
+                    userName: that.plan.userName,
+                    loginName: that.plan.loginName,
+                    userTelphone: that.plan.userTelphone,
+                    roleIds: that.plan.id,
+
+                    createUserId: createUserId,
+                    dataRes: "manager",
+                    password: "a123456",
+                    sysCode: "manager",
+                    orgCode: "03_DEFAULT"
+                  }
+                })
+                .then(res => {
+                  that.isLoading = false;
+                  that.handleClose();
+                  if (res.data.code == "success") {
+                    that.$message.success(res.data.message);
+
+                    that.lookFor();
+                  } else {
+                    that.$message.error(res.data.message);
+                  }
+                }).catch(() => {
+                that.$message.error('新增用户异常');
+              });
+            } else {
+              return false;
+            }
+          });
+        } else if(that.optMode == 'edit'){
+          that.$refs[formName].validate((valid) => {
+            if (valid) {
+              var createUserId = that._Storage.getObj("userObj", "userObj").id;
+              that.$axios
+                .$POST({
+                  api_name: "modifyUser",
+                  params: {
+                    userName: that.plan.userName,
+                    loginName: that.plan.loginName,
+                    userTelphone: that.plan.userTelphone,
+                    roleIds: that.plan.id,
+
+                    id:that.userId ,
+                    updateUserId: createUserId,
+                    dataRes: "manager",
+                    password: "a123456",
+                    sysCode: "manager",
+                    orgCode: "03_DEFAULT"
+                  }
+                })
+                .then(res => {
+                  that.isLoading = false;
+                  that.handleClose();
+                  if (res.data.code == "success") {
+                    that.$message.success(res.data.message);
+                    that.lookFor();
+                    that.$router.go(0)
+                  } else {
+                    that.$message.error(res.data.message);
+                  }
+                }).catch(() => {
+                that.$message.error('修改用户信息异常');
+              });
+            } else {
+              return false;
+            }
+          });
+        }
+      },
+
+      format() {
+        Date.prototype.Format = function(fmt){
+          var o = {
+            "M+": this.getMonth()+1,
+            "d+": this.getDate(),
+            "H+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "S+": this.getMilliseconds()
+          };
+          //因为date.getFullYear()出来的结果是number类型的,所以为了让结果变成字符串型，下面有两种方法：
+          if(/(y+)/.test(fmt)){
+            //第一种：利用字符串连接符“+”给date.getFullYear()+""，加一个空字符串便可以将number类型转换成字符串。
+            fmt=fmt.replace(RegExp.$1,(this.getFullYear()+"").substr(4-RegExp.$1.length));
+          }
+          for(var k in o){
+            if (new RegExp("(" + k +")").test(fmt)){
+              //第二种：使用String()类型进行强制数据类型转换String(date.getFullYear())，这种更容易理解。
+              fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(String(o[k]).length)));
+            }
+          }
+          return fmt;
+        };
+      }
+    }
+  };
+</script>
+
+<style lang="scss" scoped>
+  @import "~/assets/css/list.scss";
+  /*/deep/.el-table {*/
+  /*  .el-table__body-wrapper {*/
+  /*    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px*/
+  /*    height: calc(*/
+  /*      100vh - 90px - 64px - 20px - 65px - 76px - 85px - 82px*/
+  /*    ) !important;*/
+  /*  }*/
+  /*}*/
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+</style>

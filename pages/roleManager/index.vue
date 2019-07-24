@@ -2,7 +2,7 @@
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">系统配置</el-breadcrumb-item>
+        <el-breadcrumb-item >系统配置</el-breadcrumb-item>
         <el-breadcrumb-item>角色管理</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -12,7 +12,12 @@
           <h3>角色管理</h3>
         </el-col>
         <el-col :span="12" class="add-btn-style">
-          <el-button type="primary" icon="el-icon-plus" @click="dialogForm('add_form')">新增角色</el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-plus"
+            @click="dialogForm('add_form')"
+            v-show="btns[0].isShow"
+          >新增角色</el-button>
         </el-col>
       </el-row>
       <el-main class="main_table" style="width:100%">
@@ -32,11 +37,32 @@
           <!-- <el-table-column prop="createUserId" label="操作人"></el-table-column> -->
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button @click="dialogForm('update_form',scope.row.id)" type="text" size="small">编辑</el-button>
-              <span style="color: #409EFF">|</span>
-              <el-button @click="dialogForm_delRows(scope.row)" type="text" size="small">删除</el-button>
-              <span style="color: #409EFF">|</span>
-              <el-button @click="authorize(scope.row)" type="text" size="small">授权</el-button>
+              <el-button
+                @click="dialogForm('update_form',scope.row.id)"
+                type="text"
+                size="small"
+                v-show="btns[1].isShow"
+              >
+                编辑
+                <span class="margin-all">|</span>
+              </el-button>
+
+              <el-button
+                @click="dialogForm_delRows(scope.row)"
+                type="text"
+                size="small"
+                v-show="btns[2].isShow"
+              >
+                删除
+                <span class="margin-all">|</span>
+              </el-button>
+
+              <el-button
+                @click="authorize(scope.row)"
+                type="text"
+                size="small"
+                v-show="btns[3].isShow"
+              >授权</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -161,9 +187,28 @@ export default {
   data() {
     return {
       isLoading: false,
+      currentBtns: [],
+      btns: [
+        {
+          name: "新增角色",
+          isShow: false
+        },
+        {
+          name: "编辑",
+          isShow: false
+        },
+        {
+          name: "删除",
+          isShow: false
+        },
+        {
+          name: "授权",
+          isShow: true
+        }
+      ],
       formData: {}, //查询的formData
       tableData: [], //table查询结果
-      userObj:{},
+      userObj: {},
       loading: true,
       widgetInfo: {
         pageSize: 10,
@@ -252,7 +297,10 @@ export default {
     };
   },
   mounted() {
-  	this.userObj = this._Storage.getObj("userObj", "userObj");
+    const that = this;
+    that.userObj = that._Storage.getObj("userObj", "userObj");
+    that.currentBtns = that._Storage.getObj("currentBtnArr", "currentBtnArr");
+    that.isBtnShow();
   },
   computed: {},
   created() {
@@ -393,7 +441,7 @@ export default {
               resourceIds: authTree_check.join(","),
               createUserId: authorize_row.createUserId,
               dataRes: admin_dataRes,
-              createDate: "",
+              createDate: ""
             }
           })
           .then(res => {
@@ -518,7 +566,7 @@ export default {
           if (res && code === "success") {
             var add_resAlias = function(alias_data) {
               for (let i in alias_data) {
-                alias_data[i].resName += "（" + alias_data[i].resAlias + "）";
+//              alias_data[i].resName += "（" + alias_data[i].resAlias + "）";
                 if (alias_data[i].children.length > 0) {
                   add_resAlias(alias_data[i].children);
                 }
@@ -581,6 +629,18 @@ export default {
       if (this.checked === false && this.ruleForm_admin.valueAdmin.length > 0) {
         this.ruleForm_admin.valueAdmin = [];
       }
+    },
+    isBtnShow() {
+      const that = this;
+      let arr = that.currentBtns;
+      that.btns.forEach(element => {
+        arr.forEach(item => {
+          console.log(item);
+          if (item.name === element.name) {
+            element.isShow = item.isShow;
+          }
+        });
+      });
     }
   }
 };
@@ -595,21 +655,19 @@ export default {
   padding-right: 25px;
   box-sizing: border-box;
 }
-.list-wrap {
-  //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
-  height: calc(100vh - 90px - 64px - 20px - 65px - 132px);
-  overflow-y: scroll;
-  width: 100%;
-  .el-table {
-    padding: 0;
-    overflow: hidden;
-    th {
-      background: rgba(240, 243, 247, 1);
-    }
+.main_table {
+  /deep/.el-table {
     .el-table__body-wrapper {
       //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
-      height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+      height: calc(100vh - 90px - 64px - 20px - 65px - 100px - 48px);
       overflow-y: auto;
+      .margin-all {
+        margin-left: 7px;
+      }
+      .el-button--small,
+      .el-button--small.is-round {
+        padding: 9px 0;
+      }
     }
   }
 }
@@ -625,6 +683,17 @@ export default {
   align-items: center;
   position: relative;
   margin: 10px 0;
+}
+@media screen and (max-width: 1680px) {
+  .main_table {
+    /deep/.el-table {
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 60px - 64px - 20px - 65px - 100px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
 }
 </style>
 <style type="text/css">

@@ -1,0 +1,168 @@
+/* .resourceManage{
+  margin-top: 12px;
+} */
+.content {
+    background-color: #fff !important;
+    /* margin-top: 10px; */
+    /* height: calc(100vh - 113px) !important; */
+  }
+  .system_manage_header {
+    height:40px !important;
+    box-shadow: none;
+    background: #edf0f7;
+    margin: 0;
+  }
+  .system_manage_header .bread_crumb {
+    line-height: 40px;
+    box-shadow: none;
+}
+  .el-main{
+    height: calc(100vh - 113px) !important;
+    border: 1px solid #e1e4e6;
+  }
+  .search_status {
+    font-size: 16px;
+  }
+  .addbutton {
+    width: 90px;
+    height: 32px;
+    background-color: rgb(64, 158, 255);
+    color:#fff;
+    line-height: 32px;
+  }
+  .addButtonColor{
+    color: #fff !important;
+    background:  #409EFF !important;
+    float: right;
+    width: 86px;
+    height: 32px;
+    padding: 9px 15px;
+    /* margin-top: 10px; */
+    margin-bottom: 4px;
+  }
+  /* .centerConntent:nth-of-type(odd) {
+    background: red;
+  } */
+  /* .is-leaf{
+      background-color:aqua;
+      text-align: center;
+  } */
+  .shadeElement{
+    width: 100%;
+    height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    position: fixed;
+    left: 0;
+    top:0;
+    z-index: 900;
+  }
+  .formContent{
+    width:460px;
+    height: 320px;
+    background: #fff;
+    margin: 244px auto;
+  }
+  .formSystemName{
+    margin-top: 20px;
+  }
+  .titleName{
+    width: 100%;
+    height: 50px;
+    background: #254f85;
+  }
+  .titleName .edit{
+    width: 50%;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 300;
+    margin-left:20px;
+    float: left;
+  }
+  .titleName .deleteButton{
+    width: 10%;
+    height: 50px;
+    line-height: 50px;
+    color: #fff;
+    text-align: left;
+    font-size: 18px;
+    font-weight: 300;
+    float: right;
+  }
+  .formELement{
+    width: 100%;
+    height: 40px;
+  }
+  .formELement .leftsystemName{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .el-input{
+    width: 300px;
+    height: 32px;
+    margin-top: 4px;
+    margin-right: 30px;
+    float: right;
+  }
+  .formELement .leftsystemAddr{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .leftsystemCode{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement .formsystemMark{
+    width: 124px;
+    height: 40px;
+    line-height: 40px;
+    float: left;
+  }
+  .formELement i{
+    color: #f15f5f;
+  }
+  .formButton{
+    margin-top: 12px;
+  }
+  .el-button+.el-button{
+    margin-left: 0 ;
+  }
+  .section-top{
+    margin-top: 12px;
+  }
+  th .cell{
+    text-align: center;
+  }
+  td .cell{
+    text-align: center;
+  }
+  .deleteContent{
+    width: 340px;
+    height: 145px;
+    margin: 270px auto;
+    border-radius: 5px;
+    background: #fff;
+  }
+  .deletaText{
+    padding-top: 32px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 16px;
+  }
+  .formButtonTop{
+    margin-top: 30px;
+  }
+  .el-table__row:nth-of-type(odd){
+    background : #e7e7e7 !important;
+  }

@@ -1,0 +1,27 @@
+<!--
+ * @Descripttion: 运营中心管理--企业用户管--运营中心用户
+ * @version: 
+ * @Author: yangxq
+ * @Date: 2019-07-18 09:48:16
+ * @LastEditors: sueRimn
+ * @LastEditTime: 2019-07-19 14:46:23
+ -->
+<template>
+  <div class="enterpriserUser-wrap">
+    <div class="left-tree"></div>
+    <div class="right-con">22</div>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {};
+  },
+  mounted() {},
+  methods: {}
+};
+</script>
+
+<style lang="scss" scoped>
+</style>

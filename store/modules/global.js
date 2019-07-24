@@ -4,25 +4,26 @@
  */
 
 const state = {
-    value: "",
-
+  value: "",
 };
 
 const mutations = {
-    updateValue(state, payload) {
-        state.value = payload;
-    }
+  updateValue(state, payload) {
+    state.value = payload;
+  }
 };
 
 const actions = {
-    setValue({ commit }, data) {
-        commit('updateValue', data);
-    }
+  setValue({
+    commit
+  }, data) {
+    commit('updateValue', data);
+  }
 };
 
 export default {
-    namespaced: true,
-    state,
-    mutations,
-    actions
+  namespaced: true,
+  state,
+  mutations,
+  actions
 }

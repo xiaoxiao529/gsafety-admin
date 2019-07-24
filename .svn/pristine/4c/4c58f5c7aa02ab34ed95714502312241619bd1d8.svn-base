@@ -1,0 +1,378 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">业主单位管理</el-breadcrumb-item>
+        <el-breadcrumb-item>编辑业主单位管理信息</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-tabs class="top-tab" v-loading.lock="isLoading">
+          <div class="tab-content" v-if="">
+            <!-- 基础信息 -->
+            <h3 class="title" style="margin-top:20px;">基础信息</h3>
+            <div class="tab-content-detail">
+              <el-form
+                :model="fromParent"
+                class="basic-information"
+                label-width="120px"
+                :label-position="labelPosition"
+              >
+                <el-row>
+                  <el-col :span="8">
+                      <el-form-item label="企业名称:" :rules="[{ required: true}]">
+                        <el-input :disabled="true" v-model.trim="fromParent.unitName"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                      <el-form-item label="统一信用编码:" >
+                        <el-input placeholder="请输入" :disabled="false" v-model.trim="fromParent.unitCreditCode"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                      <el-form-item label="企业地址:" required :rules="[{ required: true}]">
+                        <el-select style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.serviceStatus">
+                          <el-option
+                            v-for="item in serviceStatus"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          ></el-option>
+                        </el-select>
+                      </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="详细地址:" :rules="[{ required: true}]">
+                      <el-input :disabled="false" v-model.trim="fromParent.unitAddress"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="接入渠道:" :rules="[{ required: true}]">
+                      <el-select :disabled="true" style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.enterpriseUnitAccessChannel">
+                        <el-option
+                          v-for="item in joinTypeData"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="服务模式:" :rules="[{ required: true}]">
+                      <el-select :disabled="true" style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.enterpriseUnitServiceModel">
+                        <el-option
+                          v-for="item in serviceTypeData"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="企业种类:" required :rules="[{ required: true}]">
+                      <el-select :disabled="true" style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.enterpriseUnitType">
+                        <el-option
+                          v-for="item in unitTypeData"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="公司类型:" :rules="[{ required: true}]">
+                      <el-select :disabled="true" style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.enterpriseCompanyType">
+                        <el-option
+                          v-for="item in companyTypeData"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="所属集团:" >
+                      <el-select :disabled="true" style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.unitParentId=='-1'?'':fromParent.unitParentId">
+                        <el-option
+                          v-for="item in unitParentGroupData"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value"
+                        ></el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item >
+                      <template slot-scope="scope">
+                        <el-checkbox :disabled="operationTypeDisable" v-model="operationChecked">分配到签入运营中心</el-checkbox>
+                      </template>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item >
+                      <template>
+                        <el-checkbox :disabled="bigScreenDisable" v-model="bigScreenChecked">企业提供VIP服务(大屏展示系统)</el-checkbox>
+                      </template>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+            <h3 class="title" style="margin-top:20px;">联系信息</h3>
+            <div class="tab-content-detail">
+              <el-form
+                :model="fromParent"
+                class="basic-information"
+                label-width="160px"
+                :label-position="labelPosition"
+              >
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="企业法人:">
+                      <el-input placeholder="请输入" v-model.trim="fromParent.legalperson"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="法人联系电话:">
+                      <el-input placeholder="请输入" v-model.trim="fromParent.legalpersonTel"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="企业联系人:" :rules="[{ required: true}]">
+                      <el-input placeholder="请输入" v-model.trim="fromParent.unitContact"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="企业联系人电话:" :rules="[{ required: true}]">
+                      <el-input placeholder="请输入" v-model.trim="fromParent.unitContactTel"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+          </div>
+      </el-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  components: {
+
+  },
+  data() {
+    return {
+      id:null,
+      labelPosition: "right",
+      isLoading:false,
+      operationTypeDisable:false,//分配运营中心
+      operationChecked:false,//  是否分派运营中心
+      bigScreenDisable:true,//大屏
+      bigScreenChecked:true,
+      fromParent: {
+
+      },
+      //服务模式
+      serviceTypeData:[
+        {
+          value: '',
+          label: '请选择'
+        }
+      ],
+      //所属集团
+      unitParentGroupData:[
+        {
+          value: '',
+          label: '请选择'
+        }
+      ],
+      //服务状态
+      serviceStatus:[
+        {
+          value: '',
+          label: '请选择'
+        },
+        {
+          value: '0',
+          label: '待服务'
+        },
+        {
+          value: '1',
+          label: '服务中'
+        },
+        {
+          value: '2',
+          label: '服务期满'
+        }
+      ],
+
+      unitTypeData : [{
+        value: '01',
+        label: '单一型'
+      },
+        {
+          value: '02',
+          label: '集团型'
+        }
+      ],
+      joinTypeData : [{
+          value: '0',
+          label: '直接发展'
+        },
+        {
+          value: '1',
+          label: '深度合作伙伴'
+        }
+      ],
+      companyTypeData : [{
+            value: '0',
+            label: '集团总公司'
+          },
+          {
+            value: '1',
+            label: '集团分公司'
+          }
+        ],
+      };
+  },
+  computed: {
+
+
+  },
+  created() {
+    this.id = this.$route.params.id;
+    setTimeout(this.findAllSubCenterCode(), 1000);
+  },
+
+  mounted() {
+
+  },
+
+  methods: {
+    //编辑业主单位信息接口
+    findAllSubCenterCode(){
+      this.isLoading = true;
+      const that = this;
+      this.$axios
+        .$POST_NEW({
+          api_name: "editEnterpriseUnitById",
+          params: {
+            id: that.id
+          }
+        })
+        .then(res => {
+          this.isLoading = false;
+          if (res.data.code == 'success') {
+            that.fromParent = res.data.data;
+            that.getCheckBoxState();
+            var data = [this.$axios.$POST_NEW({api_name: "findAllParentUnit"}),
+                        this.$axios.$POST_NEW({api_name: "queryGeneralOrgServiceType"}),
+                        this.$axios.$POST_NEW({api_name: "queryDistrictCascode"})];
+            that.$axios.$AllRequst({
+              data:data,
+              callback:function (args) {
+                for (var key in args){
+                  if (args[key].data.code == "success") {
+                    if (args[key].config.url.search("findAllParentUnit") != -1){
+                      that.unitParentGroupData = args[key].data.data;
+                      that.unitParentGroupData.unshift({value: '',label: '请选择'});
+                    }
+                    if (args[key].config.url.search("queryGeneralOrgServiceType") != -1){
+                      that.serviceTypeData = args[key].data.data;
+                      that.serviceTypeData.unshift({value: '',label: '请选择'});
+                    }
+                  } else {
+                    that.$message.warning(res.data.message);
+                  }
+                }
+            }})
+          } else {
+            that.$message.warning(res.data.message);
+          }
+        });
+    },
+
+    getCheckBoxState(){
+      const that = this;
+      if (that.fromParent.operationType == '1'&&that.fromParent.enterpriseUnitType == '02') {
+        that.operationTypeDisable = false;
+        that.operationChecked = true;
+      } else if (that.fromParent.enterpriseUnitType == '01') {
+        that.operationTypeDisable = true;
+        that.operationChecked = false;
+      }
+      if (that.fromParent.enterpriseUnitServiceModel == '2'||that.fromParent.enterpriseUnitServiceModel == '3') {
+        that.bigScreenDisable = false;
+        if (that.fromParent.screenFlag == '1') {
+          that.bigScreenDisable = false;
+        }
+      }
+    }
+  }
+};
+</script>
+
+<style lang="scss"  scoped>
+  @import "~/assets/css/list.scss";
+/deep/.top-tab {
+  .el-tabs__nav {
+    margin-left: 25px;
+    height: 0px;
+    line-height: 65px;
+  }
+  .el-tabs__item {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(37, 40, 46, 1);
+    &.is-active {
+      color: rgba(28, 119, 255, 1);
+    }
+  }
+
+  .tab-content {
+    padding: 0 40px;
+    .title {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(37, 40, 46, 1);
+      margin: 5px 0 10px 0;
+    }
+  }
+}
+.main-wrap {
+  overflow-y: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

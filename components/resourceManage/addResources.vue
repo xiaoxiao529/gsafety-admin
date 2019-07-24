@@ -2,7 +2,7 @@
   <div class="msgbox-container" :class="{show:show}" v-loading="loading">
     <div class="msgbox">
       <div class="msgbox-title">
-        <span>新增用户</span>
+        <span>新增用户-add</span>
         <img src="~/assets/img/msgbox-close.png" alt class="cursor" @click="close" />
         <!-- <img src="../../assets/img/msgbox-close.png" alt class="cursor" @click="close" />// -->
       </div>

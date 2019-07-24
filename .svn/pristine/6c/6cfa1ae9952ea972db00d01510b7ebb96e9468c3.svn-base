@@ -1,0 +1,209 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">业主单位管理</el-breadcrumb-item>
+        <el-breadcrumb-item>编辑业主单位管理信息</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-tabs class="top-tab" v-loading.lock="isLoading">
+          <div class="tab-content" v-if="">
+            <!-- 基础信息 -->
+            <h3 class="title" style="margin-top:20px;">基础信息</h3>
+            <div class="tab-content-detail">
+              <el-form
+                :model="fromParent"
+                class="basic-information"
+                label-width="120px"
+                :label-position="labelPosition"
+              >
+                <el-row>
+                  <el-col :span="8">
+                      <el-form-item label="企业名称:" :rules="[{ required: true}]">
+                        <el-input :disabled="true" v-model.trim="fromParent.unitName"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                      <el-form-item label="统一信用编码:" >
+                        <el-input :disabled="false" v-model.trim="fromParent.unitCreditCode"></el-input>
+                      </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                      <el-form-item label="企业地址:" required :rules="[{ required: true}]">
+                        <el-select style="width: 100%" placeholder="请选择" filterable v-model.trim="fromParent.serviceStatus">
+                          <el-option
+                            v-for="item in serviceStatus"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                          ></el-option>
+                        </el-select>
+                      </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="详细地址:" :rules="[{ required: true}]">
+                      <el-input :disabled="false" v-model.trim="fromParent.city"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="接入渠道:" >
+                      <el-input :disabled="true" v-model.trim="fromParent.subCenterName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="服务模式:" :rules="[{ required: true}]">
+                      <el-input :disabled="true" v-model.trim="fromParent.unitName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="企业种类:" :rules="[{ required: true}]">
+                      <el-input :disabled="true" v-model.trim="fromParent.unitName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="公司类型:" :rules="[{ required: true}]">
+                      <el-input :disabled="true" v-model.trim="fromParent.deviceId"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="所属集团:" >
+                      <el-input :disabled="true" v-model.trim="fromParent.subCenterName"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>
+          </div>
+      </el-tabs>
+    </div>
+  </div>
+</template>
+
+<script>
+
+export default {
+  components: {
+
+  },
+  data() {
+    return {
+      id:null,
+      labelPosition: "right",
+      isLoading:false,
+      fromParent: {
+
+      },
+      //服务状态
+      serviceStatus:[
+        {
+          value: '',
+          label: '请选择'
+        },
+        {
+          value: '0',
+          label: '待服务'
+        },
+        {
+          value: '1',
+          label: '服务中'
+        },
+        {
+          value: '2',
+          label: '服务期满'
+        }
+      ],
+    };
+  },
+  computed: {
+
+
+  },
+  created() {
+    this.id = this.$route.params.id;
+    setTimeout(this.findAllSubCenterCode(), 1000);
+  },
+
+  mounted() {
+
+  },
+
+  methods: {
+    //编辑业主单位信息接口
+    findAllSubCenterCode(){
+      this.isLoading = true;
+      const that = this;
+      this.$axios
+        .$POST_NEW({
+          api_name: "editEnterpriseUnitById",
+          params: {
+            id: that.id
+          }
+        })
+        .then(res => {
+          this.isLoading = false;
+          if (res.data.code == 'success') {
+            debugger
+            that.fromParent = res.data.data;
+          } else {
+            that.$message.warning(res.data.message);
+          }
+        });
+    },
+  }
+};
+</script>
+
+<style lang="scss"  scoped>
+  @import "~/assets/css/list.scss";
+/deep/.top-tab {
+  .el-tabs__nav {
+    margin-left: 25px;
+    height: 0px;
+    line-height: 65px;
+  }
+  .el-tabs__item {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(37, 40, 46, 1);
+    &.is-active {
+      color: rgba(28, 119, 255, 1);
+    }
+  }
+
+  .tab-content {
+    padding: 0 40px;
+    .title {
+      font-size: 18px;
+      font-weight: 400;
+      color: rgba(37, 40, 46, 1);
+      margin: 5px 0 10px 0;
+    }
+  }
+}
+.main-wrap {
+  overflow-y: auto;
+}
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

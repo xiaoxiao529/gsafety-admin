@@ -4,7 +4,7 @@
 *  --- axios封装 ---
 * */
 
-import axios from 'axios'
+import axios, {AxiosInstance} from 'axios'
 import qs from 'qs'
 import Cookie from 'js-cookie'
 import _ from 'lodash'
@@ -52,6 +52,7 @@ const http = axios.create({
 });
 
 function checkStatus (response) {
+
     if (response && response.data) {
         return response.data
     }
@@ -138,7 +139,6 @@ http.interceptors.request.use(config => {
     // 对请求错误做些什么
     return Promise.reject(error);
 });
-
 // 添加响应拦截器
 http.interceptors.response.use(response => {
     // 对响应数据做点什么
@@ -149,6 +149,8 @@ http.interceptors.response.use(response => {
     checkCode(error)
     return Promise.reject(error);
 });
+//AxiosStatic
+
 
 const $POST = (api_name,params,time) => {
     let url = ApiConfig.api[api_name];

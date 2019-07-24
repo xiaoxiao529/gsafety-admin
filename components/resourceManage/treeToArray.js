@@ -49,40 +49,44 @@ export const getTree = (data, root, idTxt, pidTxt, pushTxt) => {
 export const columns = [{
     text: "序号",
     value: "resOrder",
-    width: 80
+    width: 100
   },
   {
     text: "资源名称",
     value: "resName",
-    width: 120
-  }, {
-    text: "资源别名",
-    value: "resAlias",
-    width: 120
-  }, {
+    width: 150
+  },
+  //  {
+  //   text: "资源别名",
+  //   value: "resAlias",
+  //   width: 120
+  // }, 
+  {
     text: "类型",
     value: "resType",
-    width: 100
+    width: 70
   }, {
     text: "链接地址",
     value: "resUrl",
-    width: 200
+    width: 210
   },
 
+  // {
+  //   text: "请求方式",
+  //   value: "resRequestType",
+  //   width: 100
+  // },
+  // {
+  //   text: "图标",
+  //   value: "resIcon",
+  //   width: 100
+  // }, 
   {
-    text: "请求方式",
-    value: "resRequestType",
-    width: 100
-  },
-  {
-    text: "图标",
-    value: "resIcon",
-    width: 100
-  }, {
     text: "状态",
     value: "isVisibled",
     width: 100
-  }, {
+  },
+  {
     text: "操作",
     value: '',
     width: 200

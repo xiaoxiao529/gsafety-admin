@@ -35,6 +35,7 @@
                     v-model="outStockFormData.orgCode"
                     @change="getUnitInfoByOrgCode"
                     placeholder="请选择"
+                    filterable clearable
                   >
                     <el-option
                       v-for="item of orgList"
@@ -47,7 +48,7 @@
               </el-col>
               <el-col :span="8" v-if="showButton([0],outStockFormData.applyType) ">
                 <el-form-item label="申请单位:" prop="applyUnit">
-                  <el-select v-model="outStockFormData.applyUnit" placeholder="请选择">
+                  <el-select v-model="outStockFormData.applyUnit" placeholder="请选择" filterable clearable>
                     <el-option
                       v-for="item of unitList"
                       :key="item.unitId"
@@ -57,8 +58,13 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="8" v-if="showButton([1,2],outStockFormData.applyType) ">
+              <el-col :span="8" v-if="showButton([1],outStockFormData.applyType) ">
                 <el-form-item label="申请项目:" prop="applyProject">
+                  <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" v-if="showButton([2],outStockFormData.applyType) ">
+                <el-form-item label="申请项目:" prop="">
                   <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
                 </el-form-item>
               </el-col>
@@ -210,9 +216,9 @@ export default {
     submitHandel() {
       const that = this;
       let applyUnitName = null;
-      that.fullscreenLoading = true;
       that.$refs.outStockFormData.validate(valid => {
         if (valid) {
+          that.fullscreenLoading = true;
           let deviceIdArr = [];
           that.tableData.forEach(item => {
             deviceIdArr.push(item.deviceId);
@@ -238,7 +244,8 @@ export default {
                 applyUnit: applyUnitName,
                 applyProject: that.outStockFormData.applyProject,
                 deviceIds: deviceIdArr.join(","), //要出库的设备主键id,多个之间使用逗号进行分隔
-                userId:that.userObj.id //当前操作人id
+                userId:that.userObj.id, //当前操作人id
+                userName:that.userObj.userName
               }
             })
             .then(res => {

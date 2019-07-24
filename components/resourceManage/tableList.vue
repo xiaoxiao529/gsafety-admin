@@ -50,16 +50,23 @@
           <i v-if="!scope.row._expanded" class="el-icon-plus" />
           <i v-else class="el-icon-minus" />
         </span>
-        <span v-if="index===8" class="tree-del">
-          <span class="margin-l" @click="showMsgBox(scope.row)">编辑</span>
-          <span class="margin-all">|</span>
+        <span v-if="index===5" class="tree-del">
+          <span class="margin-l" @click="showMsgBox(scope.row) " v-show="btns[0].isShow">
+            编辑
+            <span class="margin-all">|</span>
+          </span>
+
           <!-- <span class="margin-l">删除</span> -->
-          <el-button type="text" @click="deleteInfo(scope.row)">删除</el-button>
-          <span class="margin-all">|</span>
+          <el-button type="text" @click="deleteInfo(scope.row)" v-show="btns[1].isShow">
+            删除
+            <span class="margin-all">|</span>
+          </el-button>
+
           <span
             class="margin-l"
             @click="isVisibled(scope.row)"
-          >{{scope.row.isVisibled==='0'?'可见':'不可见'}}</span>
+            v-show="btns[2].isShow"
+          >{{scope.row.isVisibled==='0'?'不可见':'可见'}}</span>
         </span>
         {{ scope.row[column.value] | changeName(index)}}
       </template>
@@ -93,14 +100,30 @@ export default {
   },
   data() {
     return {
-      loading: false
+      loading: false,
+      currentBtns: [],
+      btns: [
+        {
+          name: "编辑",
+          isShow: false
+        },
+        {
+          name: "删除",
+          isShow: false
+        },
+        {
+          name: "是否可见",
+          isShow: false
+        }
+      ]
     };
   },
   mounted() {
-    setTimeout(console.log("this.formatData", this.formatData), 5000);
-    this.expandAllFun();
-    console.log("this.formatData=mounted", this.formatData);
-    console.log("this.columns", this.columns);
+    const that = this;
+    setTimeout(console.log("this.formatData", that.formatData), 5000);
+    that.expandAllFun();
+    that.currentBtns = that._Storage.getObj("currentBtnArr", "currentBtnArr");
+    that.isBtnShow();
   },
   computed: {
     // 格式化数据源
@@ -117,6 +140,10 @@ export default {
         ? Array.concat([tmp, this.expandAll], this.evalArgs)
         : [tmp, this.expandAll];
       return func.apply(null, args);
+    },
+
+    userObj() {
+      return this._Storage.getObj("userObj", "userObj");
     }
   },
   methods: {
@@ -156,6 +183,7 @@ export default {
               type: "success"
             });
             this.$bus.emit("refresh");
+            this.findUserResource();
           }
         })
         .catch(err => {
@@ -163,7 +191,7 @@ export default {
         });
     },
     calculateWith(index) {
-      if (index === 0 || index === 1 || index === 8 || index === 2) {
+      if (index === 0) {
         let width = this.columns;
         return width[index].width;
       }
@@ -227,15 +255,86 @@ export default {
       for (let i = 0; i < els.length; i++) {
         els[i].lclick();
       }
+    },
+    //刷新左侧菜单
+    findUserResource() {
+      var that = this;
+      that.$axios
+        .$POST({
+          api_name: "findUserByUserId",
+          params: {
+            userId: that.userObj.id
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            let roleId = res.data.data.userAuthList[0].authRoleList[0].roleId;
+            that.$axios
+              .$POST({
+                api_name: "findResourceByRoleId",
+                params: {
+                  roleId: roleId
+                }
+              })
+              .then(res => {
+                if (res.data.code == "success") {
+                  this._Storage.setObj(
+                    "jurisdictionList",
+                    "jurisdictionList",
+                    res.data.data
+                  );
+                  var resourceData = res.data.data;
+
+                  function queryList(json) {
+                    for (var i = 0; i < json.length; i++) {
+                      if (json[i].resType == "2") {
+                        json.splice(i, 1);
+                        i--;
+                      } else {
+                        queryList(json[i].children);
+                      }
+                    }
+                    return json;
+                  }
+                  this.list = queryList(resourceData);
+                } else {
+                  that.logining = false;
+                  that.$message({
+                    type: "error",
+                    message: res.data.message
+                  });
+                }
+              });
+          } else {
+            that.logining = false;
+            that.$message({
+              type: "error",
+              message: res.data.message
+            });
+          }
+        });
+    },
+    //按钮权限
+    isBtnShow() {
+      const that = this;
+      let arr = that.currentBtns;
+      that.btns.forEach(element => {
+        arr.forEach(item => {
+          console.log(item);
+          if (item.name === element.name) {
+            element.isShow = item.isShow;
+          }
+        });
+      });
     }
   },
   filters: {
     changeName(val, index) {
       let arr = ["目录", "菜单", "按钮"];
-      if (index === 7) {
+      if (index === 4) {
         if (val === "0") return "可见";
         else return "不可见";
-      } else if (index === 3) {
+      } else if (index === 2) {
         return arr[val];
       } else {
         return val;
@@ -311,7 +410,7 @@ $space-width: 18px;
   color: #34aefc;
   margin: 0 auto;
   .margin-l {
-    margin-left: 5px;
+    //margin-left: 5px;
     cursor: pointer;
   }
   .margin-all {

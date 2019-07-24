@@ -4,7 +4,7 @@
  * @Author: yangxq
  * @Date: 2019-07-02 15:52:31
  * @LastEditors: sueRimn
- * @LastEditTime: 2019-07-12 17:49:12
+ * @LastEditTime: 2019-07-22 09:28:29
  -->
 
 
@@ -12,7 +12,7 @@
   <div>
     <div class="Crumbs">
       <el-breadcrumb separator-class="el-icon-arrow-right">
-        <el-breadcrumb-item :to="{ path: '/' }">硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>硬件平台</el-breadcrumb-item>
         <el-breadcrumb-item>出入库记录</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
@@ -57,16 +57,7 @@
 
         <!-- 列表 -->
         <div class="list-wrap">
-          <el-table
-            v-loading.lock="isLoading"
-            :data="tableData"
-            ref="refTable"
-            :row-key="getRowKeys"
-            :expand-row-keys="expands"
-            @current-change="toggleRowExpansion"
-            stripe
-            show-overflow-tooltip
-          >
+          <el-table v-loading.lock="isLoading" :data="tableData" show-overflow-tooltip>
             <el-table-column label="申请信息" show-overflow-tooltip align="left" min-width="30%">
               <template slot-scope="scope">
                 <div>
@@ -113,31 +104,18 @@
               align="left"
               min-width="10%"
             ></el-table-column>
-            <el-table-column type="expand">
-              <template slot-scope="props">
-                <el-table
-                  :data="props.row.deviceInfoList"
-                  height="190px"
-                  style="width: 100%;margin-bottom:15px"
-                  class="deviceInfoList-table"
-                >
-                  <el-table-column
-                    label="序号"
-                    prop="deviceName"
-                    type="index"
-                    align="left"
-                    min-width="15%"
-                  ></el-table-column>
-                  <el-table-column label="硬件ID" prop="deviceId" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="硬件名称" prop="deviceName" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="硬件类型" prop="deviceTypeName" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="厂家" prop="brand" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="型号" prop="model" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="供应商" prop="supplier" align="left" min-width="10%"></el-table-column>
-                  <el-table-column label="单价" prop="deviceId" align="left" min-width="10%">
-                    <template slot-scope="scope">{{scope.row.price}}元/{{scope.row.measurementUnit}}</template>
-                  </el-table-column>
-                </el-table>
+            <el-table-column
+              label="操作人"
+              prop="createUserName"
+              show-overflow-tooltip
+              align="left"
+              min-width="10%"
+            ></el-table-column>
+            <el-table-column label="操作" min-width="10%" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <div>
+                  <el-link type="primary" @click="look(scope.row.id)">设备信息</el-link>
+                </div>
               </template>
             </el-table-column>
           </el-table>
@@ -145,6 +123,22 @@
         <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
       </div>
     </div>
+    <el-dialog title="设备信息" :visible.sync="dialogFormVisible" width="960px">
+      <div class="deviceInfoList-wrap">
+        <el-table :data="deviceInfoList" class="deviceInfoList-table">
+          <el-table-column label="序号" prop="deviceName" type="index" align="left" min-width="15%"></el-table-column>
+          <el-table-column label="硬件ID" prop="id" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="硬件名称" prop="deviceName" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="硬件类型" prop="deviceTypeName" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="厂家" prop="brand" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="型号" prop="model" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="供应商" prop="supplier" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="单价" prop="deviceId" align="left" min-width="10%">
+            <template slot-scope="scope">{{scope.row.price}}元/{{scope.row.measurementUnit}}</template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -157,10 +151,8 @@ export default {
   data() {
     return {
       isLoading: false,
-      getRowKeys(row) {
-        return row.id;
-      },
-      expands: [],
+      dialogFormVisible: false,
+      deviceInfoList: [],
       labelWidth: "100px",
       types: [
         { value: "0", label: "仓库入库" },
@@ -191,7 +183,9 @@ export default {
       }
     };
   },
-  mounted() {},
+  mounted() {
+    this.getDeviceByRecordId();
+  },
   methods: {
     getTableData() {
       this.isLoading = true;
@@ -221,16 +215,38 @@ export default {
           }
         });
     },
+    getDeviceByRecordId(recordId) {
+      let that = this;
+      that.isLoading = true;
+      that.$axios
+        .$POST({
+          api_name: "getDeviceByRecordId",
+          params: {
+            recordId: recordId
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            that.isLoading = false;
+            that.deviceInfoList = res.data.data;
+            //that.tableData = data.rows;
+            //that.widgetInfo.total = data.total === null ? 0 : data.total;
+          } else {
+            // that.tableData = [];
+            // that.widgetInfo.list = res.data.rows;
+            // that.widgetInfo.total = 0;
+            console.log("没有数值。。。。。");
+          }
+        });
+    },
+    look(recordId) {
+      let that = this;
+      that.dialogFormVisible = true;
+      that.getDeviceByRecordId(recordId);
+    },
     transform(key, list) {
       //类型转化
       return list.find(item => item.value == key).label;
-    },
-    toggleRowExpansion(row) {
-      this.expands = [];
-      this.expands.push(row.id);
-    },
-    rowClick(row, index, e) {
-      this.$refs.refTable.toggleRowExpansion(row);
     },
     serch() {
       var startTime = this.serchForm.DataSelect[0];
@@ -344,7 +360,18 @@ export default {
     }
   }
 }
-
+.deviceInfoList-wrap {
+  /deep/.el-table {
+    .el-table__body-wrapper {
+      height: auto;
+      min-height: 250px;
+      overflow-y: auto;
+    }
+  }
+}
+/deep/.el-dialog__wrapper {
+  overflow: hidden;
+}
 @media screen and (max-width: 1680px) {
   .main-wrap {
     /deep/.el-form {

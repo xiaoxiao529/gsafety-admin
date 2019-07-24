@@ -20,20 +20,19 @@
               <h4 class="dialog-h3">申请信息</h4>
               <div>
                 <el-form-item label="申请类型:"  class="el-form-item-first" required prop="">
-<!--                  <el-radio-group v-model="outStockFormData.applyType" @change="changeTipsCancle">-->
                   <el-radio-group v-model="outStockFormData.applyType" @change="changeTipsCancle">
                     <el-radio  v-for="item of applyTypeList" :key="item.value" :label="item.value">{{item.label}}</el-radio>
                   </el-radio-group>
                 </el-form-item>
                 <el-row :gutter="20" v-if="outStockFormData.repositoryType == 0">
                   <el-col :span="8" v-if="showButton([0,1,2],outStockFormData.applyType) ">
-                    <el-form-item label="申请人:" prop="applyPerson">
+                    <el-form-item label="申请人:" prop="">
                       <el-input v-model="outStockFormData.applyPerson" placeholder="申请人"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
-                    <el-form-item label="运营中心:" prop="orgCode">
-                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" placeholder="请选择" clearable>
+                    <el-form-item label="运营中心:" prop="">
+                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" placeholder="请选择" filterable clearable>
                         <el-option
                           v-for="item of orgList"
                           :key="item.orgCode"
@@ -45,7 +44,7 @@
                   </el-col>
                   <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
                     <el-form-item label="申请单位:" prop="">
-                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择" clearable>
+                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择" filterable clearable>
                         <el-option
                           v-for="item of unitList"
                           :key="item.unitId"
@@ -69,7 +68,7 @@
                   </el-col>
                   <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
                     <el-form-item label="运营中心:" prop="orgCode">
-                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" placeholder="请选择">
+                      <el-select v-model="outStockFormData.orgCode" @change="getUnitInfoByOrgCode" filterable clearable placeholder="请选择">
                         <el-option
                           v-for="item of orgList"
                           :key="item.orgCode"
@@ -81,7 +80,7 @@
                   </el-col>
                   <el-col :span="8"  v-if="showButton([0],outStockFormData.applyType) ">
                     <el-form-item label="申请单位:" prop="">
-                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择">
+                      <el-select v-model="outStockFormData.applyUnit" placeholder="请选择" filterable clearable>
                         <el-option
                           v-for="item of unitList"
                           :key="item.unitId"
@@ -105,7 +104,7 @@
               </div>
           </div>
           <div class="panel-wrap">
-              <h4 class="dialog-h3">出库硬件列表</h4>
+              <h4 class="dialog-h3">硬件信息</h4>
               <div>
                 <el-row :gutter="20">
                   <el-col :span="8">
@@ -340,7 +339,8 @@
       initInStock(){
         const that = this;
         that.dialogOutStockVisible=true;
-        that.repositoryType='0'
+        that.repositoryType='0',
+        that.outStockFormData.applyPerson= '',
         that.outStockFormData.applyType = 0;
         that.outStockFormData.repositoryType = 0;
         that.$nextTick(() => {
@@ -411,7 +411,7 @@
       inStockType(){
         const that = this;
         that.outStockFormData.applyProject='';
-        //that.outStockFormData.applyPerson='';
+        that.outStockFormData.applyPerson='';
         that.outStockFormData.orgCode='';
         that.outStockFormData.applyUnit='';
         that.outStockFormData.applyOrg='';
@@ -468,7 +468,7 @@
        */
       submitHandel(){
         const that = this;
-        that.fullscreenLoading = true;
+
         let applyUnitName = null;
         that.$refs.outStockFormData.validate((valid) => {
           if (valid) {
@@ -478,6 +478,7 @@
             if(that.outStockFormData.applyUnit){
               applyUnitName= that.unitList.find(item => item.unitId == that.outStockFormData.applyUnit).unitName;
             }
+            that.fullscreenLoading = true;
             that.$axios
               .$POST({
                 api_name: "putInRepository",//出库接口
@@ -503,7 +504,8 @@
                   taxRate:that.outStockFormData.taxRate,
                   flowYear:that.outStockFormData.flowYear,
                   remarks:that.outStockFormData.remarks,
-                  userId:that.userObj.id
+                  userId:that.userObj.id,
+                  userName:that.userObj.userName
                 }
               })
               .then(res => {
@@ -559,7 +561,9 @@
 
         });
       },
-
+      /**
+       * 取消时提示
+       */
       changeTipsCancle(){
         const that = this;
         that.$nextTick(() => {
