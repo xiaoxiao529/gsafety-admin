@@ -1,0 +1,351 @@
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog title="出库" width="768px"
+               :visible.sync="dialogOutStockVisible"
+               :close-on-click-modal="clickModalFlag"
+               :close-on-press-escape="clickModalFlag">
+      <div class="stock-mian">
+        <div class="panel-wrap">
+          <h4 class="dialog-h3">申请信息</h4>
+          <el-form
+            :rules="rules"
+            ref="outStockFormData"
+            :label-position="labelPosition"
+            :model="outStockFormData"
+            label-width="80px"
+          >
+            <el-form-item label="申请类型:" class="el-form-item-first" required>
+              <el-radio-group v-model="outStockFormData.applyType" @change="changeTipsClose">
+                <el-radio
+                  v-for="item of applyTypeList"
+                  :key="item.value"
+                  :label="item.value"
+                >{{item.label}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-row :gutter="20">
+              <el-col :span="8" v-if="showButton([0,1,2],outStockFormData.applyType) ">
+                <el-form-item label="申请人:" prop="applyPerson">
+                  <el-input v-model="outStockFormData.applyPerson" placeholder="申请人"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" v-if="showButton([0],outStockFormData.applyType) ">
+                <el-form-item label="运营中心:" prop="orgCode">
+                  <el-select
+                    v-model="outStockFormData.orgCode"
+                    @change="getUnitInfoByOrgCode"
+                    placeholder="请选择"
+                    filterable clearable
+                  >
+                    <el-option
+                      v-for="item of orgList"
+                      :key="item.orgCode"
+                      :label="item.orgName"
+                      :value="item.orgCode"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" v-if="showButton([0],outStockFormData.applyType) ">
+                <el-form-item label="申请单位:" prop="applyUnit">
+                  <el-select v-model="outStockFormData.applyUnit" placeholder="请选择" filterable clearable>
+                    <el-option
+                      v-for="item of unitList"
+                      :key="item.unitId"
+                      :label="item.unitName"
+                      :value="item.unitId"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" v-if="showButton([1],outStockFormData.applyType) ">
+                <el-form-item label="申请项目:" prop="applyProject">
+                  <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8" v-if="showButton([2],outStockFormData.applyType) ">
+                <el-form-item label="申请项目:" prop="">
+                  <el-input v-model="outStockFormData.applyProject" placeholder="申请项目"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
+        </div>
+        <div class="panel-wrap">
+          <h4 class="dialog-h3">出库硬件列表({{number}})</h4>
+          <div class="list-wrap">
+            <el-table :data="tableData" stripe style="width: 100%" max-height="200px">
+              <el-table-column prop="deviceId" label="硬件Id" min-width="10%"></el-table-column>
+              <el-table-column prop="deviceName" label="硬件名称" min-width="15%"></el-table-column>
+              <el-table-column prop="deviceTypeName" label="硬件类型" min-width="15%"></el-table-column>
+              <el-table-column prop="factory" label="厂家" min-width="10%"></el-table-column>
+              <el-table-column prop="brand" label="品牌型号" min-width="10%"></el-table-column>
+            </el-table>
+          </div>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancelHandel()">取 消</el-button>
+        <el-button type="primary" @click="submitHandel()" v-loading.fullscreen.lock="fullscreenLoading">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+export default {
+  data() {
+    return {
+      userObj:{},
+      number:null,
+      fullscreenLoading:false,
+      clickModalFlag:false,//不通过遮罩层关闭
+      dialogOutStockVisible: false, //出库
+      labelPosition: "top", //对齐方式
+      outStockFormData: {
+        //表单data
+        applyType: 0,
+        applyProject: "",
+        applyPerson: "",
+        orgCode: "",
+        applyOrg: "",
+        applyUnit: ""
+      },
+      orgList: [], //运营中心列表
+      unitList: [], //申请单位列表
+      applyTypeList: [
+        {
+          value: 0,
+          label: "运营中心"
+        },
+        {
+          value: 1,
+          label: "企业项目"
+        },
+        {
+          value: 2,
+          label: "其它"
+        }
+      ],
+      tableData: [],
+      rules: {
+        applyPerson: [
+          { required: true, message: "申请人不能为空", trigger: "blur" }
+        ],
+        orgCode: [
+          { required: true, message: "运营中心不能为空", trigger: "change" }
+        ],
+        applyProject: [
+          { required: true, message: "申请项目不能为空", trigger: "change" }
+        ]
+      }
+    };
+  },
+  mounted() {
+    const that = this;
+    that.getAllOrgInfo();
+    that.userObj = that._Storage.getObj("userObj", "userObj");
+  },
+  computed: {},
+  methods: {
+    /**
+     * 类型申请显示
+     * @param param
+     */
+    initOutStock(param) {
+      const that = this;
+      that.tableData = param;
+      that.number = that.tableData.length;
+      that.dialogOutStockVisible = true;
+      that.outStockFormData = {
+        applyType: 0,
+        applyProject: "",
+        applyPerson: "",
+        orgCode: "",
+        applyUnit: ""
+      };
+      that.$nextTick(() => {
+        that.$refs["outStockFormData"].resetFields();
+      });
+    },
+    /**
+     * 获取所有运营中心
+     */
+    getAllOrgInfo() {
+      const that = this;
+      that.$axios.$GET({ api_name: "getAllOrgInfo" }).then(res => {
+        if (res.data.code == "success") {
+          that.orgList = res.data.data;
+        }
+      });
+    },
+    /**
+     * 联动运营中心下的单位信息
+     */
+    getUnitInfoByOrgCode(val) {
+      const that = this;
+      that.unitList = [];
+      that.outStockFormData.applyUnit = null;
+      that.$axios
+        .$GET({ api_name: "getUnitInfoByOrgCode", params: { orgCode: val } })
+        .then(res => {
+          if (res.data.code == "success") {
+            that.unitList = res.data.data;
+          }
+        });
+    },
+    /**
+     * 类型申请显示
+     * @param arr
+     * @param value
+     * @returns {boolean}
+     */
+    showButton(arr, value) {
+      const that = this;
+      if (value === 0) {
+        that.outStockFormData.applyProject = "";
+      }
+      if (value === 1 || value === 2) {
+        that.outStockFormData.orgCode = "";
+        that.outStockFormData.applyUnit = "";
+      }
+      return arr.indexOf(value * 1) > -1;
+    },
+    /**
+     * 出库确定按钮
+     */
+    submitHandel() {
+      const that = this;
+      let applyUnitName = null;
+      that.$refs.outStockFormData.validate(valid => {
+        if (valid) {
+          that.fullscreenLoading = true;
+          let deviceIdArr = [];
+          that.tableData.forEach(item => {
+            deviceIdArr.push(item.deviceId);
+          });
+          //console.log(that.orgList)
+          if (that.outStockFormData.orgCode) {
+            that.outStockFormData.applyOrg = that.orgList.find(
+              item => item.orgCode == that.outStockFormData.orgCode
+            ).orgName;
+          }
+          if(that.outStockFormData.applyUnit){
+            applyUnitName= that.unitList.find(item => item.unitId == that.outStockFormData.applyUnit).unitName;
+          }
+          //console.log(that.outStockFormData.applyOrg)
+          that.$axios
+            .$POST({
+              api_name: "putOutRepository", //出库接口
+              params: {
+                applyType: that.outStockFormData.applyType,
+                applyPerson: that.outStockFormData.applyPerson,
+                applyOrg: that.outStockFormData.applyOrg,
+                orgCode: that.outStockFormData.orgCode,
+                applyUnit: applyUnitName,
+                applyProject: that.outStockFormData.applyProject,
+                deviceIds: deviceIdArr.join(","), //要出库的设备主键id,多个之间使用逗号进行分隔
+                userId:that.userObj.id, //当前操作人id
+                userName:that.userObj.userName
+              }
+            })
+            .then(res => {
+              that.fullscreenLoading = false;
+              if (res.data.code == "success") {
+                that.isLoading = false;
+                that.dialogOutStockVisible = false;
+                that.$message({
+                  message: res.data.rspMsg,
+                  type: "success"
+                });
+                that.$emit("sureHandel"); //父组件调用方法刷新列表
+              } else {
+                that.fullscreenLoading = false;
+                that.$message.error(res.data.rspMsg);
+              }
+            })
+            .catch(() => {
+              this.$message({
+                message: "这里是异常",
+                type: "warning"
+              });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    /**
+     * 出库取消按钮
+     */
+    cancelHandel() {
+      const that = this;
+      that.outStockFormData = {
+        applyType: 0,
+        applyProject: "",
+        applyPerson: "",
+        orgCode: "",
+        applyUnit: ""
+      };
+      that.dialogOutStockVisible = false;
+    },
+    /**
+     * 切换时提示关闭
+     */
+    changeTipsClose() {
+      const that = this;
+      that.dialogVisible = false;
+      that.$nextTick(() => {
+        that.$refs["outStockFormData"].resetFields();
+      });
+    }
+  }
+};
+</script>
+<style lang="scss" scoped="scoped">
+.DialogStockWrap {
+  font-family: MicrosoftYaHei;
+  .panel-wrap {
+    margin-top: 16px;
+    .dialog-h3 {
+      font-size: 18px;
+      color: rgba(37, 40, 46, 1);
+      font-weight: 400;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(225, 229, 235, 1);
+    }
+    /deep/.el-form--label-top {
+      .el-form-item-first {
+        margin-bottom: 0;
+      }
+      .el-form-item__label {
+        padding: 0;
+        color: #525c66;
+        font-size: 16px;
+      }
+      .el-radio__label {
+        font-size: 16px;
+        font-weight: 400;
+        /*color: rgba(37,40,46,1);*/
+      }
+      .el-select {
+        width: 100%;
+      }
+    }
+  }
+}
+.list-wrap {
+  margin-top: 12px;
+  /deep/.el-table {
+    padding: 0;
+    overflow: hidden;
+    th {
+      background: rgba(240, 243, 247, 1);
+    }
+    .el-table__body-wrapper {
+      overflow-y: auto;
+    }
+  }
+  /*.el-checkbox{ margin-top: 6px;}*/
+}
+</style>

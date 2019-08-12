@@ -1,0 +1,177 @@
+<template>
+    <div class="main-wrap main-wrap-other">
+      <div class="main-container">
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form" >
+        </el-form>
+        <!-- 列表-->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="序号" prop="" align="center" show-overflow-tooltip min-width="4%">
+              <template scope="scope">
+                <span>{{(widgetInfo.pageNo - 1) * widgetInfo.pageSize + scope.$index + 1}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="企业名称" prop="unitName" align="center" show-overflow-tooltip min-width="12%"></el-table-column>
+            <el-table-column label="运营中心名称" prop="subCenterName" align="center" show-overflow-tooltip min-width="12%"></el-table-column>
+            <el-table-column label="报警数" prop="alarmNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="规范数" prop="standardNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="规范率" prop="standardRate" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="真警数" prop="trueAlarmNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="真警率" prop="nonstandardRate" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="误报数" prop="falseAlarmNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="误报率" prop="falseAlarmRate" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="不规范数" prop="nonstandardNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="处理数" prop="handleNumber" align="center" show-overflow-tooltip min-width="8%"></el-table-column>
+          </el-table>
+          <Pagination
+            :widgetInfo="widgetInfo"
+            v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+          />
+        </div>
+      </div>
+    </div>
+</template>
+<script>
+  import Pagination from "~/components/Pagination";
+  import ApiConfig from "@/config/api";
+  export default {
+    components: {
+      Pagination,
+      ApiConfig,
+    },
+    data() {
+      return {
+        isLoading: false,
+        formData:{
+            tel:"",
+            name:""
+        },
+        num:1,
+        tableData:[],
+        loading: true,
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        }
+      };
+    },
+    mounted() {
+      const that = this;
+
+    },
+    computed: {},
+    methods: {
+      /**
+       * @Description:实际用户的列表
+       * @param pagenoFlag
+       */
+      actualUsersPage() {
+        const that = this;
+        that.isLoading = true;
+        that.$axios
+          .$GET_CENTER({
+            api_name: "getAlarmDataOfCompany",
+            params: {
+              num:that.num,
+              page: that.widgetInfo.pageNo,
+              pageSize: that.widgetInfo.pageSize
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            // debugger
+            if (res.data.rspCode == "0") {
+              let data = res.data.data;
+              that.tableData = data;
+              // that.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              that.tableData = [];
+              // that.widgetInfo.list = res.data.rows;
+              // that.widgetInfo.total = 0;
+              that.$message.error(res.data.rspMsg);
+              console.log("没有数值。。。。。");
+            }
+          });
+      },
+      getDataFormNum(num){
+          this.num = num;
+          this.actualUsersPage();
+      },
+
+      getExcelUrl(){
+          let url = "/center" + ApiConfig.api["getAlarmDataOfCompany"]+"Excel?num="+this.num;
+          this.$confirm("确认批量导出excel？")
+              .then(_ => {
+                  window.open(url);
+              })
+              .catch(_ => {
+
+              });
+      },
+
+      /**
+       * @Description:分页
+       * @param widgetInfo
+       */
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.actualUsersPage();
+      },
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .main-wrap-other{
+    border: none;
+  }
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+  @media screen and (max-width: 1680px) {
+    .list-wrap {
+      //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+      height: calc(100vh - 60px - 64px - 20px - 65px - 76px);
+      overflow: hidden;
+      /deep/.el-table {
+        padding: 0;
+        overflow: hidden;
+        th {
+          background: rgba(240, 243, 247, 1);
+        }
+        .el-table__body-wrapper {
+          //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+          height: calc(100vh - 60px - 64px - 20px - 65px - 76px - 85px - 48px);
+          overflow-y: auto;
+        }
+      }
+    }
+  }
+</style>

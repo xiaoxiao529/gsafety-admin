@@ -1,0 +1,78 @@
+
+//export default ({ app,route }) => {
+//
+//  app.router.beforeEach((to, from, next) => {
+//    	console.log(to.path,"**********")
+//		var resourceData = app.store.state.resourceData
+//    	
+//	    function queryList(url) {
+//		    for (var i = 0; i < resourceData.length; i++) {
+//		    	if (resourceData[i].resUrl != url) {
+//						return true;
+//		    	} else {
+//		    		queryList(resourceData[i].children);
+//		    	}
+//		    }
+//		}
+//		var result = queryList(to.path);
+//    	console.log(result,"resultresultresultresult")
+//    	if(result === undefined){
+//    		//console.log(app,"app")
+//    	}
+//    	next()
+//  })
+//}
+import _Storage from '../utils/Storage';
+export default ({ app })=>{
+	if (process.client) {
+
+	 	app.router.beforeEach((to, from, next) => {
+	 		
+	 		debugger;
+	 		
+	 		console.log(to.name,"9999999")
+
+	 		function queryList(loopArr, target) {
+
+			    for (var i = 0; i < loopArr.length; i++) {
+			    	let item = loopArr[i];
+			    	if (item.resUrl && item.resUrl == target) {
+			    			hasTarget = true;
+							return;
+			    	} else {
+			    		if(item.children && item.children.length>0){
+			    			queryList(item.children, target);		    			
+			    		}
+			    	}
+			    }
+			}
+	 		
+			const resourceData = _Storage.getObj(
+		      "jurisdictionList",
+		      "jurisdictionList"
+		    )?_Storage.getObj(
+		      "jurisdictionList",
+		      "jurisdictionList"
+		    ):[];
+
+	 		var hasTarget = false;
+			if(to.name != "login" && to.name != "index" 
+			&& to.name != "error" 
+			&& to.name!="informationManager-infoEdit"
+			&& to.name!="informationManager-infoDetail"
+			){
+				queryList(resourceData, to.name);
+
+				if(hasTarget){
+		      		next();
+		    }else{
+		     		hasTarget = false;
+		      		next({ path: '/error' })
+		      	}
+			}else{
+				next()
+			}
+	      	
+	    })
+	 }
+}

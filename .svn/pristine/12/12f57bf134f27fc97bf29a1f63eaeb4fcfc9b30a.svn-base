@@ -1,0 +1,571 @@
+<!-- 下行列表页 -->
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">企业管理</el-breadcrumb-item>
+        <el-breadcrumb-item>服务机构管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>服务机构管理</h3>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="企业名称:" prop="orgName" :label-width="labelWidth">
+            <el-input placeholder="请输入企业名称" v-model.trim="formData.unitName"></el-input>
+          </el-form-item>
+
+          <el-form-item label="合作模式:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.cooperateModel">
+              <el-option
+                v-for="item in cooperationModelData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="服务状态:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.status">
+              <el-option
+                v-for="item in serviceStateData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="运营中心:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.subCenterCode">
+              <el-option
+                v-for="item in opCenterData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="" class="serch-btn">
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset()">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" @row-click="openDetails" stripe show-overflow-tooltip>
+            <el-table-column label="企业名称" prop="serviceUnitName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="合作模式" prop="serviceUnitJoinModelText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="所属运营中心" prop="subCenterName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="服务状态" prop="dataStatusText" show-overflow-tooltip align="center">
+            </el-table-column>
+            <el-table-column label="操作" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" style="color: #999999;" v-if="checkState(scope.row.dataStatus)">启用</el-link>
+                <el-link type="primary" v-if="!checkState(scope.row.dataStatus)" @click="startClick(scope.row)">启用</el-link>
+                <el-link type="primary" v-if="!checkState(scope.row.dataStatus)" style="color: #999999;">停用</el-link>
+                <el-link type="primary" v-if="checkState(scope.row.dataStatus)" @click="stopClick(scope.row)">停用</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+        </div>
+      </div>
+    </div>
+
+    <el-dialog :title="optTitle" :visible.sync="dialogVisible" width="1200px">
+      <div class="dialog-body-diy-wrapper">
+        <h3 class="title" style="margin-top:20px;">基础信息</h3>
+        <el-row class="service-row">
+          <el-col :span="8">
+            <span>机构名称:{{rowData.serviceUnitName}}</span>
+          </el-col>
+          <el-col :span="8">
+            <span>机构类型:{{checkServicrUnitName()}}</span>
+          </el-col>
+          <el-col :span="8">
+            <span>合作模式:{{rowData.serviceUnitJoinModelText=="0"?"签约型":"非签约型"}}</span>
+          </el-col>
+        </el-row>
+        <el-row class="service-row">
+          <el-col :span="8">
+            <span>所在地:{{getCascadeName()}}</span>
+          </el-col>
+          <el-col :span="16">
+            <span>详细地址:{{rowData.unitAddress}}</span>
+          </el-col>
+        </el-row>
+        <el-row class="service-row">
+          <el-col :span="8">
+            <span>联系人:{{rowData.serviceUnitContacts}}</span>
+          </el-col>
+          <el-col :span="8">
+            <span>联系方式:{{rowData.serviceUnitTelphone}}</span>
+          </el-col>
+        </el-row>
+        <h3 class="title" style="margin-top:20px;">服务资质</h3>
+        <el-row class="service-row">
+          <el-col :span="24">
+            <span>资质名称:{{getAptitudeName()}}</span>
+          </el-col>
+        </el-row>
+        <el-row class="service-row">
+            <el-col :span="6" v-for="(o, index) in rowData.list" :key="o" :offset="index > 0 ? rowData.list.length : 0" v-if="o.attachmentType == 0">
+              <el-card :body-style="{ padding: '0px' }" >
+                <img :src="getImgShowText(index)" class="image"/>
+              </el-card>
+              <div style="padding: 14px;" >
+                <span>{{o.attachmentName}}</span>
+              </div>
+            </el-col>
+        </el-row>
+        <h3 class="title" style="margin-top:20px;">合同协议上传</h3>
+        <el-row class="service-row">
+          <el-col :span="12">
+            <span>合作期始:{{rowData.serviceUnitStartDate?rowData.serviceUnitStartDate.split(" ")[0]:""}}</span>
+          </el-col>
+          <el-col :span="12">
+            <span>合作期至:{{rowData.serviceUnitEndDate?rowData.serviceUnitEndDate.split(" ")[0]:""}}</span>
+          </el-col>
+        </el-row>
+        <el-row class="service-row" v-for="(o, index) in rowData.list" :key="o" :offset="index > 0 ? rowData.list.length : 0" >
+          <el-col :span="24" v-if="o.attachmentType == 1">
+            <span>服务合同:</span>
+            <span>{{o.attachmentName}}</span>
+          </el-col>
+        </el-row>
+        <div style="height: 40px"></div>
+      </div>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  import Pagination from "~/components/Pagination";
+  export default {
+    components: {
+      Pagination,
+    },
+    data() {
+      return {
+        flag: false,
+        isLoading: false,
+        labelWidth: "100px",
+
+        formData: {},
+        rowData:{},
+        unitId:"",
+        tableData: [],
+        loading: true,
+        pageNo: 1,
+        pageSize: 6,
+        total: 0,
+
+        widgetInfo: {
+          pageSize: 6,
+          pageNo: 1,
+          total: 0
+        },
+
+        indexNum: 0,
+        dialogVisible: false,
+        labelPosition: "top",
+        optTitle:null,
+        rules:{
+          parentCode:[
+            { required: true, message: '不能为空', trigger: 'blur' }
+          ],
+        },
+        //服务机构管理
+        cooperationModelData:[
+          {
+              value: '',
+              label: '全部'
+          },
+          {
+              value: '0',
+              label: '签约型'
+          },
+          {
+              value: '1',
+              label: '非签约型'
+          }
+        ],
+          // 服务状态
+        serviceStateData : [
+            {
+                value: '',
+                label: '全部'
+            },
+            {
+                value: '9',
+                label: '待启用'
+            },
+            {
+
+                value: '0',
+                label: '已启用'
+            },
+            {
+                value: '1',
+                label: '已停用'
+            },
+        ],
+        opCenterData:[
+            {
+                value: '',
+                label: '全部'
+            }
+        ],
+        aptitude_data:{
+            '0':'消防设施维护保养检测机构一级资质',
+            '1':'消防设施维护保养检测机构二级资质',
+            '2':'消防设施维护保养检测机构三级资质',
+            '3':'消防安全评估机构一级资质',
+            '4':'消防安全评估机构二级资质',
+            '5':'消防设施维护保养检测机构临时一级资质'
+        },
+      };
+    },
+    created() {
+      this.findAllSubCenterCode();
+    },
+    computed: {
+
+    },
+    methods: {
+        // 查询全部运营中心
+        findAllSubCenterCode() {
+            this.isLoading = true;
+            this.$axios
+                .$POST_NEW({
+                    api_name: "findAllSubCenterCode",
+                })
+                .then(res => {
+                    if (res.data.code == "success") {
+                        this.isLoading = false;
+                        var list = [];
+                        list = res.data.data;
+                        for (var key in list) {
+                            var temp = {};
+                            temp.value = list[key].value;
+                            temp.label = list[key].label;
+                            this.opCenterData.push(temp);
+                        }
+                    } else {
+                        this.opCenterData = [
+                            {
+                                value: '',
+                                label: '全部'
+                            }
+                        ];
+                    }
+                });
+        },
+        //获取数据
+        findMonitorDeviceStateDownList() {
+            var that = this;
+            this.isLoading = true;
+            this.$axios
+                .$POST_NEW({
+                    api_name: "queryServiceUnitList",
+                    params: {
+                        unitName: that.formData.unitName,
+                        cooperateModel: that.formData.cooperateModel,
+                        status:that.formData.status,
+                        subCenterCode:that.formData.subCenterCode,
+                        pageNo: that.widgetInfo.pageNo,
+                        pageSize: that.widgetInfo.pageSize
+                    }
+                })
+                .then(res => {
+                    if (res.data.code == "success") {
+                        that.isLoading = false;
+                        var data = res.data.data.rows;
+                        that.tableData = [];
+                        for (var key in data){
+                            that.tableData.push(that.tableRowClassName(data[key]));
+                        }
+                        that.widgetInfo.total = res.data.data.total === null ? 0 : res.data.data.total;
+                    } else {
+                        that.tableData = [];
+                        that.widgetInfo.list = res.data.data.rows;
+                        that.widgetInfo.total = 0;
+                    }
+                });
+        },
+        //分页
+        sonHandleCurrentChange(widgetInfo) {
+            this.widgetInfo.pageSize = widgetInfo.pageSize
+                ? parseInt(widgetInfo.pageSize)
+                : this.widgetInfo.pageSize;
+            this.widgetInfo.pageNo = widgetInfo.pageNo
+                ? parseInt(widgetInfo.pageNo)
+                : this.widgetInfo.pageNo;
+            this.findMonitorDeviceStateDownList();
+        },
+        //重置
+        reset() {
+            this.formData = {};
+            this.findMonitorDeviceStateDownList();
+        },
+        //查询
+        lookFor() {
+            this.findMonitorDeviceStateDownList();
+        },
+
+        checkState: function (state) {
+            if (state == '0') {
+                return state;
+            } else {
+                return null;
+            }
+        },
+
+        handleChange() {
+            console.log(JSON.stringify(this.value));
+            console.log(JSON.stringify(this.value1));
+        },
+
+        //停用按钮
+        stopClick: function (row) {
+            var that = this;
+            this.$confirm('确认停用企业?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.isLoading = true;
+                this.$axios
+                    .$POST_NEW({
+                        api_name: "enableServiceUnit",
+                        params: {
+                            serviceUnitId: row.id,
+                            operateType: '1',
+                            serviceId: row.serviceUnitId,
+                            serviceUnitCode: row.serviceUnitId,
+                            orgCode: row.subCenterCode,
+                            serviceUnitName: row.serviceUnitName,
+                            subCenterName: row.subCenterName
+                        }
+                    })
+                    .then(res => {
+                        this.isLoading = false;
+                        if (res.data.code == 'success') {
+                            that.$message.success("停用成功");
+                            // that.lookFor();
+                        } else {
+                            that.$message.success(res.data.message);
+                        }
+                    });
+            })
+        },
+
+        //启用按钮
+        startClick: function (row) {
+            var that = this;
+            this.$confirm('确认启用企业?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.isLoading = true;
+                this.$axios
+                    .$POST_NEW({
+                        api_name: "enableServiceUnit",
+                        params: {
+                            serviceUnitId: row.id,
+                            operateType: '0',
+                            serviceId: row.serviceUnitId,
+                            serviceUnitCode: row.serviceUnitId,
+                            orgCode: row.subCenterCode,
+                            serviceUnitName: row.serviceUnitName,
+                            subCenterName: row.subCenterName
+                        }
+                    })
+                    .then(res => {
+                        this.isLoading = false;
+                        if (res.data.code == 'success') {
+                            that.$message.success("启用成功");
+                            // that.lookFor();
+                        } else {
+                            that.$message.success(res.data.message);
+                        }
+                    });
+            });
+        },
+
+        tableRowClassName:function (row) {
+            // 业务状态要根据时间判断
+            var nowDate = new Date(new Date().toLocaleDateString()).getTime();
+            var serviceEndDate = new Date(row.serviceUnitEndDate).getTime();
+            if (row.serviceUnitEffectiveDate) {
+                if (nowDate >= serviceEndDate) {
+                    row.serviceStatusName = "服务期满";
+                } else if (nowDate < serviceEndDate) {
+                    row.serviceStatusName = "服务中";
+                }
+            } else {
+                row.serviceStatusName = "待服务";
+            }
+
+            // 服务状态转换
+            switch (row.dataStatus) {
+                case "9":
+                    row.dataStatusText = '待启用';
+                    break;
+                case "0":
+                    row.dataStatusText = '已启用';
+                    break;
+                case "1":
+                    row.dataStatusText = '已停用';
+                    break;
+                default:
+                    break;
+            }
+            // 合作模式状态转换
+            switch (row.serviceUnitJoinModel) {
+                case "0":
+                    row.serviceUnitJoinModelText = '签约型';
+                    break;
+                case "1":
+                    row.serviceUnitJoinModelText = '非签约型';
+                    break;
+                default:
+                    break;
+            }
+            return row;
+        },
+
+        //关闭弹框
+        handleClose() {
+            const that = this;
+            that.dialogVisible = false;
+        },
+
+        openDetails(row) {
+            console.log(row);
+            this.isLoading = true;
+            const that = this;
+            that.unitId = row.id,
+            that.optTitle = "查看服务机构信息";
+            this.$axios
+                .$POST_NEW({
+                    api_name: "queryServiceUnitById",
+                    params: {
+                        "operateType": "2",
+                        "serviceUnitId": that.unitId
+                    }
+                })
+                .then(res => {
+                    this.isLoading = false;
+                    if (res.data.code == 'success') {
+                        that.rowData = res.data.data;
+                        that.dialogVisible = true;
+                    } else {
+                        that.$message.warning(res.data.message);
+                    }
+                });
+        },
+        checkServicrUnitName:function () {
+            if (this.rowData.serviceUnitType === "0") {
+                return "维保公司";
+            } else if ("1" === this.rowData.serviceUnitType) {
+                return "年度检测公司";
+            } else if ("2" === this.rowData.serviceUnitType) {
+                return "风险评估公司";
+            }
+        },
+        getCascadeName:function () {
+            var cascadeName = "";
+            if (this.rowData.provinceName) {
+                cascadeName = this.rowData.provinceName;
+                if (this.rowData.cityName) {
+                    cascadeName = cascadeName + "/" + this.rowData.cityName;
+                }
+                if (this.rowData.countyName) {
+                    cascadeName = cascadeName + "/" + this.rowData.countyName;
+                }
+                return cascadeName;
+            }
+        },
+        getAptitudeName:function () {
+            if (this.rowData.serviceUnitAptitude){
+                var arr = this.rowData.serviceUnitAptitude.split(",");
+                var aptitudeName = "";
+                for (var k = 0; k < arr.length; k++) {
+                    aptitudeName += "," + this.aptitude_data[arr[k]];
+                }
+                aptitudeName = aptitudeName.substr(1);
+                return aptitudeName;
+            }
+        },
+        getImgShowText:function (index) {
+            var obj = this.rowData.list[index];
+            if (obj.attachmentType == "0"){
+                var imageUrl = "";
+                // imageUrl = "http://172.19.12.24:8099/operationManagement/"+ obj.attachmentUrl;
+                imageUrl = "http://172.19.12.24:8099/operationManagement/enterprise/6b267cd8f7364e4b87743ee45833b9ba.png";
+                return imageUrl;
+            }
+        },
+    }
+  }
+</script>
+
+<style lang="scss" scoped>
+  @import "~/assets/css/list.scss";
+  .dialog-body-diy-wrapper{
+    font-size: 16px;
+    /*margin: 10px;*/
+  }
+  .el-col{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .title {
+    font-size: 18px;
+    font-weight: 400;
+    color: rgba(37, 40, 46, 1);
+    margin: 5px 0 10px 0;
+  }
+  .service-row{
+    margin-left: 40px;margin-right: 40px;
+  }
+  .image {
+    width: 100%;
+    display: block;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+</style>

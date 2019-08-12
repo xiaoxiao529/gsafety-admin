@@ -1,0 +1,208 @@
+/*
+ * @Author: TanZer.hanyu
+ * @Date: 2019-05-10 15:28:08
+ * --- api配置项 ---
+ * */
+const getTargetHost = (milieu) => {
+  switch (milieu) {
+    case 'dev':
+      //return 'http://172.19.12.52:9001'; //内网--贺伟
+      return 'http://172.19.13.17:8099'; //内网--朱先君
+      //return 'http://172.19.12.180:9000'; //内网-测试地址
+      // return 'http://172.19.12.24:9002'; //组织架构
+      // return 'http://172.19.12.209:9832';
+    case 'test': // 测试
+      //  return 'http://172.19.12.194:9834/api/v1';
+      return 'http://112.27.198.15:9834';
+    case 'pro': // 生产
+      return 'www.gsafetycloud.com';
+    case 'pre': // 预生产
+      return 'test.gsafetycloud.com';
+    default:
+      return milieu;
+  }
+};
+
+export default {
+  // apiHost: "https://api.douban.com/",
+  apiHost: getTargetHost(process.env.milieu),
+  api: {
+    findMonitorDeviceStateDownList: "/api/v1/user-center-service/monitorDeviceState/findMonitorDeviceStateDownList", //硬件平台-下行控制列表
+    findSubCenterValue: "/api/v1/user-center-service/monitorDeviceState/findSubCenterValue", //硬件平台-下行控制-运营中心下拉框
+    hnlaSendDown: "/api/v1/user-center-service/monitorDeviceState/hnlaSendDown", //硬件平台-发送河南力安下行命令
+    sendCommand: "/api/v1/user-center-service/monitorDeviceState/sendCommand", //硬件平台-发送北京乐鸟下行命令
+    findMonitorDeviceStateExtByMonitorId: "/api/v1/user-center-service/monitorDeviceState/findMonitorDeviceStateExtByMonitorId", //根据监测设备ID获取设备阈值信息---立安
+    findUnitValue: "/api/v1/user-center-service/monitorDeviceState/findUnitValue", //根据监测设备ID获取设备阈值信息---立安
+    login: "/api/v1/upms-service/login/login", //系统登录,
+    findUserByUserId: "/api/v1/upms-service/user/findUserByUserId", //根据用户id获取用户详情信息,
+    getRopositoryRecordPage: "/api/v1/user-center-service/rep/getRopositoryRecordPage", // 获取出入库记录分页
+    getDeviceByRecordId: "/api/v1/user-center-service/rep/getDeviceByRecordId", //出入库记录-查询出入库记录所涉及的设备信息
+    getHardwareTypePage: "/api/v1/user-center-service/hardwareType/getHardwareTypePage", //硬件类型
+    deleteHardwareType: "/api/v1/user-center-service/hardwareType/deleteHardwareType", //删除硬件类型
+    addHardwareType: "/api/v1/user-center-service/hardwareType/addHardwareType", //添加设备类型
+    getHardwareTypeTree: "/api/v1/user-center-service/hardwareType/getHardwareTypeTree", //获取设备类型树
+    updateHardwareType: "/api/v1/user-center-service/hardwareType/updateHardwareType", //更新设备类型
+    findTotalNum: "/api/v1/user-center-service/homepage/findTotalNum", //首页-总数统计
+    findEnterpriseUnitModelCount: "/api/v1/user-center-service/homepage/findEnterpriseUnitModelCount", //首页-服务模式分布
+    newUnitForSixMonth: "/api/v1/user-center-service/homepage/newUnitForSixMonth", //新增企业趋势
+    getEnterpriseDevice: "/api/v1/user-center-service/homepage/getEnterpriseDevice", //硬件设备供应分类
+    findProjectDeviceList: "/api/v1/user-center-service/monitorDeviceStateInfo/findProjectDeviceList", //项目设备列表-表格数据
+    findDeviceOfflineHisList: "/api/v1/user-center-service/monitorDeviceStateInfo/findDeviceOfflineHisList", //项目设备列表-表格数据
+    findDeviceIdValue: "/api/v1/user-center-service/monitorDeviceStateInfo/findDeviceIdValue", //项目设备列表-获取一二级设备下拉框
+    findEnclosureManageList: "/api/v1/user-center-service/enclosureManage/findEnclosureManageList", //附件管理-表格数据
+    findHardwareDeviceControlRecordList: "/api/v1/user-center-service/monitorDeviceState/findHardwareDeviceControlRecordList", //设备下行记录列表
+    findRoleListBySysCode: "/api/v1/upms-service/role/findRoleListBySysCode", //根据系统code获取角色列表
+    findUserListBySysCodeAndOrgCode: "/api/v1/upms-service/user/findUserListBySysCodeAndOrgCode", //根据系统CODE、组织机构CODE获取用户列表
+    getAllParentTypeInfo: "/api/v1/user-center-service/hardwareType/getAllParentTypeInfo", //更新设备类型
+    getDeviceRepositoryPage: "/api/v1/user-center-service/rep/getDeviceRepositoryPage", //,获取设备库存列表分页
+    putInRepository: "/api/v1/user-center-service/rep/putInRepository", //入库
+    downLoadExcelTemplate: "/api/v1/user-center-service/rep/downLoadExcelTemplate", //导入序列号模板
+    putOutRepository: "/api/v1/user-center-service/rep/putOutRepository", //正常出库
+    destroyOutRepository: "/api/v1/user-center-service/rep/destroyOutRepository", //销库出库
+    getAllOrgInfo: "/api/v1/user-center-service/record/getAllOrgInfo", //获取所有的运营中心
+    getUnitInfoByOrgCode: "/api/v1/user-center-service/record/getUnitInfoByOrgCode", //获取某运营中心下的单位信息
+    backInToRepository: "/api/v1/user-center-service/rep/backInToRepository", //回退入库
+    downloadDeviceRepositoryExcel: "/api/v1/user-center-service/rep/downloadDeviceRepositoryExcel", //导出设备库存excel信息
+    deleteUser: "/api/v1/upms-service/user/deleteUser", //删除用户信息
+    resetPasswordByUserId: "/api/v1/upms-service/user/resetPasswordByUserId", //重置密码
+    deleteEnclosureManageInfoById: "/api/v1/user-center-service/enclosureManage/deleteEnclosureManageInfoById", //附件管理-删除附件
+    addEnclosureManageInfo: "/api/v1/user-center-service/enclosureManage/addEnclosureManageInfo", //附件管理-上传附件
+    uploadfile:"/zuul/api/v1/user-center-service/enclosureManage/uploadfile",//附件管理-上传附件
+    downAttachment:"/zuul/api/v1/user-center-service/enclosureManage/downAttachment",//附件管理-下载附件
+    findRoleListBySysCodeAndPager: "/api/v1/upms-service/role/findRoleListBySysCodeAndPager", //角色管理-获取角色列表
+    addRole: "/api/v1/upms-service/role/addRole", //角色管理-获取角色列表
+    updateRole: "/api/v1/upms-service/role/updateRole", //角色管理-编辑权限
+    deleteRole: "/api/v1/upms-service/role/deleteRole", //角色管理-删除角色
+    findRoleById: "/api/v1/upms-service/role/findRoleById", //角色管理-获取角色信息详情
+    addUser: "/api/v1/upms-service/user/addUser", //新增用户
+    cancelUserByUserId: "/api/v1/upms-service/user/cancelUserByUserId", //根据用户ID/所属系统/所属机构注销用户，仅注销用户授权信息
+    restoreUserByUserId: "/api/v1/upms-service/user/restoreUserByUserId", //通过用户id与系统编码还原已注销用户信息（仅恢复授权信息）
+    modifyUser: '/api/v1/upms-service/user/updateUser', //修改用户基本信息
+    findAllResourceBySysCode: "/api/v1/upms-service/res/findAllResourceBySysCode", //资源管理-根据系统CODE获取资源列表（patent=-1）
+    deleteResource: "/api/v1/upms-service/res/deleteResource", //资源管理-删除资源
+    findResourceBySysCode: "/api/v1/upms-service/res/findResourceBySysCode", //资源管理-根据系统CODE获取资源列表（添加）
+    addResource: "/api/v1/upms-service/res/addResource", //资源管理-新增资源
+    updateResourceA: "/api/v1/upms-service/res/updateResource", //资源管理-修改资源
+    updateVisibled: "/api/v1/upms-service/res/updateVisibled", //资源管理-设备资源可见/不可见
+    findTreeBySysCode: "/api/v1/upms-service/res/findTreeBySysCode", //角色管理-获取角色资源列表  1显示全部的
+    findResourceByRoleId: "/api/v1/upms-service/role/findResourceByRoleId", //角色管理-通过角色id获取资源列表 2显示全部里面已经勾选的
+    giveRolesForResource: "/api/v1/upms-service/role/giveRolesForResource", //角色管理-点击确定按钮，3更新资源选中情况
+    checkUserPassword: "/api/v1/upms-service/user/checkUserPassword", //修改密码-查询旧密码是否正确
+    modifyUserPassword: "/api/v1/upms-service/user/modifyUserPassword", //修改密码-修改密码
+
+    queryOperationOrgList: "/mainOperationOrgController/queryOperationOrgList", //查询运营中心列表
+    queryDistrictCascodeProvince: "/mainOperationOrgController/queryDistrictCascodeProvince", //查询区域
+    deleteOperationOrgByOrgCode: "/mainOperationOrgController/deleteOperationOrgByOrgCode", //删除运营中心
+    updateOperationOrgServerStatusByOrgCode: "/mainOperationOrgController/updateOperationOrgServerStatusByOrgCode", //改变运营中心状态
+    queryOperationOrgByOrgCode: "/mainOperationOrgController/queryOperationOrgByOrgCode", //编辑运营中心
+    queryDistrictCascode: "/serviceunit/queryDistrictCascode", //服务区域
+    downloadAttachById: "/mainOperationOrgController/downloadAttachById", //下载文件
+    findAllSubCenterCode: "/generalownerunit/findAllSubCenterCode", //查询全部运营中心
+    queryEnterpriseUnitList: "/generalownerunit/queryEnterpriseUnitList", //查询业主单位列表
+    queryFreeUnitUpdateApplyList: "/generalfreeunitupdateapply/queryFreeUnitUpdateApplyList", //免费企业升级申请列表
+    updateEnterpriseStatus: "/generalownerunit/updateEnterpriseStatus", //变更企业状态
+    queryGeneralOrgServiceType: "/unitServiceType/queryGeneralOrgServiceType", //业主单位管理高级搜索
+    findAllParentUnit: "/generalownerunit/findAllParentUnit", //所属集团数据
+    applyRefuse: "/freeunitupdateapply/applyRefuse", //拒绝企业升级
+    applyDispatch: "/generalfreeunitupdateapply/applyDispatch", //分配运营中心
+
+    ownerunitupdateEnterpriseStatus: "/ownerunit/updateEnterpriseStatus", //删除运营中心企业
+    queryServiceAgreementByUnitId: "/ownerunit/queryServiceAgreementByUnitId", //变更服务
+    editEnterpriseUnitById: "/ownerunit/editEnterpriseUnitById", //编辑业主单位信息接口
+    uploadEnterpriseAttach: "/ownerunit/uploadEnterpriseAttach", //业主单位上传合同
+
+    downloadDeviceRepositoryExcelByConditions: '/api/v1/user-center-service/rep/downloadDeviceRepositoryExcelByConditions', //根据条件导出设备excel信息
+
+    getSystemListNoPage: "/api/v1/upms-service/system/getSystemListNoPage", //工具平台-权限平台
+    findOrgBySysCode: "/api/v1/upms-service/org/findOrgBySysCode", //工具平台-权限平台
+    getSystemList: "/api/v1/upms-service/system/getSystemList", //工具平台-权限平台
+    addSystem: "/api/v1/upms-service/system/addSystem", //工具平台-权限平台
+    updateSystem: "/api/v1/upms-service/system/updateSystem", //工具平台-权限平台
+    updateSysStatus: "/api/v1/upms-service/system/updateSysStatus", //工具平台-权限平台
+    deleteSystem: "/api/v1/upms-service/system/deleteSystem", //工具平台-权限平台
+
+    findActualUserList: "/userInfor/findActualUserList", //实际用户
+    getAuthSystemList: "/userInfor/getAuthSystemList", //关联应用
+
+    queryInformationSource: "/serviceinformation/queryInformationSource", //资讯管理-查询资讯来源
+    queryInformationList: "/serviceinformation/queryInformationList", //资讯管理-查询资讯列表
+    queryInformationById: "/serviceinformation/queryInformationById", //资讯管理-资讯预览
+    updateInformationStatus: "/serviceinformation/updateInformationStatus", //资讯管理-资讯预览
+    saveServiceInformationInfo: "/serviceinformation/saveServiceInformationInfo", //资讯管理-资讯保存
+    uploadThumbnailImage:"/serviceinformation/uploadThumbnailImage", //资讯管理-App缩略图上传
+
+    updateEnterpriseUnitById:"/groupunit/updateEnterpriseUnitById",//确认分配运营中心
+    queryGroupAllOrgNames:"/groupunit/queryGroupAllOrgNames",
+    queryEnterpriseUnitsByGropId:"/groupunit/queryEnterpriseUnitsByGropId",//分派运营中心
+    queryGroupUnitList:"/groupunit/queryGroupUnitList",//获取集团客户
+    queryServiceUnitById:"/serviceunit/queryServiceUnitById",
+    getOperationOrgTree: "/user/getOperationOrgTree", //运营中心-企业用户 - 运营中心用户 -左侧树结构
+    queryUserListBySysCodeAndOrgCode: "/user/queryUserListBySysCodeAndOrgCode", //运营中心-企业用户 - 运营中心用户 -左侧树结构
+    saveOrUpdateUser: "/user/saveOrUpdateUser", //运营中心-企业用户 - 运营中心用户 -新增或者修改用户
+    findRoleListBySysCodeAndOrgCode: "/user/findRoleListBySysCodeAndOrgCode", //运营中心-企业用户 - 运营中心用户 -根据系统code与组织机构code获取角色列表
+    findAdminUser: "/user/findAdminUser", //运营中心-企业用户 - 运营中心用户 -根据系统CODE、组织机构CODE获取管理员账号
+    resetPasswordByUserIdBusiness: "/user/resetPasswordByUserId", //运营中心-企业用户 - 运营中心用户 -密码重置
+    getLock: "/user/lockOrUnlockUserAuthBySysCodeAndOrgCode", //运营中心-企业用户 - 运营中心用户 -锁定账号
+    findUserByUserTelphone: "/user/findUserByUserTelphone", //运营中心-企业用户 - 运营中心用户 -验证手机号是否已存在
+
+    getRecordEnterpriseUnitTree: "/user/getRecordEnterpriseUnitTree", //运营中心-企业用户 - 事业单位  左侧树结构
+    findAllDeptAndPostNoTree: "/userPost/findAllDeptAndPostNoTree", //运营中心-企业用户 - 事业单位  岗位信息
+
+    getServiceUnitTree: "/user/getServiceUnitTree", //运营中心-企业用户 - 服务机构用户  左侧树
+
+    queryServiceUnitList:"/generalserviceunit/queryServiceUnitList",//服务机构列表
+
+    ///////数据中心
+    getAlarmDataOfCompany:"fireAlarm/getAlarmDataOfCompany",//企业报价统计
+    getAlarmDataOfService:"fireAlarm/getAlarmDataOfService",//运营中心报警统计 昨天
+    getCallTimeDetails:"fireAlarm/getCallTimeDetails",//通话时间明细(昨天)
+    getFireAlarmDetails:"fireAlarm/getFireAlarmDetails",//企业火警明细
+    newUserInNewCompany:"theSecondPart/newUserInNewCompany",//企业新增账号
+    businessActivity:"theSecondPart/businessActivity",//企业活跃情况统计
+
+    getRegiAndSysUserNumberYesterday:"userStatistics/getRegiAndSysUserNumberYesterday",//企业侧用户中注册用户数量、机构用户数量(昨天)
+    getRegiAndSysUserNumber:"userStatistics/getRegiAndSysUserNumber",//企业侧用户中注册用户数量、机构用户数量(全部)
+    getNumberOfOldUser:"userStatistics/getNumberOfOldUser",//各侧已开通用户数(不包含当天的和已注销用户)
+    getNumberOfNewUser:"userStatistics/getNumberOfNewUser",//统计各侧新增的用户数(昨天)
+    getNumberOfCancelUser:"userStatistics/getNumberOfCancelUser",//各侧注销的用户数(不包含当天)
+    getNewUserDetails:"userStatistics/getNewUserDetails",//企业侧新增用户明细(昨天)
+    getFullData:"userStatistics/getFullData",//全量数据
+    getCancelUserDetailsYesterday:"userStatistics/getCancelUserDetailsYesterday",//企业侧注销用户明细(昨天)
+    getCancelUserAllDetails:"userStatistics/getCancelUserAllDetails",//企业侧注销用户明细(全部)
+    getAppSystemListNoPage: "/userInfor/getSystemListNoPage", //有效用户-所属应用
+    findUserOrgBySysCode: "/userInfor/findOrgBySysCode", //有效用户-所属单位下拉
+    findUserInfoListBySysCodeAndOrgCode: "/userInfor/findUserListBySysCodeAndOrgCode", //有效用户-列表
+    lockOrUnlock: "/user/lockOrUnlockUserAuthBySysCodeAndOrgCode", //锁定和解锁
+    userfindUserByUserId: '/userInfor/findUserByUserId', //获取用户信息
+
+
+    enableServiceUnit: "/generalserviceunit/enableServiceUnit", //服务机构管理停用按钮
+    queryUserType: '/userTypeController/queryUserType', //用户类型配置-用户类型获取
+    queryRole: '/userTypeController/queryRole', //用户类型配置-角色获取
+    querySaveUserTypeConInfo: '/userTypeController/querySaveUserTypeConInfo', //用户类型配置-查询已保存用户类型配置
+    saveUserTypeConInfo: '/userTypeController/saveUserTypeConInfo', //用户类型配置-保存用户类型配置
+    getCompanyDepartmentTree: "/userCenter/companyDepartment/getCompanyDepartmentTree", //获取组织架构数据
+    syncCompanyDepartmentTreeData: "/api/v1/user-center-service/companyDepartment/syncCompanyDepartmentTreeData", //同步组织架构数据
+
+    queryOperatorOrgList: '/operationOrgMonitor/queryOperatorOrgList', //监测区域设置-运营中心以及被监测运营中心列表
+    queryToBeSelectedOperatorOrgList: '/operationOrgMonitor/queryToBeSelectedOperatorOrgList', //监测区域设置-待选择运营中心
+    saveOperatorOrgMinitor: '/operationOrgMonitor/saveOperatorOrgMinitor', //监测区域设置-保存
+
+    jkgetFireAlarmDetails:"jingkaiData/getEquipmentInspection",
+    getAlerm:"jingkaiData/getAlerm",
+    getAlarmCheck:"jingkaiData/getAlarmCheck",
+    getEquipmentOffOrLine:"jingkaiData/getEquipmentOffOrLine",
+    getEquipmentOffline:"jingkaiData/getEquipmentOffline",
+    getFireCheckYesterday:"jingkaiData/getFireCheckYesterday",
+    getFireDuty:"jingkaiData/getFireDuty",
+    getFirePatrol:"jingkaiData/getFirePatrol",
+    getFirePatrolYesterday:"jingkaiData/getFirePatrolYesterday",
+    getIOTEquipmentNum:"jingkaiData/getIOTEquipmentNum",
+    getPatrolInspectionInfo:"jingkaiData/getPatrolInspectionInfo",
+    getRiskManage:"jingkaiData/getRiskManage",
+
+  },
+
+  // websocket地址
+  wsHost: ""
+}

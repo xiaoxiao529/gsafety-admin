@@ -1,0 +1,94 @@
+<template>
+  <div class="DialogSettingWrap">
+    <el-dialog
+      :title="title"
+      :visible.sync="dialogSettingVisible"
+      width="768px">
+      <!--        <el-scrollbar></el-scrollbar>-->
+      <div class="setting-warpper">
+        <div class="setting-left">
+          <div class="setting-left-top">
+            <div class="title">待选择监测区域配置（1/10家):</div>
+            <el-input
+              placeholder="请输入内容"
+              v-model="searchInput">
+              <i slot="suffix" class="el-input__icon el-icon-search"></i>
+            </el-input>
+          </div>
+        </div>
+        <div class="setting-right">main</div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button>取 消</el-button>
+        <el-button type="primary">确 定</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        dialogSettingVisible: true,
+        title:'设置(合肥市运营中心)',
+        searchInput:''
+      };
+    },
+    mounted() {
+
+    },
+    computed: {},
+    methods: {
+      /**
+       * 弹框显示
+       */
+      initSettingInfo(){
+        const that= this;
+        that.dialogSettingVisible=true;
+        that.isLoading = true;
+      }
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .DialogSettingWrap{
+    font-family:MicrosoftYaHei;
+    /deep/.el-dialog__body{
+      padding: 0;
+
+      border-bottom: 1px solid #e1e5eb;
+      overflow: hidden;
+    }
+    /deep/.el-dialog__footer{
+      padding: 15px 20px;
+    }
+    .setting-warpper{
+      display: flex;
+      height: 100%;
+      overflow: hidden;
+      box-sizing: border-box;
+      .el-scrollbar{
+        width: 50%;
+        height: 100%;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .setting-left{
+        border-right: 1px solid #e1e5eb;
+        width: 50%;
+        .setting-left-top{
+          padding: 10px 15px;
+          .title{
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: rgba(37,79,133,1);
+          }
+        }
+      }
+      .setting-right{
+        width: 50%;
+      }
+    }
+
+  }
+</style>

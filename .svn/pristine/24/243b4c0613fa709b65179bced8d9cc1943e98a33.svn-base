@@ -1,0 +1,314 @@
+<template>
+	<div>
+		<div class="Crumbs">
+	      <el-breadcrumb separator-class="el-icon-arrow-right">
+	        <el-breadcrumb-item>运营中心</el-breadcrumb-item>
+	        <el-breadcrumb-item>资讯管理</el-breadcrumb-item>
+	        <el-breadcrumb-item>添加资讯</el-breadcrumb-item>
+	      </el-breadcrumb>
+	    </div>
+		<div>
+
+			<a href="javascript:;" class="yy-form-back" @click="backHandle"><i class="iconfont icon-arrow-2 backC"></i></a>
+
+			<el-form :model="formData" ref="formData" class="hardware-form" :rules="rules">
+	          	<el-form-item label="资讯标题:"  :label-width="labelWidth" prop="informationTitle">
+		            <el-input placeholder="请输入" v-model.trim="formData.informationTitle"></el-input>
+		        </el-form-item>
+		        <el-form-item label="资讯来源:" :label-width="labelWidth" prop="informationSource">
+		           	<el-input placeholder="请输入" v-model.trim="formData.informationSource"></el-input>
+		        </el-form-item>
+		        <el-form-item label="发布对象:" :label-width="labelWidth">
+		        	<a class="yy-publish-object--item"  date-item="0" 
+		        		v-for="(item,index) in btnArr" :class="{ isActive:item.isActive}" @click="isChoose(item,index)">{{item.name}}</a>
+		        </el-form-item>
+		        <el-form-item label="App缩略图:" :label-width="labelWidth">
+	                <el-upload
+					  class="upload-demo"
+		              action="/gsafetyclound/userCenter/enclosureManage/uploadfile"
+		              :limit="1">
+					  <el-button size="small" type="primary"><i class="el-icon-circle-plus"></i>上传文件</el-button>
+					  <div slot="tip" class="el-upload__tip">* 支持jpg/png/bmp格式</div>
+					</el-upload>
+		        </el-form-item>
+		        <el-form-item label="资讯内容:" :label-width="labelWidth">
+	                <!--<div id="zxfbUeditorId"></div>-->
+	                <quill-editor v-model="content"
+					                ref="myQuillEditor"
+					                :options="editorOption"
+					                @blur="onEditorBlur($event)"
+					                @focus="onEditorFocus($event)"
+					                @ready="onEditorReady($event)">
+					  </quill-editor>
+		        </el-form-item>
+		        <el-form-item label="发布时间:" :label-width="labelWidth" prop="publishDate">
+		           	<el-date-picker
+				      v-model="formData.publishDate"
+				      type="datetime"
+				      format="yyyy-MM-dd HH:mm:ss"
+              		  value-format="yyyy-MM-dd HH:mm:ss"
+				      placeholder="选择日期时间">
+				    </el-date-picker>
+		        </el-form-item>
+		        <el-form-item label="发布时间:" :label-width="labelWidth">
+		           	<el-button type="primary" @click="saveButton('formData')">完成并提交</el-button>
+		        </el-form-item>
+	        </el-form>
+		</div>
+	</div>
+</template>
+
+
+<script type="text/javascript">
+import $ from 'jquery'
+export default {
+	data: function () {
+	  return {
+	    inforId:"",
+	    labelWidth:"100px",
+	    formData:{
+	    	informationTitle:"",
+	    	informationSource:"辰安云服",
+	    	fileList: [],
+	    	infoTime:"",
+	    	publishDate:""
+	    },
+	    content: ``,
+        editorOption: {},
+        btnArr:[
+        	{name:'App', id:0,isActive:true},
+            {name:'web', id:1,isActive:false},
+            {name:'大屏', id:2,isActive:false},
+        ],
+        editData:{},
+        isChange:[],
+        rules:{
+	        publishDate: [
+	            { required: true, message: '请选择发布时间', trigger: 'change' }
+	        ],
+	        informationTitle:[
+	        	{ required: true, message: '资讯标题不能为空', trigger: 'blur' },
+	        ],
+	        informationSource:[
+	        	{ required: true, message: '资讯来源不能为空', trigger: 'blur' },
+	        ]
+        }
+        
+	  }
+	},
+	methods:{
+		onEditorReady(editor) { // 准备编辑器
+        },
+        isChoose(item,index){
+        	
+        	this.btnArr[index].isActive = !this.btnArr[index].isActive
+        	
+        },
+        onEditorBlur(){}, // 失去焦点事件
+        onEditorFocus(){}, // 获得焦点事件
+        onEditorChange(){}, // 内容改变事件
+        saveHtml:function(event){
+          alert(this.content);
+        },
+
+		backHandle(){
+			this.$router.push({
+		        name: "informationManager",
+		   });
+		},
+		saveButton(formName){
+			var that = this;
+			
+			this.isChange = [];
+			for(var i=0;i<this.btnArr.length;i++){
+				if(this.btnArr[i].isActive){
+					this.isChange.push(this.btnArr[i].id)
+				}
+			}
+
+			if (this.isChange.length==0) {
+	          this.$message.error("请选择发布对象");
+	          return false;
+	        }
+			
+			if (this.content == "") {
+	          this.$message.error("请填写资讯内容");
+	          return false;
+	        }
+			this.$refs[formName].validate((valid) => {
+            if (valid) {
+              this.$axios
+                .$POST_NEW({
+                  api_name: "saveServiceInformationInfo",
+                  params: {
+                    id:that.inforId,
+                    subCenterCode: "",
+                    informationTitle:this.formData.informationTitle,
+                    informationSource:this.formData.informationSource,
+                    publishTarget:this.isChange.sort().join(),
+                    informationContent:this.content,
+                    publishDate:this.formData.publishDate,
+                    breviaryImgUrl:""
+                  }
+                })
+                .then(res => {
+                  if (res.data.code == "success") {
+                  	this.isChange = [];
+                    this.$message.success(res.data.message);
+                    this.$router.push({
+				        name: "informationManager",
+				      });
+                  } else {
+                    this.$message.error(res.data.message);
+                  }
+                }).catch(() => {
+
+              });
+            } else {
+              return false;
+            }
+          });
+		},
+		
+	},
+	mounted() {
+
+	},
+}
+</script>
+
+<style scoped lang="scss">
+body{
+	color: red;
+}
+
+.el-button.isActive {
+    color: #009cff;
+    background-color: #fff;
+    border-color: #009cff;
+    b{
+    	display: block;
+    }
+}
+
+.yy-form-back{
+	text-decoration: none;
+}
+.yy-form-back .iconfont {
+    font-size: 26px;
+    color: #737373;
+}
+#inforDetail{
+	padding: 10px;
+	background: #fff;
+}
+</style>
+
+
+<style>
+.editor {
+  line-height: normal !important;
+  height: 800px;
+}
+.ql-snow .ql-tooltip[data-mode=link]::before {
+  content: "请输入链接地址:";
+}
+.ql-snow .ql-tooltip.ql-editing a.ql-action::after {
+    border-right: 0px;
+    content: '保存';
+    padding-right: 0px;
+}
+
+.ql-snow .ql-tooltip[data-mode=video]::before {
+    content: "请输入视频地址:";
+}
+
+.yy-publish-object--item {
+    position: relative;
+    display: inline-block;
+    width: 74px;
+    height: 34px;
+    text-align: center;
+    line-height: 34px;
+    font-size: 16px;
+    color: #666;
+    margin-right: 5px;
+    cursor: pointer;
+    border: 1px solid #cacaca;
+}
+.yy-publish-object--item b{
+    position: absolute;
+    bottom: -3px;
+    right: -2px;
+    font-size: 20px;
+    color: #009cff;
+    display: none;
+}
+.yy-publish-object--item.isActive {
+    color: #009cff;
+    background-color: #fff;
+    border-color: #009cff;
+    b{
+    	display: block;
+    }
+}
+
+.ql-snow .ql-picker.ql-size .ql-picker-label::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item::before {
+  content: '14px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=small]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=small]::before {
+  content: '10px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=large]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=large]::before {
+  content: '18px';
+}
+.ql-snow .ql-picker.ql-size .ql-picker-label[data-value=huge]::before,
+.ql-snow .ql-picker.ql-size .ql-picker-item[data-value=huge]::before {
+  content: '32px';
+}
+
+.ql-snow .ql-picker.ql-header .ql-picker-label::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item::before {
+  content: '文本';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="1"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="1"]::before {
+  content: '标题1';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="2"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="2"]::before {
+  content: '标题2';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="3"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="3"]::before {
+  content: '标题3';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="4"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="4"]::before {
+  content: '标题4';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="5"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="5"]::before {
+  content: '标题5';
+}
+.ql-snow .ql-picker.ql-header .ql-picker-label[data-value="6"]::before,
+.ql-snow .ql-picker.ql-header .ql-picker-item[data-value="6"]::before {
+  content: '标题6';
+}
+
+.ql-snow .ql-picker.ql-font .ql-picker-label::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item::before {
+  content: '标准字体';
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=serif]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=serif]::before {
+  content: '衬线字体';
+}
+.ql-snow .ql-picker.ql-font .ql-picker-label[data-value=monospace]::before,
+.ql-snow .ql-picker.ql-font .ql-picker-item[data-value=monospace]::before {
+  content: '等宽字体';
+}
+</style>
