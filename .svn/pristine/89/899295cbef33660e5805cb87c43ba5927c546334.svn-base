@@ -1,0 +1,1337 @@
+<template>
+  <div class="configuration-parameter-wrapper">
+    <h3 class="title">接收区</h3>
+   <div  class="block-num">
+     <el-scrollbar  style="height:100%">
+       <ul class="block-num-main">
+         <li class="li-item" v-for="item of monitorDeviceArry">
+           <p style="color: rgb(46, 127, 228)">{{item.createTime}}</p>
+           <p>{{item.datas}}</p>
+         </li>
+       </ul>
+     </el-scrollbar>
+   </div>
+    <div class="tab-content-detail control-operation btn-wrapper">
+      <div class="btn-wrapper-left">
+        <el-button size="mini" :disabled="btn1" @click="getNewInfo('7','1','0')">最新参数获取</el-button>
+        <el-button size="mini" :disabled="btn2" @click="getNewInfo('9','2','0')">查询设备版本号</el-button>
+      </div>
+      <div class="">
+        <el-button :disabled="monitorDeviceArry.length == 0" size="mini" @click="clear">清空</el-button>
+      </div>
+    </div>
+    <template class="tab-content-detail">
+      <!-- 串口-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">串口</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configCk"
+          label-width="100%"
+          :model="configParameter.chuankou"
+          class="el-form-diy"
+        >
+          <el-form-item label="通道" class="" prop="ckTongdaoVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuankou.ckTongdaoVal"
+                         placeholder="请选择"
+                         class="selet-width-100"
+                         filterable
+                         @change="ckTdChange(configParameter.chuankou.ckTongdaoVal)"
+              >
+                <el-option
+                  v-for="item of ckTongdao"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="波特率" class="" prop="ckBotelvVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuankou.ckBotelvVal" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of ckBotelv"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="数据位" class="" prop="ckShujuweiVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuankou.ckShujuweiVal" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of ckShujuwei"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="校验位" class="" prop="ckJiaoyanweiVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuankou.ckJiaoyanweiVal" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of ckJiaoyanwei"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                  :disabled="item.disabled"
+                >
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="停止位" class="" prop="ckTingzhiweiVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuankou.ckTingzhiweiVal" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of ckTingzhiwei"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('1','chuankou','configCk')"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!--  远程服务器-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">远程服务器</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configYcfwq"
+          label-width="100%"
+          :model="configParameter.remoteServer"
+          class="el-form-diy"
+        >
+          <el-form-item label="通道" class="" prop="ycTongdaoVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.remoteServer.ycTongdaoVal"
+                         placeholder="请选择"
+                         class="selet-width-100"
+                         filterable
+                         @change="ycfwqTdChange(configParameter.remoteServer.ycTongdaoVal)">
+                <el-option
+                  v-for="item of ycTongdao"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="IP" class="" prop="ycIP">
+            <div class="item-warpper">
+              <el-input v-model.trim="configParameter.remoteServer.ycIP" placeholder="0.0.0.0" class="selet-width-100" >
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="端口" class="" prop="ycDuankou">
+            <div class="item-warpper">
+              <el-input maxlength="5" show-word-limit v-model.trim="configParameter.remoteServer.ycDuankou" placeholder="请输入1~65535范围内的端口" class="selet-width-100" >
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="开关" class="" prop="ycOnoff">
+            <div class="item-warpper">
+              <el-switch
+                v-model="configParameter.remoteServer.ycOnoff"
+                active-color="#1C77FF"
+                inactive-color="#CCD4E0"
+                active-value="1"
+                inactive-value="0"
+                active-text="开"
+                inactive-text="关"
+              ></el-switch>
+            </div>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submintTips('2','remoteServer','configYcfwq')"
+
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!--  用传编码-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">用传编码</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configYcbm"
+          label-width="100%"
+          :model="configParameter.yongchuan"
+          class="el-form-diy"
+        >
+
+          <el-form-item label="用传编码" class="" prop="sourceCode">
+            <div class="item-warpper">
+              <el-input v-model.trim="configParameter.yongchuan.sourceCode"
+                        placeholder="请输入8位数字的用传编码"
+                        maxlength="8" show-word-limit
+                        class="selet-width-100">
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="findMonitorDeviceStateByControlHostAndSourceId"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 传输方式-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">传输方式</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configCsfs"
+          label-width="100%"
+          :model="configParameter.chuanshu"
+          class="el-form-diy"
+        >
+          <el-form-item label="通道" class="" prop="csTongdaoVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuanshu.csTongdaoVal"
+                         placeholder="请选择"
+                         class="selet-width-100"
+                         filterable
+                         @change="csTdChange(configParameter.chuanshu.csTongdaoVal)">
+                <el-option
+                  v-for="item of ycTongdao"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="传输方式" class="" prop="csFahngshiVal">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chuanshu.csFahngshiVal"
+                         placeholder="请选择"
+                         class="selet-width-100"
+                         filterable>
+                <el-option
+                  v-for="item of csFahngshi"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('4','chuanshu','configCsfs')"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!--  透传配置-->
+      <div class="single-form-wrapper" v-if="tcFlag">
+        <h4 class="single-title margin-bottom-10">透传配置</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configTcpz"
+          label-width="100%"
+          :model="configParameter.touchuan"
+          class="el-form-diy"
+        >
+          <el-form-item label="DB9" class="" prop="DB9Val">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.touchuan.DB9Val" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of touchuanSelect"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="RS232" class="" prop="RS232">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.touchuan.RS232" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of touchuanSelect"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="RS485" class="" prop="RS485">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.touchuan.RS485" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of touchuanSelect"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="CAN" class="" prop="CAN">
+            <el-select v-model="configParameter.touchuan.CAN" placeholder="请选择" class="selet-width-100"  filterable>
+              <el-option
+                v-for="item of touchuanSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('a','touchuan','configTcpz')"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!--  输入接口-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">输入接口</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configSrjk"
+          label-width="100%"
+          :model="configParameter.shuru"
+          class="el-form-diy"
+        >
+          <el-form-item label="1" class="" prop="one">
+            <el-select v-model="configParameter.shuru.one" placeholder="请选择" class="selet-width-100"  filterable>
+              <el-option
+                v-for="item of shuruSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="2" class="" prop="two">
+            <el-select v-model="configParameter.shuru.two" placeholder="请选择" class="selet-width-100"  filterable>
+              <el-option
+                v-for="item of shuruSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="3" class="" prop="three">
+            <el-select v-model="configParameter.shuru.three" placeholder="请选择" class="selet-width-100"  filterable>
+              <el-option
+                v-for="item of shuruSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="4" class="" prop="four">
+            <el-select v-model="configParameter.shuru.four" placeholder="请选择" class="selet-width-100"  filterable>
+              <el-option
+                v-for="item of shuruSelect"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('6','shuru','configSrjk')"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 本地IP-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">本地IP</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configIp"
+          label-width="100%"
+          :model="configParameter.ip"
+          class="el-form-diy"
+        >
+          <el-form-item label="IP" class="" prop="ycIP">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.ip.ycIP" placeholder="0.0.0.0" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submintTips('8','ip','configIp')"
+            >确认下发</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 设备查询-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">设备查询</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configCx"
+          label-width="100%"
+          :model="configParameter.chaxun"
+          class="el-form-diy"
+        >
+          <el-form-item label="用户名" class="" prop="userName">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.chaxun.userName" placeholder="请输入用户名" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="密码" class="" prop="password">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.chaxun.password" placeholder="请输入密码" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="指定密码" class="" prop="pwOnoff">
+            <el-radio v-model="configParameter.chaxun.pwOnoff" label="1">是</el-radio>
+            <el-radio v-model="configParameter.chaxun.pwOnoff" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="类型" class="" prop="type">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.chaxun.type" placeholder="请选择" class="selet-width-100"  filterable>
+                <el-option
+                  v-for="item of cxLeixing"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="时间" class="" prop="time">
+            <div class="item-warpper">
+              <el-date-picker
+                v-model="configParameter.chaxun.time"
+                type="date"
+                class="selet-width-100"
+                format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd"
+                :picker-options="pickerOptions"
+                placeholder="选择日期">
+              </el-date-picker>
+            </div>
+          </el-form-item>
+          <el-form-item label="存储路径" class="" prop="url">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.chaxun.url" placeholder="请输入存储路径" class="selet-width-100">
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('10','chaxun','configCx')"
+            >确认查询</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <!-- 设备升级-->
+      <div class="single-form-wrapper">
+        <h4 class="single-title margin-bottom-10">设备升级</h4>
+        <el-form
+          :label-position="labelPosition"
+          :rules="rules"
+          ref="configSj"
+          label-width="100%"
+          :model="configParameter.shengji"
+          class="el-form-diy"
+        >
+          <el-form-item label="用户名" class="" prop="userName">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.shengji.userName" placeholder="请输入用户名" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="密码" class="" prop="password">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.shengji.password" placeholder="请输入密码" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item label="指定密码" class="" prop="pwOnoff">
+            <el-radio v-model="configParameter.shengji.pwOnoff" label="1">是</el-radio>
+            <el-radio v-model="configParameter.shengji.pwOnoff" label="0">否</el-radio>
+          </el-form-item>
+          <el-form-item label="类型" class="" prop="type">
+            <div class="item-warpper">
+              <el-select v-model="configParameter.shengji.type" placeholder="请选择" class="selet-width-100"  filterable clearable>
+                <el-option
+                  v-for="item of sjLeixing"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+          <el-form-item label="存储路径" class="" prop="url">
+            <div class="item-warpper">
+              <el-input v-model="configParameter.shengji.url" placeholder="请输入存储路径" class="selet-width-100" clearable>
+              </el-input>
+            </div>
+          </el-form-item>
+          <el-form-item class="btn-wrapper">
+            <el-button
+              type="primary"
+              :disabled="disbledSubmitFlag"
+              v-loading.fullscreen.lock="fullscreenloading"
+              @click="submit('11','shengji','configSj')"
+            >确认升级</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+    </template>
+  </div>
+</template>
+
+<script>
+  import axios, {AxiosInstance} from 'axios';
+  export default {
+    props: ["fromParent"],
+    data() {
+      return {
+        newValueObj:{},
+        defaultValue:{
+          chuankou:{},
+          remoteServer:{},
+          yongchuan:{},
+          chuanshu:{},
+          shuru:{},
+          ip:{}
+        },
+        setintervalFlag:false,
+        btn1:false,
+        btn2:false,
+        timer:null,
+        timestamp:'',
+        pickerOptions: {
+          disabledDate(time) {
+            return time.getTime() > Date.now();//包含当前天
+            // return time.getTime() > (new Date(new Date().getTime() - 24*60*60*1000)).getTime();//当前前一天
+          }
+        },
+        monitorDeviceArry:[],
+        userObj:{},
+        tcFlag:false,
+        fullscreenloading: false,
+        disbledSubmitFlag:false,
+        labelPosition:"top",
+        configParameter: {
+          chuankou:{
+            ckTongdaoVal:'',
+            ckBotelvVal:'',
+            ckShujuweiVal:'',
+            ckJiaoyanweiVal:'',
+            ckTingzhiweiVal:''
+          },
+          remoteServer:{
+            ycTongdaoVal:'',
+            ycOnoff:"0",
+            ycIP:null,
+            ycDuankou:null
+          },
+          yongchuan:{
+            sourceCode:null
+          },
+          chuanshu:{
+            csTongdaoVal:null,
+            csFahngshiVal:null
+          },
+          touchuan:{
+            DB9Val:'0',
+            RS232:'0',
+            RS485:'0',
+            CAN:'0'
+          },
+          shuru:{
+            one:null,
+            two:null,
+            three:null,
+            four:null
+          },
+          ip:{
+            ycIP:null
+          },
+          chaxun:{
+            pwOnoff:'1',
+            type:null,
+            time:null,
+            url:'ftp://112.30.62.110:9031/log/',
+            userName:'test',
+            password:'123456'
+          },
+          shengji:{
+            pwOnoff:'1',
+            type:null,
+            url:'ftp://112.30.62.110:9031/',
+            userName:'test',
+            password:'123456'
+          }
+        },
+        sumbitVal:[],
+        ckTongdao:[{value: '0', label: '串口1（DB9）'},//串口--通道
+                  // {value: 1, label: '串口1(RS232)'},
+                  {value: '1', label: '串口2（端子）'},
+                  {value: '2', label: 'RS485'}],
+        ckBotelv:[{value: '0', label: '110'},//串口--波特率
+                 {value: '1', label: '300'},
+                 {value: '2', label: '600'},
+                 {value: '3', label: '1200'},
+                 {value: '4', label: '2400'},
+                 {value: '5', label: '4800'},
+                 {value: '6', label: '9600'},
+                 {value: '7', label: '14400'},
+                 {value: '8', label: '19200'},
+                 {value: '9', label: '38400'},
+                 {value: '10', label: '56000'},
+                 {value: '11', label: '57600'},
+                 {value: '12', label: '115200'}],
+        ckShujuwei:[{value: '0', label: '8位'},//串口--数据位
+                   {value: '1', label: '7位'},
+                   {value: '2', label: '6位'}],
+        ckJiaoyanwei:[{value: '0', label: '无校验'},//串口--校验位
+                     {value: '1', label: '奇校验'},
+                     {value: '2', label: '偶校验'},
+                     {value: '3', label: 'Mark',disabled: true},
+                     {value: '4', label: 'Space',disabled: true}],
+        ckTingzhiwei:[{value: '0', label: '1'},//串口--停止位
+                     {value: '1', label: '1.5'},
+                     {value: '2', label: '2'}],
+
+        ycTongdao:[{value: '0', label: '天泽'},//远程服务器--通道
+                  {value: '1', label: '支队'},
+                  {value: '2', label: '服务器'}],
+
+        csFahngshi:[{value: '0', label: '天泽（默认）'},//传输方式--传输方式
+                  {value: '1', label: '国标'},
+                  {value: '2', label: '透传'}],
+
+        tcPeizhi:[{value: '0', label: '透传'},//透传配置
+                  {value: '1', label: '正常'}],
+
+        srJiekou:[{value: '0', label: '常闭'},//输入接口
+                  {value: '1', label: '常开'}],
+
+        cxLeixing:[{value: '1', label: '报警'},//设备查询--类型
+                  {value: '2', label: '故障'},
+                  {value: '3', label: '动作'},
+                  {value: '4', label: '屏蔽'},
+                  {value: '5', label: '主机记录'},
+                  {value: '6', label: '网关操作记录'}],
+
+        sjLeixing:[{value: '1', label: 'DB9'},//设备升级--类型
+                  {value: '2', label: 'RS232'},
+                  {value: '3', label: 'RS485'},
+                  {value: '4', label: 'CAN'},
+                  {value: '5', label: '应用程序'},
+                  {value: '6', label: '配置文件'}],
+
+        touchuanSelect:[{value: '0', label: '正常'},//串口--通道
+                        {value: '1', label: '透传'}],
+        shuruSelect:[{value: '1', label: '常闭'},//串口--通道
+                     {value: '0', label: '常开'}],
+
+        rules: {
+          ckTongdaoVal: [{ required: true, message: "通道不能为空"}],
+          ckBotelvVal: [{ required: true, message: "波特率不能为空"}],
+          ckShujuweiVal: [{ required: true, message: "数据位不能为空"}],
+          ckJiaoyanweiVal: [{ required: true, message: "校验位不能为空"}],
+          ckTingzhiweiVal: [{ required: true, message: "停止位不能为空"}],
+          ycTongdaoVal: [{ required: true, message: "通道不能为空"}],
+          ycIP: [{ required: true, message: "IP不能为空"},
+                 {pattern: /(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))/, message: '请输入正确的ip',trigger:'blur'}],
+          ycDuankou: [{ required: true, message: "端口号不能为空"},
+                      {pattern: /^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]{1}|6553[0-5])$/, message: '请输入正确的端口号(1~65535)',trigger:'blur'}],
+          ycOnoff: [{ required: true, message: "开关不能为空"}],
+          sourceCode: [{ required: true, message: "用传编码不能为空"},
+                       {pattern: /^\d{8}$/, message: '请输入正确的用传编码(8位数字)',trigger:'blur'}],
+          csTongdaoVal: [{ required: true, message: "通道不能为空"}],
+          csFahngshiVal: [{ required: true, message: "传输方式不能为空"}],
+          DB9Val: [{ required: true, message: "DB9Val不能为空"}],
+          RS232: [{ required: true, message: "RS232不能为空"}],
+          RS485: [{ required: true, message: "RS485不能为空"}],
+          CAN: [{ required: true, message: "CAN不能为空"}],
+          one: [{ required: true, message: "1不能为空",trigger:'change'}],
+          two: [{ required: true, message: "2不能为空",trigger:'change'}],
+          three: [{ required: true, message: "3不能为空",trigger:'change'}],
+          four: [{ required: true, message: "4不能为空",trigger:'change'}],
+          userName:[{ required: true, message: "用户名不能为空"}],
+          password:[{ required: true, message: "密码不能为空"}],
+          pwOnoff:[{ required: true, message: "开关不能为空"}],
+          type:[{ required: true, message: "类型不能为空"}],
+          time:[{ required: true, message: "时间不能为空"}],
+          url:[{ required: true, message: "路径不能为空"},
+            {pattern:/^ftp?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i, message: "输入正确的存储路径",trigger:'blur'}]
+        }
+      };
+    },
+    watch: {
+    },
+    mounted() {
+      const that = this;
+      that.findTanZerData();
+      that.getUserObj();
+      that.getTimestamp();
+      that.timer = setInterval(function () {
+        that.findHardwareUploadDataList();
+      },2000);
+      that.userObj = that._Storage.getObj("userObj", "userObj");
+    },
+    beforeDestroy(){
+      clearInterval(this.timer);
+      this.timer= null;
+    },
+    methods: {
+      /**
+       * 在ip下发时候，确定提示按钮
+       */
+      submintTips(type,dataValue,refName){
+        const that = this;
+        let tsy =null;
+
+        tsy=(type == '8')?"这是本地ip修改，确定要提交吗？":'这是远程服务器修改，确定要提交吗？';
+
+        that.$refs[refName].validate((valid) => {
+          if (valid) {
+            this.$confirm(tsy, '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              that.submit(type,dataValue,refName)
+            }).catch(_ => {});
+
+          }
+        });
+      },
+
+      /**
+       * 获取网关设备解析的数据
+       */
+      findTanZerData(){
+        let that = this;
+        console.log('findTanZerData'+new Date())
+        that.$axios
+          .$POST({
+            api_name: "findTanZerData",
+            params: {
+              monitorId: that.fromParent.id,
+              // deviceId: that.fromParent.deviceId,
+              onlyCode: that.fromParent.controlHost
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              let data = res.data.data;
+              if(!data){
+                return;
+              }
+              if(data.length<2){
+                that.defaultValue.ip = data.filter(item=>{
+                  return item.flag== "8"
+                })[0]
+                //本地IP
+                that.configParameter.ip.ycIP = that.defaultValue.ip.value;
+                return
+              }
+              that.defaultValue.chuankou = data.filter(item=>{
+                return item.flag== "1"
+              })[0];
+              that.defaultValue.remoteServer = data.filter(item=>{
+                return item.flag== "2"
+              })[0];
+              that.defaultValue.yongchuan = data.filter(item=>{
+                return item.flag== "3"
+              })[0];
+              that.defaultValue.chuanshu = data.filter(item=>{
+                return item.flag== "4"
+              })[0];
+              that.defaultValue.shuru = data.filter(item=>{
+                return item.flag== "6"
+              })[0];
+              that.defaultValue.ip = data.filter(item=>{
+                return item.flag== "8"
+              })[0]
+              console.log(that.defaultValue)
+              if(that.defaultValue.ip){
+                //本地IP
+                that.configParameter.ip.ycIP = that.defaultValue.ip.value;
+              }
+              if(that.defaultValue.yongchuan){
+                //用传编码
+                that.configParameter.yongchuan.sourceCode = that.defaultValue.yongchuan.value;
+              }
+              //输入接口
+              if(that.defaultValue.shuru){
+                let shuruArray = that.defaultValue.shuru.value.split(" ");
+                that.configParameter.shuru={
+                  one:shuruArray[0],
+                  two:shuruArray[1],
+                  three:shuruArray[2],
+                  four:shuruArray[3],
+                };
+              }
+              if(that.defaultValue.chuankou){
+                //串口
+                let chuankou = that.defaultValue.chuankou.value.td0.split(" ");
+                that.configParameter.chuankou={
+                  ckTongdaoVal:chuankou[0],
+                  ckBotelvVal:chuankou[1],
+                  ckShujuweiVal:chuankou[2],
+                  ckJiaoyanweiVal:chuankou[3],
+                  ckTingzhiweiVal:chuankou[4]
+                };
+              }
+              if(that.defaultValue.remoteServer){
+                //远程服务器
+                let remoteServer = that.defaultValue.remoteServer.value.td0.split(" ");
+                that.configParameter.remoteServer={
+                  ycTongdaoVal:remoteServer[0],
+                  ycOnoff:remoteServer[1],
+                  ycIP:remoteServer[2],
+                  ycDuankou:remoteServer[3],
+                };
+              }
+              if(that.defaultValue.chuanshu){
+                //传输方式
+                let chuanshu = that.defaultValue.chuanshu.value.td2.split(" ");
+                that.configParameter.chuanshu={
+                  csTongdaoVal:chuanshu[0],
+                  csFahngshiVal:chuanshu[1]
+                }
+                //判断透传是否显示
+                if(chuanshu[0]=="2"&&chuanshu[1]=="2"){
+                  that.tcFlag = true
+                }
+              }
+            } else {
+              console.log("失败");
+            }
+          }).catch(err=>{
+          that.$message({
+            message: err,
+            type: "warning"
+          });
+        });
+      },
+
+      /**
+       * 下发查询
+       * @param operationType 只能为7 和 9
+       */
+      getNewInfo(operationType,flag,type){
+        console.log('getNewInfo-tanZerSendDown'+new Date())
+        const that = this;
+        that.fullscreenLoading = true;
+        that.$axios
+          .$POST({
+            api_name: "tanZerSendDown",
+            params: {
+              onlyCode: that.fromParent.controlHost,
+              sourceId: that.fromParent.sourceId,
+              operationType: operationType,
+              dataValue:null,
+              username:that.userObj.userName
+            }
+          })
+          .then(res => {
+            if(!res.data.state){
+              that.fullscreenLoading = false;
+              that.$message({
+                message: 'state 不存在',
+                type: "error",
+                duration:1800
+              });
+              return
+            }
+            if (res.data.state == "1") {
+              that.fullscreenLoading = false;
+              setTimeout(function () {
+                that.findMonitorDeviceStateExtByMonitorId(flag);
+              },1000)
+            } else {
+              that.fullscreenLoading = false;
+              that.$message({
+                message: type == "3"?'请手动获取最新参数':res.data.message,
+                type: "error",
+                duration:1800
+              });
+            }
+          }).then(res=>{
+            setTimeout(function(){
+              that.findTanZerData();
+            },1500)
+          })
+          .catch(err=>{
+            that.fullscreenLoading = false;
+            that.$message({
+              message: err,
+              type: "warning",
+              duration:1800
+            });
+          });
+      },
+
+      /**
+       * 确定下发
+       * @param operationType  下发类型
+       * @param dataValue  下发参数
+       * @param refName  form的refs
+       */
+      submit(operationType,dataValue,refName){
+        const that = this;
+        that.sumbitVal = [];
+        that.$refs[refName].validate((valid) => {
+          if (valid) {
+            let configVal = that.configParameter[dataValue];
+            for (let i in configVal) {
+              that.sumbitVal.push(configVal[i])
+            };
+            that.fullscreenLoading = true;
+            that.$axios
+              .$POST({
+                api_name: "tanZerSendDown",
+                params: {
+                  onlyCode: that.fromParent.controlHost,
+                  sourceId: that.fromParent.sourceId,
+                  operationType: operationType,
+                  dataValue:that.sumbitVal.join(' '),
+                  username:that.userObj.userName
+                }
+              })
+              .then(res => {
+                if (res.data.state == "1") {
+                  if(operationType == '4'){
+                    let tc = that.configParameter.chuanshu
+                    that.tcFlag = tc.csTongdaoVal == '2'&&tc.csFahngshiVal == '2' ? true : false;
+                    that.$nextTick(()=>{
+                      if (that.$refs.touchuan!==undefined) {
+                        that.$refs.touchuan.resetFields();
+                      }
+                    })
+                  }
+                  if(operationType == '3'){
+                    that._Storage.setObj("downListRow", 'obj',that.newValueObj);
+                    this.$emit('modifyDownListRow');
+                  }
+                  if(operationType=='10'|| operationType=='11'){
+                    that.$nextTick(()=>{
+                      that.$refs[refName].resetFields();
+                    })
+                  }
+                  that.fullscreenLoading = false;
+                  that.$message({
+                    message: res.data.message,
+                    type: "success"
+                  });
+
+                } else {
+                  if(operationType=='10'|| operationType=='11'){
+                    that.$nextTick(()=>{
+                      that.$refs[refName].resetFields();
+                    })
+                  }
+                  that.fullscreenLoading = false;
+                  that.$message({
+                    message: res.data.message,
+                    type: "error"
+                  });
+                }
+              }).then(res=>{
+                setTimeout(function(){
+                  that.getNewInfo('7','1','3');
+                },1000)
+              })
+              .catch(err=>{
+                that.fullscreenLoading = false;
+                that.$message({
+                  message: err,
+                  type: "warning"
+                });
+              });
+          }
+        })
+      },
+
+      /**
+       * 串口传通道切换效果
+       */
+      ckTdChange(num){
+        const that = this;
+        let chuankou = that.defaultValue.chuankou.value['td'+num].split(" ");
+        that.configParameter.chuankou={
+          ckTongdaoVal:chuankou[0],
+          ckBotelvVal:chuankou[1],
+          ckShujuweiVal:chuankou[2],
+          ckJiaoyanweiVal:chuankou[3],
+          ckTingzhiweiVal:chuankou[4]
+        };
+      },
+
+      /**
+       * 远程服务器传通道切换效果
+       */
+      ycfwqTdChange(num){
+        const that = this;
+        let remoteServer = that.defaultValue.remoteServer.value['td'+num].split(" ");
+        that.configParameter.remoteServer={
+          ycTongdaoVal:remoteServer[0],
+          ycOnoff:remoteServer[1],
+          ycIP:remoteServer[2],
+          ycDuankou:remoteServer[3],
+        };
+      },
+
+      /**
+       * 传输方式通道切换效果
+       */
+      csTdChange(num){
+        const that = this;
+        let chuanshu = that.defaultValue.chuanshu.value['td'+num].split(" ");
+        that.configParameter.chuanshu={
+          csTongdaoVal:chuanshu[0],
+          csFahngshiVal:chuanshu[1]
+        }
+      },
+
+      /**
+       * 获取当前时间戳
+       */
+      getTimestamp(){
+        const that = this;
+        that.timestamp=new Date().getTime();
+      },
+
+      /**
+       * 缓存更新
+       */
+      getUserObj(){
+        const that = this;
+        that.$axios
+          .$POST({
+            api_name: "findUserByUserId",
+            params: {
+              userId: that._Storage.getObj("userObj", "userObj").id
+            },
+            time: 3000
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              //debugger
+              that._Storage.setObj("userObj", "userObj", res.data.data);
+              that.userObj = that._Storage.getObj("userObj", "userObj");
+            } else {
+              that.$message.error('查询用户系统角色失败');
+            }
+          });
+      },
+
+      /**
+       * 获取最新参数和版本号
+       * @param flag 判断是参数 还是版本号 thresholdValue
+       */
+      findMonitorDeviceStateExtByMonitorId(flag){
+        console.log('findMonitorDeviceStateExtByMonitorId'+new Date())
+        let that = this;
+        let temp = [];
+        if(flag == '1'){
+          that.btn1 = true
+        }else{
+          that.btn2 = true
+        }
+        that.$axios
+          .$POST({
+            api_name: "findMonitorDeviceStateExtByMonitorId",
+            params: {
+              monitorId: that.fromParent.id,
+              sourceId: that.fromParent.sourceId
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              let thresholdValue = JSON.parse(res.data.data.thresholdValue);
+              temp = thresholdValue.find(item=>{
+                return item.flag == flag
+              })
+              that.monitorDeviceArry.unshift({
+                createTime:res.data.data.updateTime,
+                datas:temp.value
+              });
+            } else {
+              console.log("失败");
+            }
+            if(flag == '1'){
+              setTimeout(function() {
+                that.btn1 = false;
+              }, 2000);
+            }else{
+              setTimeout(function() {
+                that.btn2 = false;
+              }, 2000);
+            }
+
+          }).catch(err=>{
+            that.$message({
+              message: err,
+              type: "warning",
+              duration:1800
+            });
+          if(flag == '1'){
+            setTimeout(function() {
+              that.btn1 = false;
+            }, 2000);
+          }else{
+            setTimeout(function() {
+              that.btn2 = false;
+            }, 2000);
+          }
+        });
+      },
+
+      /**
+       * 清空设备实时上传的数据
+       */
+      clear(){
+        const that = this;
+        that.monitorDeviceArry=[];
+        that.getTimestamp();//更新时间戳
+        that.$message({
+          message: '数据清除成功',
+          type: "success",
+          duration:1800
+        });
+        that.$axios
+          .$POST({
+            api_name: "emptyHardwareUploadData",
+            params: {
+              onlyCode: that.fromParent.controlHost
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              console.log(res.data.rspMsg || res.data.message)
+            } else {
+              console.log(res.data.rspMsg || res.data.message)
+            }
+          })
+          .catch(err=>{
+            that.fullscreenLoading = false;
+            that.$message({
+              message: err,
+              type: "warning",
+              duration:2000
+            });
+          });
+      },
+
+      /**
+       * 获取设备实时上传记录数据
+       */
+      findHardwareUploadDataList(){
+        const that = this;
+        that.$axios
+          .$POST({
+            api_name: "findHardwareUploadDataList",
+            params: {
+              onlyCode: that.fromParent.controlHost,
+              timestamp:that.timestamp
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              if(res.data.data.length != 0){
+                that.monitorDeviceArry = res.data.data;
+              }
+            } else {
+              console.log(res.data.rspMsg || res.data.message)
+            }
+          })
+          .catch(err=>{
+            that.fullscreenLoading = false;
+            that.$message({
+              message: err,
+              type: "warning",
+              duration:2000
+            });
+          });
+      },
+
+      /**
+       * 硬件平台-获取唯一设备信息
+       */
+      findMonitorDeviceStateByControlHostAndSourceId(){
+        const that = this;
+        that.fullscreenLoading = true;
+        that.$axios
+          .$POST({
+            api_name: "findMonitorDeviceStateByControlHostAndSourceId",
+            params: {
+              controlHost: that.configParameter.yongchuan.sourceCode,
+              sourceId:that.fromParent.sourceId
+            }
+          })
+          .then(res => {
+            that.fullscreenLoading = false;
+            if (res.data.code == "success") {
+              if(res.data.data === null){
+                that.newValueObj = that._Storage.getObj("downListRow", "obj");
+                that.newValueObj.controlHost = that.configParameter.yongchuan.sourceCode;
+                that.submit('3','yongchuan','configYcbm')
+              }else{
+                that.$message({
+                  message: '用传编码已存在',
+                  type: "error",
+                  duration:2000
+                });
+              }
+            } else {
+              console.log(res.data.rspMsg || res.data.message)
+            }
+          })
+          .catch(err=>{
+            that.fullscreenLoading = false;
+            that.$message({
+              message: err,
+              type: "warning",
+              duration:2000
+            });
+          });
+      }
+    },
+  };
+</script>
+
+<style lang="scss" scoped>
+  .configuration-parameter-wrapper {
+    width: auto;
+    max-width: 1200px;
+    /deep/.el-form-diy {
+      padding: 0 0 20px 0;
+      display: block;
+      overflow: hidden;
+      .el-form-item {
+        box-sizing: border-box;
+        padding-right: 40px;
+        width: 33.33%;
+        float: left;
+        margin-bottom: 10px;
+        &.btn-wrapper {
+          width: 100%;
+          margin-top: 20px;
+        }
+        &.switch-show {
+          .item-warpper {
+            display: flex;
+          }
+          .el-switch-wrap {
+            width: 90px;
+            text-align: right;
+            .el-switch__label--left {
+              margin-right: 5px;
+            }
+            .el-switch__label--right {
+              margin-left: 5px;
+            }
+          }
+        }
+        .el-form-item__label {
+          padding: 0;
+          line-height: 36px;
+        }
+        .el-input--suffix .el-input__inner {
+          padding-right: 36px;
+        }
+        .test-icon-diy {
+          font-style: normal;
+          width: 36px;
+          text-align: center;
+          display: inline-block;
+        }
+      }
+    }
+  }
+  .selet-width-100{ width: 100%}
+  .block-num{
+    height:400px;
+    background:rgba(235,240,247,1);
+    border:1px solid rgba(225,229,235,1);
+    border-radius:3px;
+    font-size:16px;
+    font-family:DINPro;
+    font-weight:400;
+    color:rgba(37,40,46,1);
+    line-height:22px;
+    margin-bottom: 20px;
+  }
+  .block-num-main{
+    padding: 20px 15px;
+  }
+  .margin-bottom-10{
+    margin-bottom: 10px;
+    font-weight: 400;
+  }
+  .li-item{
+    margin-bottom: 10px;
+  }
+  .btn-wrapper{
+    display: flex;
+    .btn-wrapper-left{
+      flex: 1;
+    }
+  }
+</style>

@@ -1,0 +1,279 @@
+<template>
+  <div class="configuration-parameter-wrapper">
+    <template class="tab-content-detail">
+      <el-form
+        :label-position="labelPosition"
+        ref="configParameter"
+        label-width="100%"
+        :model="configParameter"
+        class="el-form-diy"
+      >
+        <el-form-item label="设备正常检测周期:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.number="configParameter['03']">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备正常发送周期:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.number="configParameter['04']">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="变化量报警值:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['05']">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警上限值:" class="switch-show">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['06']">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警下限值:" class="switch-show">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['07']">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="电池电压下限报警:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['08']">
+
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="服务器 IP:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter.ip">
+
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警开关:" class="switch-show" prop="">
+          <el-radio v-model="configParameter['16']" label="1">开</el-radio>
+          <el-radio v-model="configParameter['16']" label="0">关</el-radio>
+        </el-form-item>
+        <el-form-item label="服务器端口 PORT:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['0B']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 YEAR:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['0C']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 MONTH:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['0D']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 DATE:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['0E']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 HOUR:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['0F']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 MINUTE:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['10']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 SECOND:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['11']">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="经度信息高:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['12']"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="经度信息低:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['13']"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="纬度信息高:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['14']"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="纬度信息低:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['15']"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备报警检测周期:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['18']">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备报警发送周期:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['19']">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="温度报警下限:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['1A']">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="流量报警上限:" class="switch-show" prop="">
+          <div class="item-warpper">
+            <el-input placeholder="暂无" v-model.trim="configParameter['1B']">
+              <i slot="suffix" class="test-icon-diy">L/s</i>
+            </el-input>
+          </div>
+        </el-form-item>
+      </el-form>
+    </template>
+  </div>
+</template>
+
+<script>
+  export default {
+    //
+    props: ["CKSY"],
+    data() {
+      return {
+        dataFlag:true,
+        dateTemp:null,
+        dateList:[],
+        fullscreenloading: false,
+        labelPosition: "top",
+        isOpenArr: [],
+        isValidArr: [],
+        isShow: "",
+        disbledFlag: false,
+        disbledSubmitFlag: true,
+        configParameter: {
+        },
+      };
+    },
+    computed: {
+      fromParent() {
+        return this._Storage.getObj("downListRow", "obj");
+      }
+    },
+    watch: {
+
+    },
+    mounted() {
+      this.findMonitorDeviceStateExtByMonitorId();
+    },
+    methods: {
+      findMonitorDeviceStateExtByMonitorId() {
+        let that = this;
+        console.log("that.CKSY", that.CKSY);
+        that.configParameter = that.CKSY;
+        that.configParameter.ip = that.configParameter['09']+'.'+that.configParameter['0A']
+      }
+    }
+  };
+</script>
+
+
+<style lang="scss" scoped>
+  .configuration-parameter-wrapper {
+    width: auto;
+    max-width: 1200px;
+    /deep/.el-form-diy {
+      padding: 0;
+      .el-form-item {
+        box-sizing: border-box;
+        width: 100%;
+        display: flex;
+        margin-bottom: 0;
+        &.switch-show {
+          .item-warpper {
+            display: flex;
+            width: 115px;
+            padding-left: 5px;
+            .el-input {
+              .el-input__inner {
+                padding: 0;
+                border: 0;
+                height: auto;
+                line-height: normal;
+                background: transparent;
+                color: #606266;
+              }
+            }
+          }
+          .el-switch-wrap {
+            width: 120px;
+            text-align: right;
+            .el-switch__label--left {
+              margin-right: 5px;
+            }
+            .el-switch__label--right {
+              margin-left: 5px;
+            }
+          }
+        }
+        &.two-line {
+          display: block;
+          .el-form-item__label {
+            width: 100%;
+          }
+          .el-form-item__content {
+            width: 100%;
+          }
+        }
+        .el-form-item__content {
+          line-height: 36px;
+          .el-radio-group {
+            padding-left: 10px;
+            .el-radio {
+              margin-right: 15px;
+            }
+            .el-radio__input.is-disabled + span.el-radio__label {
+            }
+          }
+        }
+        .el-form-item__label {
+          padding: 0;
+          line-height: 36px;
+        }
+        .el-input--suffix .el-input__inner {
+          padding-right: 36px;
+        }
+        .test-icon-diy {
+          font-style: normal;
+          width: 36px;
+          text-align: center;
+          display: none;
+        }
+        .el-radio {
+          margin: 0 15px;
+        }
+      }
+    }
+  }
+</style>

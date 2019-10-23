@@ -1,0 +1,288 @@
+<template>
+  <div class="DialogStockWrap" id="tempDownLink">
+    <el-dialog
+      title="临时下行"
+      :visible.sync="tempDownlinkVisible"
+      :lock-scroll="lockScroll"
+      width="930px"
+      :before-close="cancelHandel"
+      :close-on-click-modal="clickModalFlag"
+      :close-on-press-escape="clickModalFlag">
+      <div class="tempDownlink-mian">
+        <el-form :inline="true"
+                 :model="formData"
+                 ref="formData"
+                 class="hardware-form">
+          <el-form-item label="设备ID:"
+                        prop="deviceId"
+                        :label-width="labelWidth">
+            <el-input placeholder="请输入"
+                      v-model.trim="formData.deviceId"></el-input>
+          </el-form-item>
+          <el-form-item label="用传编码:"
+                        prop="controlHost"
+                        :label-width="labelWidth">
+            <el-input placeholder="请输入"
+                      v-model.trim="formData.controlHost"></el-input>
+          </el-form-item>
+          <el-form-item label="品牌:"
+                        :label-width="labelWidth">
+            <el-select placeholder="全部"
+                       v-model.trim="formData.brand">
+              <el-option v-for="item in brands"
+                         :key="item.value"
+                         :label="item.label"
+                         :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="协议号:"
+                        prop="xyh"
+                        :label-width="labelWidth">
+            <el-input placeholder="请输入"
+                      v-model.trim="formData.deviceVersion"></el-input>
+          </el-form-item>
+          <el-form-item label="厂家:"
+                        prop="cj"
+                        :label-width="labelWidth">
+            <el-input placeholder="请输入"
+                      v-model.trim="formData.sourceId"></el-input>
+          </el-form-item>
+          <el-form-item label=" " class="serch-btn">
+            <el-button type="primary" size="small">查询</el-button>
+            <el-button size="small">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="设备id" prop="deviceId" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="用传编码" prop="controlHost" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="品牌" prop="brand" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="协议号" prop="deviceVersion" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="录入时间" prop="createTime" show-overflow-tooltip min-width="20%"></el-table-column>
+                <el-table-column label="操作" show-overflow-tooltip align="center"  min-width="8%">
+                  <template slot-scope="scope">
+                    <el-link type="primary" @click="deleteHardwareType(scope.$index,scope.row)" >删除</el-link>
+                    <el-link type="primary" @click="toDetail(scope.$index, scope.row)">下行</el-link>
+                  </template>
+                </el-table-column>
+          </el-table>
+          <Pagination
+            :widgetInfo="widgetInfo"
+            v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+          />
+        </div>
+      </div>
+    </el-dialog>
+
+    <!--    删除  弹框-->
+    <el-dialog custom-class="del-dialog-wrap"  :visible.sync="dialogDelVisible" width="280px">
+      <div class="del-dialog-main">
+        <div class="icon-wrap">
+          <i class="el-icon-s-opportunity"></i>
+        </div>
+        <div class="p-wrap">
+          <p class="title-p">是否确定删除？</p>
+          <p class="tips-p">删除后将不可恢复</p>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="sureHandle">确 定</el-button>
+         <el-button @click="cancalHandle">取 消</el-button>
+      </span>
+    </el-dialog>
+  </div>
+</template>
+<script>
+  import Pagination from "~/components/Pagination";
+  export default {
+    components: {
+      Pagination
+    },
+    data() {
+      return {
+        tempDownlinkVisible: false, //弹框显示标识
+        lockScroll:true,
+        clickModalFlag:false,//不通过遮罩层关闭
+        fullscreenLoading:false,
+        dialogDelVisible:false,
+        labelWidth:'90px',
+        formData:{
+          brand:'天泽盒子'
+        },
+        brands: [
+          {
+            value: "天泽盒子",
+            label: "天泽盒子"
+          }
+        ],
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        tableData: [], //table查询结果
+        isLoading: false,
+      };
+    },
+    mounted() {
+      const that = this;
+    },
+    computed: {},
+    methods: {
+      /**
+       * 下行
+       * @param index
+       * @param row
+       */
+      toDetail (index, row) {
+        //跳转到详情
+        console.log('11',row)
+        this._Storage.setObj("downListRow", "obj", row);
+        this.$router.push({
+          name: "downLine-downlinkControlDetail",
+          params: {
+            row: row
+          }
+        });
+      },
+      /**
+       * 删除弹框
+       * @param index
+       * @param row
+       */
+      deleteHardwareType(index,row) {
+        const that = this;
+        that.dialogDelVisible = true;
+        that.deviceId = row.deviceId;
+      },
+      /**
+       * 删除确定按钮
+       */
+      sureHandle(){
+        const that = this;
+        that.isLoading = true;
+        // that.$axios
+        //   .$POST({
+        //     api_name: "deleteHardwareType",
+        //     params: {
+        //       hardwareTypeId: that.hardwareTypeId
+        //     }
+        //   })
+        //   .then(res => {
+        //     that.isLoading = false;
+        //     if (res.data.code == "success") {
+        //       that.isLoading = false;
+        //       that.dialogDelVisible = false;
+        //       that.$message({
+        //         message: res.data.rspMsg,
+        //         type: 'success'
+        //       });
+        //       that.getHardwareTypePage('load');
+        //     } else {
+        //       that.isLoading = false;
+        //       that.$message.error(res.data.rspMsg);
+        //     }
+        //   }).catch(()=>{
+        //   this.$message({
+        //     message: '这里是异常',
+        //     type: 'warning'
+        //   });
+        // });
+      },
+      /**
+       * 删除取消按钮
+       */
+      cancalHandle(){
+        const that = this;
+        that.dialogDelVisible = false;
+        this.$message('取消删除操作');
+      },
+      /**
+       * 临时下行显示
+       * @param param
+       */
+      initTempDownLink() {
+        const that = this;
+        that.tempDownlinkVisible = true;
+        //that.outStockFormData = {};
+        that.$nextTick(() => {
+          // that.$refs["outStockFormData"].resetField();
+          // let tempDownLink = document.getElementById('tempDownLink');
+          // tempDownLink.getElementsByClassName('el-dialog__body')[0].scrollTop = 0;
+        });
+      },
+      /**
+       * 临时下行取消按钮
+       */
+      cancelHandel(){
+        const that = this;
+        that.tempDownlinkVisible = false
+      },
+      /**
+       * 分页
+       * @param widgetInfo
+       */
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.getHardwareTypePage('load');
+      },
+      /**
+       * 硬件类别管理的列表
+       * @param pagenoFlag
+       */
+      getHardwareTypePage(pagenoFlag) {
+        const that = this;
+        that.isLoading = true;
+        if(pagenoFlag=='search'){
+          that.widgetInfo.pageNo = 1;
+        }
+        that.$axios
+          .$POST({
+            api_name: "findTemporaryDownDeviceList",
+            params: {
+              deviceId: that.formData.id,
+              controlHost: that.formData.typeName,
+              brand: that.formData.typeCode,
+              deviceVersion: that.widgetInfo.pageNo,
+              sourceId: that.widgetInfo.pageSize
+            }
+          })
+          .then(res => {
+
+            if (res.data.code == "success") {
+              that.isLoading = false;
+              let data = res.data.data;
+              that.tableData = data.rows;
+              that.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              that.isLoading = false;
+              that.tableData = [];
+              that.widgetInfo.list = res.data.rows;
+              that.widgetInfo.total = 0;
+              console.log("没有数值。。。。。");
+            }
+          });
+      },
+
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .tempDownlink-mian{
+    height: auto;
+    max-height: 450px;
+    /deep/.el-form .serch-btn .el-form-item__content{
+       width: auto;
+    }
+  }
+  /deep/.el-loading-mask{
+    background-color: rgba(255,255,255,.5);
+  }
+</style>
+

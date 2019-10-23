@@ -1,0 +1,935 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>硬件平台</el-breadcrumb-item>
+        <el-breadcrumb-item>硬件库存</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>硬件库存</h3>
+        </el-col>
+        <el-col :span="12" class="add-btn-style">
+          <el-button
+            type="primary"
+            @click="batchExportOutStock"
+            :disabled="tableData.length==0 ? true:false"
+            v-show="btns[0].isShow"
+          >批量导出excel</el-button>
+          <el-button type="success" @click="inStock" v-show="btns[1].isShow">入库</el-button>
+        </el-col>
+      </el-row>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="硬件ID:" label-width="70px">
+            <el-input placeholder="请输入硬件ID" v-model="formData.deviceId"></el-input>
+          </el-form-item>
+          <el-form-item label="硬件名称:" label-width="95px">
+            <el-input placeholder="请输入硬件名称" v-model="formData.deviceName"></el-input>
+          </el-form-item>
+          <el-form-item label="硬件父类:" label-width="95px">
+            <el-select
+              v-model.trim="formData.deviceSysVal"
+              placeholder="请选择"
+              @change="getChildrenHardwareType"
+              filterable
+            >
+              <el-option
+                v-for="item of deviceSys"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="硬件子类:" label-width="95px">
+            <el-select
+              v-model.trim="formData.device"
+              placeholder="请选择"
+              @change="setHardwareTypeValue"
+              filterable
+            >
+              <el-option
+                v-for="item in optsTemp"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="品牌:" label-width="65px">
+            <el-input placeholder="品牌" v-model="formData.brand"></el-input>
+          </el-form-item>
+          <el-form-item label="型号:" label-width="65px">
+            <el-input placeholder="型号" v-model="formData.model"></el-input>
+          </el-form-item>
+          <el-form-item label="序列号:" label-width="65px">
+            <el-input placeholder="序列号" v-model="formData.serialNumber"></el-input>
+          </el-form-item>
+          <el-form-item label="存管状态:" label-width="95px">
+            <el-select v-model="formData.repStatus" placeholder="请选择" clearable>
+              <el-option
+                v-for="item of repStsList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="最后申请人:" label-width="100px">
+            <el-input placeholder="请输入最后申请人" v-model="formData.applyerPerson"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请类型:" label-width="120px">
+            <el-select v-model="formData.applyStatus" placeholder="请选择" clearable>
+              <el-option
+                v-for="item of applyTypeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="最后申请项目:" label-width="120px">
+            <el-input placeholder="请输入最后申请项目" v-model="formData.applyProject"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请运营中心:" label-width="145px">
+            <el-input placeholder="请输入最后申请运营中心" v-model="formData.orgName"></el-input>
+          </el-form-item>
+          <el-form-item label="最后申请单位:" label-width="115px">
+            <el-input placeholder="请输入最后申请单位" v-model="formData.unitName"></el-input>
+          </el-form-item>
+          <el-form-item label label-width="15px" style="width: 140px">
+            <el-button type="primary" size="small" @click="getDeviceRepositoryPage('search')">查询</el-button>
+            <el-button size="small" @click="reset">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table
+            v-loading.lock="loading"
+            ref="table"
+            :data="tableData"
+            stripe
+            show-overflow-tooltip
+            @selection-change="handleSelectionChange"
+          >
+            <el-table-column type="selection" width="45" :selectable="selectInit"></el-table-column>
+            <el-table-column label="硬件ID" prop="deviceId" show-overflow-tooltip min-width="6%"></el-table-column>
+            <el-table-column label="硬件名称" prop="deviceName" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column
+              label="硬件类型"
+              prop="deviceTypeName"
+              show-overflow-tooltip
+              min-width="8%"
+            ></el-table-column>
+            <el-table-column label="厂家" prop="factory" show-overflow-tooltip min-width="7%"></el-table-column>
+            <el-table-column label="品牌" prop="brand" show-overflow-tooltip min-width="6%"></el-table-column>
+            <el-table-column label="型号" prop="model" show-overflow-tooltip min-width="6%"></el-table-column>
+            <el-table-column label="序列号"  show-overflow-tooltip min-width="6%">
+              <template slot-scope="scope">
+                <div class="stock-p-wrap">{{scope.row.serialNumber || '--'}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="存管状态"  show-overflow-tooltip min-width="6%">
+              <template slot-scope="scope">
+                <div class="stock-p-wrap">{{showLabel(scope.row.repStatus,repStsList)}}</div>
+              </template>
+            </el-table-column>
+            <el-table-column label="最后申请信息" show-overflow-tooltip min-width="15%">
+              <template slot-scope="scope">
+                <p>申请类型：{{showLabel(scope.row.applyType,applyTypeList)}}</p>
+                <p>&nbsp;&nbsp;申请人：{{scope.row.applyPerson || '--'}}</p>
+                <p v-if="scope.row.applyType != 0">申请项目：{{scope.row.applyProject || '--'}}</p>
+                <template v-if="scope.row.applyType === 0">
+                  <p>运营中心：{{scope.row.applyOrg || '--'}}</p>
+                  <p>申请单位：{{scope.row.applyUnit || '--'}}</p>
+                </template>
+              </template>
+            </el-table-column>
+            <el-table-column label="创建时间" prop="createTime" show-overflow-tooltip min-width="8%"></el-table-column>
+            <el-table-column label="操作" align="center" min-width="10%" class="set-wrapper">
+              <template slot-scope="scope">
+                <!--                <el-link type="primary" @click="viewEcode(scope.$index,scope.row)"  v-if="scope.row.repStatus != 2">二维码</el-link>-->
+                <!--                <el-link-->
+                <!--                  type="primary"-->
+                <!--                  @click="setupInfo(scope.$index,scope.row)"-->
+                <!--                  v-if="scope.row.repStatus === 1"-->
+                <!--                  v-show="btns[4].isShow"-->
+                <!--                >安装信息</el-link>-->
+                <el-link
+                  type="primary"
+                  @click="returnStock(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus === 1"
+                  v-show="btns[5].isShow"
+                >回退入库</el-link>
+                <el-link
+                  type="primary"
+                  @click="sellingStock(scope.$index,scope.row)"
+                  v-if="scope.row.repStatus === 0"
+                  v-show="btns[3].isShow"
+                >销库</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="page-footer">
+            <div class="pf-left">
+              <span class="span-yx">已选({{multipleSelectionAll.length}})</span>
+              <el-button
+                type="primary"
+                @click="batchOutStock"
+                :disabled="multipleSelectionAll.length == 0?true:false"
+                v-show="btns[2].isShow"
+              >批量出库</el-button>
+            </div>
+            <div class="pf-right">
+              <Pagination
+                :widgetInfo="widgetInfo"
+                v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--    二维码弹出框-->
+    <el-dialog title="二维码" :visible.sync="dialogQrcodeVisible" width="300px">
+      <qriously :value="qrCord" :size="260"></qriously>
+    </el-dialog>
+    <!--    出库-->
+    <out-stock ref="outStock" @sureHandel="outStockHandel"></out-stock>
+    <!--    入库-->
+    <in-stock ref="inStock" @sureHandel="outStockHandel"></in-stock>
+    <!--    安装信息-->
+    <setup-info ref="stepInfo"></setup-info>
+    <!--    提示弹框-->
+    <tips-diglog ref="tipDiloag" @loadData="tipsHandel"></tips-diglog>
+  </div>
+</template>
+<script>
+  import ApiConfig from "../../config/api";
+  import Pagination from "~/components/Pagination";
+  import InStock from "~/pages/hardwareStock/inStock";
+  import OutStock from "~/pages/hardwareStock/outStock";
+  import SetupInfo from "~/pages/hardwareStock/setupInfo";
+  import TipsDiglog from "~/pages/hardwareStock/tipsDiglog";
+  import Qs from "qs";
+  export default {
+    components: {
+      InStock,
+      OutStock,
+      SetupInfo,
+      TipsDiglog,
+      Pagination
+    },
+    data() {
+      return {
+        btns: [
+          {
+            name: "批量导出excel",
+            isShow: false,
+            index: 0
+          },
+          {
+            name: "入库",
+            isShow: false,
+            index: 1
+          },
+          {
+            name: "批量出库",
+            isShow: false,
+            index: 2
+          },
+          {
+            name: "销库",
+            isShow: false,
+            index: 3
+          },
+          {
+            name: "查看安装信息",
+            isShow: false
+          },
+          {
+            name: "回退入库",
+            index: 4
+          }
+        ],
+        btnsArr: [],
+        currentBtns: [],
+        qrCord: null,
+        dialogReurnVisible: false, //回退入库弹出
+        dialogDelVisible: false, //销库弹出框
+        dialogQrcodeVisible: false, //二维码
+        optTitle: null,
+        labelPosition: "top",
+        isLoading: false,
+        loading: false,
+        hardwareTypeId: null, //删除的主键id
+        optMode: null,
+        formData: {
+          deviceId: "",
+          deviceName: "",
+          brand: "",
+          model:"",
+          serialNumber:"",
+          repStatus: "",
+          deviceSysVal: "00000000",
+          device: "00000000",
+          deviceTypeCodes: "",
+          applyStatus: "",
+          applyerPerson: "",
+          applyProject: "",
+          orgName: "",
+          unitName: ""
+        },
+        deviceSys: [
+          {
+            value: "00000000",
+            label: "全部"
+          }
+        ],
+        optsTemp: [
+          {
+            value: "00000000",
+            label: "全部"
+          }
+        ],
+        hardwareTypeTreeList: [],
+        tableData: [], //table查询结果
+        parentTypeNameList: [], //父类型树
+        loading: true,
+        plan: {},
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        repStsList: [
+          {
+            value: 0,
+            label: "已入库",
+            text: "已入库"
+          },
+          {
+            value: 1,
+            label: "已出库",
+            text: "已出库"
+          },
+          {
+            value: 2,
+            label: "已销库",
+            text: "已销库"
+          }
+        ],
+        applyTypeList: [
+          {
+            value: "0",
+            label: "运营中心"
+          },
+          {
+            value: "1",
+            label: "企业项目"
+          },
+          {
+            value: "2",
+            label: "其它"
+          }
+        ],
+
+        rules: {
+          parentCode: [
+            { required: true, message: "请选择父类型", trigger: "change" }
+          ],
+          typeName: [
+            { required: true, message: "硬件类型不能为空", trigger: "blur" },
+            { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "blur" }
+          ],
+          code: [
+            { required: true, message: "硬件code不能为空", trigger: "blur" },
+            { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "blur" }
+          ]
+        },
+        checkAll: false,
+        isIndeterminate: false,
+        qrcodeObj: {}, // 二维码配置
+        multipleSelection: [], //选中
+        multipleSelectionAll: [], //全选
+        idKey: "deviceId", // 标识列表数据中每一行的唯一键的名称
+        azDeviceId: null,
+        message: {
+          setType: "",
+          deviceId: ""
+        }
+      };
+    },
+    created() {
+    },
+    mounted() {
+      const that = this;
+      that.getHardwareTypeTree();
+      that.currentBtns = that._Storage.getObj("currentBtnArr", "currentBtnArr");
+      console.log(that.currentBtns);
+      that.isBtnShow();
+    },
+    computed: {},
+    methods: {
+      /**
+       * 控制权限按钮
+       */
+      isBtnShow() {
+        const that = this;
+        let arr = that.currentBtns;
+        that.$nextTick(() => {
+          that.btns.forEach(element => {
+            arr.forEach(item => {
+              if (item.name === element.name) {
+                element.isShow = item.isShow;
+              }
+            });
+          });
+        });
+      },
+      /**
+       * 销库和回退入库确定事件
+       * @param row(子组件向父组件传值) 该行全部信息
+       */
+      tipsHandel(row) {
+        const that = this;
+        // 标识当前行的唯一键的名称
+        let idKey = that.idKey;
+        for (let i = 0; i < that.multipleSelectionAll.length; i++) {
+          if (that.multipleSelectionAll[i][idKey] == row.deviceId) {
+            // 如果该条是被销库的 那么在总条数中移除
+            that.multipleSelectionAll.splice(i, 1);
+            break;
+          }
+        }
+        that.getDeviceRepositoryPage("load");
+      },
+
+      /**
+       * 入库
+       */
+      inStock() {
+        const that = this;
+        that.$refs.inStock.initInStock();
+      },
+
+      /**
+       * 出库确定按钮事件
+       */
+      outStockHandel() {
+        const that = this;
+        (that.multipleSelection = []),
+          (that.multipleSelectionAll = []), //全选
+          that.getDeviceRepositoryPage("search");
+      },
+      /**
+       * 销库
+       * @param index 索引值
+       * @param row
+       */
+      sellingStock(index, row) {
+        const that = this;
+        that.message.setType = "destroy";
+        that.message.deviceId = row.deviceId;
+        that.$refs.tipDiloag.showDialog(index, row, that.message);
+      },
+      /**
+       * 回退入库
+       * @param index
+       * @param row
+       */
+      returnStock(index, row) {
+        const that = this;
+        that.message.setType = "back";
+        that.message.deviceId = row.deviceId;
+        that.$refs.tipDiloag.showDialog(index, row, that.message);
+      },
+      /**
+       * 硬件类型全部数据
+       */
+      getHardwareTypeTree() {
+        const that = this;
+        that.$axios.$GET({ api_name: "getHardwareTypeTree" }).then(res => {
+          if (res.data.code == "success") {
+            that.hardwareTypeTreeList = res.data.data;
+            //加载分类
+            if (
+              null != that.hardwareTypeTreeList &&
+              that.hardwareTypeTreeList.length > 0
+            ) {
+              that.hardwareTypeTreeList.forEach(item => {
+                let obj = {};
+                obj.label = item.typeName;
+                obj.value = item.code;
+                that.deviceSys.push(obj);
+              });
+            }
+          }
+        });
+      },
+      /**
+       * 联动硬件类型下级
+       * @param val
+       */
+      getChildrenHardwareType(val) {
+        const that = this;
+        that.optsTemp = [{ value: "00000000", label: "全部" }];
+        that.formData.device = that.optsTemp[0].value;
+        if ("00000000" === val) {
+          that.formData.deviceTypeCodes = "";
+          return;
+        }
+        if (
+          null != that.hardwareTypeTreeList &&
+          that.hardwareTypeTreeList.length > 0
+        ) {
+          for (let i = 0; i < that.hardwareTypeTreeList.length; i++) {
+            if (val === that.hardwareTypeTreeList[i].code) {
+              let children = that.hardwareTypeTreeList[i].children;
+              if (null != children && children.length > 0) {
+                let codes = [];
+                children.forEach(item => {
+                  let obj = {};
+                  obj.label = item.typeName;
+                  obj.value = item.code;
+                  that.optsTemp.push(obj);
+                  codes.push(item.code);
+                });
+                that.formData.deviceTypeCodes = codes.join(",");
+              }
+              break;
+            }
+          }
+        }
+      },
+      /**
+       * 设置硬件分类的值
+       * @param val
+       */
+      setHardwareTypeValue(val) {
+        const that = this;
+        console.log(val)
+        if ("00000000" === val) {
+          //根据上级的值，获取全部内容
+          if (
+            null != that.hardwareTypeTreeList &&
+            that.hardwareTypeTreeList.length > 0
+          ) {
+            for (let i = 0; i < that.hardwareTypeTreeList.length; i++) {
+              if (
+                that.formData.deviceSysVal === that.hardwareTypeTreeList[i].code
+              ) {
+                let children = that.hardwareTypeTreeList[i].children;
+                if (null != children && children.length > 0) {
+                  let codes = [];
+                  children.forEach(item => {
+                    codes.push(item.code);
+                  });
+                  that.formData.deviceTypeCodes = codes.join(",");
+                }
+                break;
+              }
+            }
+          }
+        } else {
+          that.formData.deviceTypeCodes = val;
+        }
+      },
+      /**
+       * 将存管状态和申请类型对应的中文显示出来
+       * @param key
+       * @param list
+       * @returns {string|*}
+       */
+      showLabel(key, list) {
+        if (key === "" || key === null || key === undefined) {
+          return "--";
+        }
+        return list.find(item => item.value == key).label;
+      },
+      /**
+       * 硬件库存列表
+       * @param pagenoFlag
+       */
+      getDeviceRepositoryPage(pagenoFlag) {
+        const that = this;
+        if (pagenoFlag == "search") {
+          that.widgetInfo.pageNo = 1;
+        }
+        that.loading = true;
+        that.$axios
+          .$POST({
+            api_name: "getDeviceRepositoryPage",
+            params: {
+              deviceId: that.formData.deviceId, //设备主键id
+              deviceName: that.formData.deviceName, //设备名称
+              deviceTypeCodes: that.formData.deviceTypeCodes, //设备类型code,多个之间使用逗号进行分隔
+              brand: that.formData.brand, //品牌
+              model:that.formData.model, //型号
+              serialNumber:that.formData.serialNumber, //序列号
+              repositoryStatus: that.formData.repStatus, //存管状态
+              applyStatus: that.formData.applyStatus, //最后申请类型
+              applyerPerson: that.formData.applyerPerson, //最后申请人
+              applyProject: that.formData.applyProject, //最后申请项目
+              orgName: that.formData.orgName, //最后申请运营中心orgCode
+              unitName: that.formData.unitName, //最后单位
+              pageNo: that.widgetInfo.pageNo,
+              pageSize: that.widgetInfo.pageSize
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              that.loading = false;
+              let data = res.data.data;
+              that.tableData = data.rows;
+              that.widgetInfo.total = data.total === null ? 0 : data.total;
+              setTimeout(() => {
+                this.setSelectRow();
+              }, 50);
+            } else {
+              that.loading = false;
+              that.tableData = [];
+              that.widgetInfo.list = res.data.rows;
+              that.widgetInfo.total = 0;
+              console.log("没有数值。。。。。");
+            }
+          })
+          .catch(() => {
+            console.log("这里是异常");
+          });
+      },
+
+      /**
+       * 硬件库存列表分页
+       * @param widgetInfo
+       */
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.changePageCoreRecordData();
+        this.getDeviceRepositoryPage("load");
+      },
+      /**
+       * 查询重置
+       */
+      reset() {
+        const that = this;
+        that.formData= {
+          deviceId: "",
+          deviceName: "",
+          brand: "",
+          repStatus: "",
+          deviceSysVal: "00000000",
+          device: "00000000",
+          deviceTypeCodes: "",
+          applyStatus: "",
+          applyerPerson: "",
+          applyProject: "",
+          orgName: "",
+          unitName: "",
+          model:"",
+          serialNumber:""
+        },
+          that.getDeviceRepositoryPage("search");
+      },
+      /**
+       * 查看二维码
+       * @param index row的索引
+       * @param row  行信息
+       */
+      viewEcode(index, row) {
+        const that = this;
+        that.dialogQrcodeVisible = true;
+        that.qrCord = row.deviceId.toString();
+      },
+      /**
+       * 安装信息
+       * @param index
+       * @param row
+       */
+      setupInfo(index, row) {
+        const that = this;
+        that.azDeviceId = row.deviceId;
+        that.$refs.stepInfo.initStupInfo(that.azDeviceId);
+      },
+
+      /**
+       * 复选框选中值
+       */
+      handleSelectionChange(val) {
+        const that = this;
+        that.multipleSelection = val;
+        //实时记录选中的数据
+        setTimeout(() => {
+          that.changePageCoreRecordData();
+        }, 50);
+      },
+      /**
+       * 复选框按钮初始化时是否可编辑
+       * @param row
+       * @param index
+       * @returns {boolean}
+       */
+      selectInit(row) {
+        return row.repStatus == 1 || row.repStatus == 2 ? false : true;
+      },
+      /**
+       * 批量出库
+       */
+      batchOutStock() {
+        const that = this;
+        if (
+          null == that.multipleSelectionAll ||
+          that.multipleSelectionAll.length == 0
+        ) {
+          that.$message.error("请勾选出库列");
+          return;
+        }
+        that.$refs.outStock.initOutStock(that.multipleSelectionAll);
+      },
+
+      /**
+       * 批量导出excel
+       */
+      batchExportOutStock() {
+        const that = this;
+        let deviceIdArr = [];
+        if (null == that.tableData || that.tableData.length == 0) {
+          that.$message.error("暂时没有批量导出的数据");
+          return;
+        }
+        if (that.widgetInfo.total > 10000) {
+          that.$message.error(
+            `导出数量${that.widgetInfo.total}条，大于10000条,请经过筛选后再进行此操作`
+          );
+          return;
+        }
+        that.tableData.forEach(item => {
+          deviceIdArr.push(item.deviceId);
+        });
+        let param = {
+          deviceId: that.formData.deviceId, //设备主键id
+          deviceName: that.formData.deviceName, //设备名称
+          deviceTypeCodes: that.formData.deviceTypeCodes, //设备类型code,多个之间使用逗号进行分隔
+          brand: that.formData.brand, //品牌
+          repositoryStatus: that.formData.repStatus, //存管状态
+          applyStatus: that.formData.applyStatus, //最后申请类型
+          applyerPerson: that.formData.applyerPerson, //最后申请人
+          applyProject: that.formData.applyProject, //最后申请项目
+          orgName: that.formData.orgName, //最后申请运营中心orgCode
+          unitName: that.formData.unitName, //最后单位
+          serialNumber:that.formData.serialNumber,//序列号
+          model:that.formData.model //型号
+        };
+        let queryStr = Qs.stringify(param);
+        let url =
+          ApiConfig.api["downloadDeviceRepositoryExcelByConditions"] +
+          "?" +
+          queryStr;
+        that
+          .$confirm("确认批量导出excel？")
+          .then(_ => {
+            window.open(url);
+          })
+          .catch(_ => {});
+      },
+      /**
+       * 设置记录行
+       */
+      setSelectRow() {
+        let that = this;
+        if (!that.multipleSelectionAll || that.multipleSelectionAll.length <= 0) {
+          return;
+        }
+        // 标识当前行的唯一键的名称
+        let idKey = that.idKey;
+        let selectAllIds = [];
+        that.multipleSelectionAll.forEach(row => {
+          selectAllIds.push(row[idKey]);
+        });
+        that.$refs.table.clearSelection();
+        for (let i = 0; i < that.tableData.length; i++) {
+          if (selectAllIds.indexOf(that.tableData[i][idKey]) >= 0) {
+            // 设置选中，记住table组件需要使用ref="table"
+            that.$refs.table.toggleRowSelection(that.tableData[i], true);
+          }
+        }
+      },
+
+      /**
+       * 跨页记忆分页选择数据
+       */
+      changePageCoreRecordData() {
+        // 标识当前行的唯一键的名称
+        const that = this;
+        let idKey = that.idKey;
+
+        // 如果总记忆中还没有选择的数据，那么就直接取当前页选中的数据，不需要后面一系列计算
+        if (that.multipleSelectionAll.length <= 0) {
+          that.multipleSelectionAll = that.multipleSelection;
+          return;
+        }
+        // 总选择里面的key集合
+        let selectAllIds = [];
+        that.multipleSelectionAll.forEach(row => {
+          selectAllIds.push(row[idKey]);
+        });
+        let selectIds = [];
+        // 获取当前页选中的id
+        that.multipleSelection.forEach(row => {
+          selectIds.push(row[idKey]);
+          // 如果总选择里面不包含当前页选中的数据，那么就加入到总选择集合里
+          if (selectAllIds.indexOf(row[idKey]) < 0) {
+            that.multipleSelectionAll.push(row);
+          }
+        });
+        let noSelectIds = [];
+        // 得到当前页没有选中的id
+        that.tableData.forEach(row => {
+          if (selectIds.indexOf(row[idKey]) < 0) {
+            noSelectIds.push(row[idKey]);
+          }
+        });
+        noSelectIds.forEach(id => {
+          if (selectAllIds.indexOf(id) >= 0) {
+            for (let i = 0; i < that.multipleSelectionAll.length; i++) {
+              if (that.multipleSelectionAll[i][idKey] == id) {
+                // 如果总选择中有未被选中的，那么就删除这条
+                that.multipleSelectionAll.splice(i, 1);
+                break;
+              }
+            }
+          }
+        });
+      }
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form {
+    padding: 20px 25px 0 25px;
+    /deep/.el-form-item {
+      margin-right: 0;
+      .el-form-item__content {
+        width: 170px;
+      }
+    }
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132
+    height: calc(100vh - 90px - 64px - 20px - 65px - 132px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单132 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 132px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+    /*.el-checkbox{ margin-top: 6px;}*/
+  }
+
+  .page-footer {
+    display: flex;
+    .pf-left {
+      width: 450px;
+      margin: 28px 0 0 10px;
+      .span-yx {
+        width: 60px;
+        font-size: 14px;
+        color: #666;
+        display: inline-block;
+      }
+    }
+    .pf-right {
+      flex: 1;
+    }
+  }
+  .main-container{
+    .el-scrollbar::-webkit-scrollbar-thumb{
+      opacity: 0;
+    }
+    .el-scrollbar::-webkit-scrollbar-track{
+      opacity: 0;
+    }
+  }
+  /deep/.el-table th > .cell{
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  /deep/.is-center{
+    .cell{
+      .el-link.el-link--primary{
+        display: block;
+        margin: 0 auto;
+        width: 70px;
+        &:hover{
+          text-decoration: none;
+        }
+      }
+    }
+  }
+  @media screen and (min-width: 1635px) and (max-width: 1920px) {
+    .list-wrap {
+      //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单188
+      height: calc(100vh - 90px - 64px - 20px - 65px - 188px);
+      /deep/.el-table {
+        .el-table__body-wrapper {
+          //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单188 分页85 头部高度48px
+          height: calc(100vh - 90px - 64px - 20px - 65px - 188px - 85px - 48px);
+          overflow-y: auto;
+        }
+      }
+    }
+  }
+  @media screen and (min-width: 1364px) and (max-width: 1635px) {
+    .list-wrap {
+      //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单188
+      height: calc(100vh - 60px - 64px - 20px - 65px - 245px);
+      /deep/.el-table {
+        .el-table__body-wrapper {
+          //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单188 分页85 头部高度48px
+          height: calc(100vh - 60px - 64px - 20px - 65px - 245px - 85px - 48px);
+          overflow-y: auto;
+        }
+      }
+      /deep/.el-form-item {
+        max-width: 200px;
+      }
+    }
+  }
+  @media screen and (max-width: 1363px) {
+    .list-wrap {
+      //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单244
+      height: calc(100vh - 60px - 64px - 20px - 65px - 301px);
+      /deep/.el-table {
+        .el-table__body-wrapper {
+          //导航60px 面包屑64px 距离底部20px 面板标题65px 查询form表单244 分页85 头部高度48px
+          height: calc(100vh - 60px - 64px - 20px - 65px - 301px - 85px - 48px);
+          overflow-y: auto;
+        }
+      }
+      /deep/.el-form-item {
+        max-width: 200px;
+      }
+    }
+  }
+</style>

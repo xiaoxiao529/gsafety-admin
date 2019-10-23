@@ -1,0 +1,239 @@
+<template>
+  <div class="round-echarts-wrap">
+    <dl class="round-echarts-main">
+      <dt class="round-em-header">
+        <h3 class="round-em-title">企业分布情况</h3>
+      </dt>
+      <dd>
+        <p class="p-style" v-if="!showFlag">暂无数据</p>
+        <div class="round-img" id="enterprise_Data"></div>
+      </dd>
+    </dl>
+    <dl class="round-echarts-main">
+      <dt class="round-em-header">
+        <h3 class="round-em-title">用户分布情况</h3>
+        <el-form>
+          <el-form-item label="" class="" prop="">
+            <div class="item-warpper">
+              <el-select v-model="userDataVal"
+                         placeholder="请选择"
+                         class="selet-width-100"
+                         filterable>
+                <el-option
+                  v-for="item of userDataSelectList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </div>
+          </el-form-item>
+        </el-form>
+      </dt>
+      <dd>
+        <p class="p-style" v-if="!userFlag">暂无数据</p>
+        <template v-show="userFlag">
+          <div class="round-img" id="user_Data"></div>
+        </template>
+      </dd>
+    </dl>
+  </div>
+</template>
+
+<script>
+    let HOME_CHART = {}; //图表对象
+    import echarts from 'echarts'
+
+    export default {
+        name: "pieEchartsView",
+
+        data() {
+            return {
+                enterpriseData: [],
+                userData: [],
+                userDataVal: '10,11',
+                showFlag: false,
+                userFlag: false,
+                userDataSelectList: [{
+                    value: '10,11',
+                    label: '全部渠道'
+                }, {
+                    value: '10',
+                    label: 'web用户'
+                }, {
+                    value: '11',
+                    label: 'App用户'
+                }]
+
+            }
+        },
+        watch: {
+            userDataVal(val) {
+                this.userDataVal = val;
+                this.$emit('userDistributionDropDown', this.userDataVal);
+            }
+        },
+        computed: {},
+        methods: {
+            initEcharts(obj) {
+                if (obj.enterpriseData.data.length === 0) {
+                    this.showFlag = false;
+                } else {
+                    this.showFlag = true;
+                }
+                this.enterpriseData = obj.enterpriseData.data;
+                this.setEnterpriseDataChart();
+                window.addEventListener('resize', function () {
+                    HOME_CHART.enterprise_Data.resize();
+                });
+
+
+                if (obj.userData.data.length === 0) {
+                    this.userFlag = false;
+                } else {
+                    this.userFlag = true;
+                }
+                this.userData = obj.userData.data;
+                this.setUserDataChart();
+                window.addEventListener('resize', function () {
+                    HOME_CHART.user_Data.resize();
+                });
+
+            },
+            setEnterpriseDataChart() {
+                let _self = this;
+                //服务模式分布
+                HOME_CHART.enterprise_Data = echarts.init(document.getElementById('enterprise_Data'));
+                HOME_CHART.enterprise_Data.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b}: {c}'
+                    },
+                    color: ['#02C868', '#2487FF', '#FFC013', '#1BC1F4', '#8066FF', '#ce1829','#FF8C00','#FE8463'],
+                    series: [
+                        {
+                            name: '企业分布情况',
+                            type: 'pie',
+                            radius: ['0%', '75%'],
+                            center: ['50%', '50%'],
+                            avoidLabelOverlap: true,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 1,
+                                    borderColor: '#ffffff',
+                                    label: {
+                                        show: true,
+                                        formatter: "{b}: {c}"
+                                    }
+                                }
+                            },
+                            label: {
+                                label: {
+                                    show: true,
+                                    formatter: '{b} : {c}'
+                                },
+                                emphasis: {
+                                    show: false,
+                                    textStyle: {
+                                        fontSize: '30',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            data: _self.enterpriseData
+                        }
+                    ]
+                })
+            },
+
+            setUserDataChart() {
+                let _self = this;
+                //服务模式分布
+                HOME_CHART.user_Data = echarts.init(document.getElementById('user_Data'));
+                HOME_CHART.user_Data.setOption({
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: '{a} <br/>{b}: {c}'
+                    },
+                    color: ['#02C868', '#2487FF', '#FFC013', '#1BC1F4', '#8066FF', '#ce1829','#FF8C00','#FE8463'],
+
+                    series: [
+                        {
+                            name: '用户分布情况',
+                            type: 'pie',
+                            radius: ['0%', '80%'],
+                            center: ['50%', '50%'],
+                            avoidLabelOverlap: true,
+                            itemStyle: {
+                                normal: {
+                                    borderWidth: 1,
+                                    borderColor: '#ffffff',
+                                    label: {
+                                        show: true,
+                                        formatter: "{b}: {c}"
+                                    }
+                                }
+                            },
+                            label: {
+                                label: {
+                                    show: true,
+                                    formatter: '{b} : {c}'
+                                },
+                                emphasis: {
+                                    show: false,
+                                    textStyle: {
+                                        fontSize: '30',
+                                        fontWeight: 'bold'
+                                    }
+                                }
+                            },
+                            data: _self.userData
+                        }
+                    ]
+                })
+            },
+        },
+        mounted() {
+        },
+    }
+</script>
+
+<style lang="scss" scoped>
+  .round-echarts-wrap {
+    width: 100%;
+    height: 400px;
+    display: flex;
+
+    .round-echarts-main {
+      width: 50%;
+      height: 100%;
+
+      .round-em-header {
+        display: flex;
+        height: 42px;
+        overflow: hidden;
+      }
+
+      .round-em-title {
+        line-height: 40px;
+        height: 40px;
+        font-weight: 400;
+        color: rgba(37, 40, 46, 1);
+        padding: 0 20px 0 30px;
+      }
+
+      .p-style {
+        line-height: 60px;
+        text-align: center;
+        font-size: 14px;
+        color: #999;
+
+      }
+    }
+
+    .round-img {
+      width: 100%;
+      height: 360px;
+    }
+  }
+</style>

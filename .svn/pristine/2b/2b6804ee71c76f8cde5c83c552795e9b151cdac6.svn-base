@@ -1,0 +1,1166 @@
+<!-- 下行列表页 -->
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item :to="{ path: '/' }">企业管理</el-breadcrumb-item>
+        <el-breadcrumb-item>业主单位管理</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <template>
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="业主单位列表" name="0"></el-tab-pane>
+            <el-tab-pane label="免费企业升级申请" name="1"></el-tab-pane>
+          </el-tabs>
+        </template>
+      </el-row>
+      <div v-if="activeName==0" class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="企业名称:" prop="orgName" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model.trim="formData.unitParentName"></el-input>
+          </el-form-item>
+          <el-form-item label="运营中心:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.subCenterCode">
+              <el-option
+                v-for="item in operatList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="" class="serch-btn">
+            <el-button type="text" size="small" @click="addvanced">高级搜索</el-button>
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset()">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="企业名称" width="220" show-overflow-tooltip prop="unitName" align="center"></el-table-column>
+            <el-table-column label="服务模式" prop="enterpriseUnitServiceModelText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="企业来源" prop="joinTypeText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="企业性质" prop="enterpriseUnitTypeText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="所属集团" prop="unitParentName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="所属运营中心" prop="orgName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="启用状态" prop="statusText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="电子档案状态" prop="unitDataStatusName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="服务状态" prop="serviceStatusName" show-overflow-tooltip align="center"></el-table-column>
+
+            <el-table-column label="操作" width="220" align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" v-if="scope.row.status == 9" @click="startClick(scope.row)">启用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 9" style="color: #999999;">停用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 9" @click="editClick(scope.row)">编辑</el-link>
+                <el-link type="primary" v-if="scope.row.status == 9" @click="deleteClick(scope.row)">删除</el-link>
+                <el-link type="primary" v-if="scope.row.status == 9" style="color: #999999;">变更服务</el-link>
+
+                <el-link type="primary" v-if="scope.row.status == 0" style="color: #999999;">启用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 0" @click="stopClick(scope.row)">停用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 0&&checkService(scope.row) != 2" @click="editClick(scope.row)">编辑</el-link>
+                <el-link type="primary" v-if="scope.row.status == 0&&checkService(scope.row) == 2" style="color: #999999;">编辑</el-link>
+                <el-link type="primary" v-if="scope.row.status == 0" style="color: #999999;">删除</el-link>
+                <el-link type="primary" v-if="scope.row.status == 0" style="color: #999999;">变更服务</el-link>
+
+                <el-link type="primary" v-if="scope.row.status == 1&&scope.row.serviceStatus==2" @click="startClick(scope.row)" >启用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1&&scope.row.serviceStatus!=2" style="color: #999999;">启用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1" style="color: #999999;">停用</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1&&scope.row.serviceStatus==1" @click="editClick(scope.row)" >编辑</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1&&scope.row.serviceStatus!=1" style="color: #999999;">编辑</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1" style="color: #999999;">删除</el-link>
+                <el-link type="primary" v-if="scope.row.status == 1" style="color: #999999;">变更服务</el-link>
+
+              </template>
+            </el-table-column>
+
+          </el-table>
+          <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+        </div>
+      </div>
+
+      <div v-else class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true" :model="formData" ref="formData" class="hardware-form">
+          <el-form-item label="企业名称:" prop="orgName" :label-width="labelWidth">
+            <el-input placeholder="请输入" v-model.trim="formData.unitName"></el-input>
+          </el-form-item>
+          <el-form-item label="处理状态:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.state">
+              <el-option
+                v-for="item in handleStateData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="申请结果:" :label-width="labelWidth">
+            <el-select placeholder="请选择" filterable v-model.trim="formData.applyResult">
+              <el-option
+                v-for="item in serviceStateData"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="" class="serch-btn">
+            <el-button type="primary" size="small" @click="lookFor()">查询</el-button>
+            <el-button size="small" @click="reset()">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <!-- 列表 -->
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="企业名称" width="220" show-overflow-tooltip prop="unitName" align="center"></el-table-column>
+            <el-table-column label="申请人" prop="applyUser" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="联系电话" prop="applyPhone" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="联系地址" prop="applyAddress" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="申请接入设备" prop="applyDevice" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="申请服务模式" prop="applyServerModelText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="申请时间" prop="applyTime" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="处理状态" prop="stateText" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="申请结果" prop="applyResultText" show-overflow-tooltip align="center"></el-table-column>
+
+            <el-table-column label="操作" width="220" align="center">
+              <template slot-scope="scope">
+                <el-link type="primary" v-if="applyCheckState(scope.row)" style="color: #999999;">分派运营中心</el-link>
+                <el-link type="primary" v-else @click="assignToCenter(scope.row)">分派运营中心</el-link>
+                <el-link type="primary" @click="upgradeHandelClick(scope.row)" v-if="applyCheckState(scope.row)">升级</el-link>
+                <el-link type="primary" v-else style="color: #999999;" >升级</el-link>
+                <el-link type="primary" @click="rejectClick(scope.row)" v-if="applyCheckState(scope.row)">拒绝</el-link>
+                <el-link type="primary" v-else style="color: #999999;">拒绝</el-link>
+              </template>
+            </el-table-column>
+          </el-table>
+          <Pagination1 :widgetInfo="widgetInfo1" v-on:sonHandleCurrentChange="sonHandleCurrentChange1" />
+        </div>
+      </div>
+    </div>
+<!--高级查询-->
+    <el-dialog title="升级" :visible.sync="dialogVisible" width="630px">
+      <div class="dialog-body-diy-wrapper">
+        <el-form
+          class="dialog-form-style"
+          :label-position="labelPosition"
+          label-width="120px"
+          :rules="rules"
+          ref="plan"
+          :model="plan" >
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="企业种类" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.enterpriseUnitType">
+                  <el-option
+                    v-for="item in enterpriseUnitType"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="所属集团" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.unitParentId">
+                  <el-option
+                    v-for="item in unitParentGroupData"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="服务模式" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.enterpriseUnitServiceModel">
+                  <el-option
+                    v-for="item in enterpriseUnitServiceModel"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="企业来源" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.joinType">
+                  <el-option
+                    v-for="item in joinType"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="启用状态" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.status">
+                  <el-option
+                    v-for="item in statusData"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="服务状态" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.serviceStatus">
+                  <el-option
+                    v-for="item in serviceStatus"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12">
+              <el-form-item label="电子档案状态" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.enterpriseUnitDataStatus">
+                  <el-option
+                    v-for="item in enterpriseUnitDataStatus"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="排序" prop="" required>
+                <el-select placeholder="请选择" filterable v-model.trim="formData.sortType">
+                  <el-option
+                    v-for="item in sortType"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="reset">重 置</el-button>
+        <el-button type="primary" @click="lookFor">确 定</el-button>
+      </span>
+    </el-dialog>
+<!--拒绝-->
+    <el-dialog title="拒绝" :visible.sync="dialog1Visible" width="500px">
+      <el-form
+        class="dialog-form-style"
+        :label-position="labelPosition"
+        label-width="120px"
+        :rules="rules"
+        ref="refuseReaObj"
+        :model="refuseReaObj" >
+        <span>拒绝该企业服务升级申请</span>
+        <div style="margin: 20px 10px;"></div>
+        <el-input
+          type="textarea"
+          placeholder="请输入拒绝内容(必填)"
+          v-model="refuseToReason"
+          maxlength="50"
+          show-word-limit
+        >
+        </el-input>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="dialog1Visible = false">取 消</el-button>
+      <el-button type="primary" @click="commitnote">确 定</el-button>
+    </span>
+    </el-dialog>
+<!--分配运营中心对话框-->
+    <el-dialog title="分配运营中心" :visible.sync="dialog2Visible" width="400px">
+      <el-form
+        class="dialog-form-style"
+        :label-position="labelPosition"
+        label-width="120px"
+        :rules="rules"
+        ref="refuseReaObj"
+        :model="distributionObj" >
+        <el-form-item required style="width:100%;" >
+          <el-select style="width:100%;"  placeholder="请选择" filterable v-model.trim="subCenterCode">
+            <el-option
+              v-for="item in operatList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+      <el-button @click="dialog2Visible = false">取 消</el-button>
+      <el-button type="primary" @click="distribution">确 定</el-button>
+    </span>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  import Pagination from "~/components/Pagination";
+  import Pagination1 from "~/components/Pagination";
+  import axios, {AxiosInstance} from 'axios';
+  export default {
+    components: {
+      Pagination,
+      Pagination1,
+      axios,
+    },
+
+    data() {
+      return {
+        flag: false,
+        isLoading: false,
+        labelWidth: "100px",
+
+        formData: {},
+
+        tableData: [],
+        loading: true,
+        pageNo: 1,
+        pageSize: 6,
+        total: 0,
+        userObj:null,//用户信息
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        widgetInfo1: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+
+        indexNum: 0,
+        plan:{},
+        dialogVisible: false, //高级查询
+        dialog1Visible:false, //拒绝对话框
+        dialog2Visible:false, //分配运营中心
+
+        refuseReaObj:{},//拒绝对话框需要的参数
+        distributionObj:{},//分配运营中心需要的参数
+        subCenterCode:null,//分配运营中心id
+        refuseToReason:null,
+        labelPosition: "top",
+        optTitle:null,
+        optMode: null,
+        rules:{},
+
+        activeName: '0',//选中的tab
+
+        operatList: [
+          {
+            value: '',
+            label: '请选择'
+          }
+        ],
+
+        enterpriseUnitServiceModel:[
+          {
+            value: '',
+            label: '请选择'
+          },
+        ],//服务模式数据
+        unitParentGroupData:[
+          {
+            value: '',
+            label: '请选择'
+          }
+        ],// 所属集团数据
+        enterpriseUnitType:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {  //企业种类
+            value: '01',
+            label: '单一型'
+          },
+          {
+            value: '02',
+            label: '集团型'
+          },
+        ],
+
+        joinType:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '系统注册'
+          },
+          {
+            value: '1',
+            label: 'App注册'
+          }
+        ],//企业来源
+
+        //启用状态
+        statusData:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '9',
+            label: '待启用'
+          },
+          {
+            value: '0',
+            label: '已启用'
+          },
+          {
+            value: '1',
+            label: '已停用'
+          }
+        ],
+        //服务状态
+        serviceStatus:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '待服务'
+          },
+          {
+            value: '1',
+            label: '服务中'
+          },
+          {
+            value: '2',
+            label: '服务期满'
+          }
+        ],
+        //电子档案状态
+        enterpriseUnitDataStatus:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '待采集'
+          },
+          {
+            value: '2',
+            label: '已完成'
+          }
+        ],
+        //其他
+        sortType:[
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '默认排序'
+          },
+          {
+            value: '1',
+            label: '即将到期'
+          }
+        ],
+        // 处理状态
+        handleStateData : [{
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '待分派'
+          },
+          {
+            value: '1',
+            label: '已分派'
+          },
+          {
+            value: '2',
+            label: '已处置'
+          }
+        ],
+        // 申请结果
+        serviceStateData : [
+          {
+            value: '',
+            label: '请选择'
+          },
+          {
+            value: '0',
+            label: '待确认'
+          },
+          {
+            value: '1',
+            label: '已升级'
+          },
+          {
+            value: '2',
+            label: '已拒绝'
+          },
+        ],
+      };
+    },
+    created() {
+        if (process.client) {
+            this.findAllSubCenterCode();
+        }
+    },
+    computed: {
+
+
+    },
+    methods: {
+      //获取数据1
+      findMonitorDeviceStateDownList() {
+        this.isLoading = true;
+        this.$axios
+          .$POST_NEW({
+            api_name: "queryEnterpriseUnitList",
+            params: {
+              pageNo: this.widgetInfo.pageNo,
+              pageSize: this.widgetInfo.pageSize,
+              unitParentName: this.formData.unitParentName,
+              subCenterCode: this.formData.subCenterCode,
+              unitParentId: this.formData.unitParentId,
+              joinType: this.formData.joinType,
+              enterpriseUnitServiceModel: this.formData.enterpriseUnitServiceModel,
+              enterpriseUnitType: this.formData.enterpriseUnitType,
+              enterpriseUnitDataStatus: this.formData.enterpriseUnitDataStatus,
+              status: this.formData.status,
+              serviceStatus: this.formData.serviceStatus,
+              sortType: this.formData.sortType
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              this.tableData = [];
+              this.isLoading = false;
+              var data = res.data.data;
+              for (var key in data.rows){
+                this.tableData.push(this.tableRowClassName(data.rows[key]));
+              }
+              this.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              this.tableData = [];
+              this.widgetInfo.list = data.rows;
+              this.widgetInfo.total = 0;
+            }
+          });
+      },
+      //获取数据2
+      queryFreeUnitUpdateApplyList() {
+        this.isLoading = true;
+        this.$axios
+          .$POST_NEW({
+            api_name: "queryFreeUnitUpdateApplyList",
+            params: {
+              pageNo: this.widgetInfo1.pageNo,
+              pageSize: this.widgetInfo1.pageSize,
+              unitName:this.formData.unitName,
+              state:this.formData.state,
+              applyResult:this.formData.applyResult
+          }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              this.tableData = [];
+              this.isLoading = false;
+              var data = res.data.data;
+              for (var key in data.rows){
+                this.tableData.push(this.applyTableRowClassName(data.rows[key]));
+              }
+              this.widgetInfo1.total = data.total === null ? 0 : data.total;
+            } else {
+              this.tableData = [];
+              this.widgetInfo1.list = data.rows;
+              this.widgetInfo1.total = 0;
+            }
+          });
+      },
+
+      //分页1
+      sonHandleCurrentChange(widgetInfo) {
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        if (this.activeName == '0'){
+          this.findMonitorDeviceStateDownList();
+        } else {
+          this.queryFreeUnitUpdateApplyList();
+        }
+      },
+      //分页2
+      sonHandleCurrentChange1(widgetInfo){
+        this.widgetInfo1.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo1.pageSize;
+        this.widgetInfo1.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo1.pageNo;
+        if (this.activeName == '0'){
+          this.findMonitorDeviceStateDownList();
+        } else {
+          this.queryFreeUnitUpdateApplyList();
+        }
+      },
+      //重置
+      reset() {
+        this.dialogVisible = false;
+        this.formData = {};
+        this.tableData = [];
+        if (this.activeName == '0'){
+          this.findMonitorDeviceStateDownList();
+        } else {
+          this.queryFreeUnitUpdateApplyList();
+        }
+      },
+      //查询
+      lookFor() {
+        this.dialogVisible = false;
+        if (this.activeName == '0'){
+          this.findMonitorDeviceStateDownList();
+        } else {
+          this.queryFreeUnitUpdateApplyList();
+        }
+      },
+      //tab切换 0为业主单位列表  1为免费企业升级申请
+      handleClick(tab, event){
+        if (tab.indexNum == this.activeName) {
+          this.formData = {};
+          this.tableData = [];
+          if (this.activeName == '0'){
+            this.findMonitorDeviceStateDownList();
+          } else {
+            this.queryFreeUnitUpdateApplyList();
+          }
+        }
+      },
+      // 查询全部运营中心
+      findAllSubCenterCode(){
+        this.isLoading = true;
+        this.$axios
+          .$POST_NEW({
+            api_name: "findAllSubCenterCode",
+            params:{
+
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              this.isLoading = false;
+              var list = [];
+              list = res.data.data;
+              for (var key in list) {
+                var temp = {};
+                temp.value = list[key].value;
+                temp.label = list[key].label;
+                this.operatList.push(temp);
+              }
+            } else {
+              this.operatList = [
+                {
+                  value: '',
+                  label: '请选择'
+                }
+              ];
+            }
+          });
+      },
+      //列表数据转换
+      tableRowClassName(row) {
+        // 服务模式转换
+        switch (row.enterpriseUnitServiceModel) {
+          case '0':
+            row.enterpriseUnitServiceModelText = '免费模式';
+            break;
+          case '1':
+            row.enterpriseUnitServiceModelText = '基础安全模式';
+            break;
+          case '2':
+            row.enterpriseUnitServiceModelText = '高级安全模式';
+            break;
+          case '3':
+            row.enterpriseUnitServiceModelText = '全托管模式';
+            break;
+          case '4':
+            row.enterpriseUnitServiceModelText = '转接模式';
+            break;
+          case '5':
+            row.enterpriseUnitServiceModelText = '初级安全模式';
+            break;
+          default:
+            break;
+        }
+        // 企业性质转换
+        switch (row.enterpriseUnitType) {
+          case '01':
+            row.enterpriseUnitTypeText = '单一型';
+            break;
+          case '02':
+            row.enterpriseUnitTypeText = '集团型';
+            break;
+          default:
+            break;
+        }
+        // 企业来源转换
+        switch (row.joinType) {
+          case '0':
+            row.joinTypeText = '系统注册';
+            break;
+          case '1':
+            row.joinTypeText = 'App注册';
+            break;
+          default:
+            break;
+        }
+
+        // 服务状态转换
+        switch (row.serviceStatus) {
+          case '0':
+            row.serviceStatusName = '待服务';
+            break;
+          case '1':
+            row.serviceStatusName = '服务中';
+            break;
+          case '2':
+            row.serviceStatusName = '服务期满';
+            break;
+          default:
+            break;
+        }
+        // 电子档案状态
+        if ("0" == row.enterpriseUnitDataStatus) {
+          row.unitDataStatusName = "待采集";
+        } else if ("1" == row.enterpriseUnitDataStatus) {
+          row.unitDataStatusName = "采集中";
+        } else if ("2" == row.enterpriseUnitDataStatus) {
+          row.unitDataStatusName = "已完成";
+        }
+        // 启用状态转换
+        switch (row.status) {
+          case '9':
+            row.statusText = '待启用';
+            break;
+          case '0':
+            row.statusText = '已启用';
+            break;
+          case '1':
+            row.statusText = '已停用';
+            break;
+          default:
+            break;
+        }
+        return row;
+      },
+
+      checkState (row) {
+        // 已分派或已处置按钮置灰
+        if(row.state=='1'||row.state=='2'){
+          // 申请结果为已拒绝可再次分派
+          if(row.applyResult=='2'){
+            return false;
+          }
+          return true;
+        }
+      },
+
+      checkresult (row){
+        // 处理结果为待确认，可以升级和拒绝
+        if(row.applyResult == '0'){
+          // 但前面为待分派的时候，不能升级和拒绝
+          if(row.state=='0'){
+            return false;
+          }
+          return true;
+        }
+      },
+      applyTableRowClassName (row) {
+        //处理状态数据处理
+        switch (row.state) {
+          case '0':
+            row.stateText = '待分派';
+            break;
+          case '1':
+            row.stateText = '已分派';
+            break;
+          case '2':
+            row.stateText = '已处置';
+          default:
+            break;
+        }
+        //申请结果数据处理
+        switch (row.applyResult) {
+          case '0':
+            row.applyResultText = '待确认';
+            break;
+          case '1':
+            row.applyResultText = '已升级';
+            break;
+          case '2':
+            row.applyResultText = '已拒绝';
+            break;
+          default:
+            row.applyResultText = '待确认';
+            break;
+        }
+        // 处理服务模式
+        switch (row.applyServerModel) {
+          case '0':
+            row.applyServerModelText = '免费模式';
+            break;
+          case '1':
+            row.applyServerModelText = '基础安全模式';
+            break;
+          case '2':
+            row.applyServerModelText = '高级安全模式';
+            break;
+          case '3':
+            row.applyServerModelText = '全托管模式';
+            break;
+          case '4':
+            row.applyServerModelText = '转接模式';
+            break;
+          case '5':
+            row.applyServerModelText = '初级安全模式';
+            break;
+          default:
+            break;
+        }
+        return row; // tr 添加hover效果
+      },
+      //启用按钮
+      startClick(row) {
+        this.$confirm('确认启用企业？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLoading = true;
+          this.$axios
+            .$POST_NEW({
+              api_name: "updateEnterpriseStatus",
+              params: {
+                id: row.id,
+                operateType: '0',
+                unitId: row.unitId,
+                enterpriseUnitServiceModel:row.enterpriseUnitServiceModel
+              }
+            })
+            .then(res => {
+              this.isLoading = false;
+              if (res.data.code == 'success') {
+                this.$message.success('启用成功');
+              } else {
+                this.$message.warning(res.data.message);
+              }
+            });
+        });
+      },
+
+      stopClick(row){
+        this.$confirm('确认停用企业？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLoading = true;
+          this.$axios
+            .$POST_NEW({
+              api_name: "updateEnterpriseStatus",
+              params: {
+                id: row.id,
+                operateType: '1',
+                unitId: row.unitId,
+                enterpriseUnitServiceModel:row.enterpriseUnitServiceModel
+              }
+            })
+            .then(res => {
+              this.isLoading = false;
+              if (res.data.code == 'success') {
+                this.$message.success('停用成功');
+              } else {
+                this.$message.warning(res.data.message);
+              }
+            });
+        });
+      },
+
+      checkService (row) {
+        // 服务状态要根据时间判断 0: 待服务；1: 服务中；2: 服务期满；
+        var nowDate = new Date(new Date().toLocaleDateString()).getTime();
+        var serviceEndDate = new Date(row.enterpriseUnitServiceEndDate).getTime();
+        var _tag = 0;
+
+        if (row.enterpriseUnitEffectiveDate) {
+          if (nowDate >= serviceEndDate) {
+            _tag = 2;
+          } else if (nowDate < serviceEndDate) {
+            _tag = 1;
+          }
+        }
+        return _tag;
+      },
+      // 编辑按钮
+      editClick (row) {
+        //跳转到详情
+        this._Storage.setObj("ownerunitEditRow", "obj", row);
+
+        this.$router.push({
+          name: "ownerunitManager-ownerunitEditControl",
+          params: {
+            // id:row.id
+          }
+        });
+      },
+      //删除按钮
+      deleteClick(row) {
+        var that = this;
+        this.$confirm('确认删除该企业？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.isLoading = true;
+          this.$axios
+            .$POST_NEW({
+              api_name: "ownerunitupdateEnterpriseStatus",
+              params: {
+                id: row.id,
+                operateType: "2",
+                orgCode: row.subCenterCode,
+                unitId: row.unitId,
+                enterpriseUnitServiceModel:row.enterpriseUnitServiceModel
+              }
+            })
+            .then(res => {
+              this.isLoading = false;
+              if (res.data.code == 'success') {
+                this.$message.success('删除成功');
+              } else {
+                this.$message.warning(res.data.message);
+              }
+            });
+        });
+      },
+      //高级搜索
+      addvanced(){
+        const that = this;
+        this.dialogVisible = true;
+        this.optTitle = '高级搜索';
+        var data = [this.$axios.$POST_NEW({api_name: "findAllParentUnit"}),this.$axios.$POST_NEW({api_name: "queryGeneralOrgServiceType"})];
+        axios.all(data).then(axios.spread(function (res,res1) {
+          //服务模式
+          if (res.data.code == 'success') {
+            that.unitParentGroupData = res.data.data;
+            that.unitParentGroupData.unshift({value: '',label: '请选择'});
+          } else {
+            this.$message.warning(res.data.message);
+          }
+          if (res1.data.code == 'success') {
+            that.enterpriseUnitServiceModel = res1.data.data;
+            that.enterpriseUnitServiceModel.unshift({value: '',label: '请选择'});
+          } else {
+            this.$message.warning(res1.data.message);
+          }
+        }));
+      },
+      //关闭弹框
+      handleClose(){
+        const that = this;
+        that.dialogVisible = false;
+        that.$nextTick(() => {
+          that.plan={}
+          that.$refs["plan"].resetFields();
+        });
+      },
+
+      // 企业免费升级申请
+      applyCheckState (row) {
+        // 已分派或已处置按钮置灰
+        if(row.state=='1'||row.state=='2'){
+          // 申请结果为已拒绝可再次分派
+          if(row.applyResult=='2'){
+            return false;
+          }
+          return true;
+        }
+      },
+
+      //升级按钮
+      upgradeHandelClick (row) {
+          // $('#applyId').val(row.applyId);
+          // $('#unitId').val(row.unitId);
+          // $('#operationOrg').val(row.operationOrg);
+      },
+      //拒绝按钮
+      rejectClick: function(row){
+        this.dialog1Visible = true;
+        this.refuseReaObj = {};
+        this.refuseReaObj.applyId = row.applyId;
+        this.refuseReaObj.unitId = row.unitId;
+        this.refuseToReason = '';
+        // alert('需要的二个参数 applyId:'+row.applyId+"unitId:"+row.unitId);
+      },
+      //拒绝对话框 带备注信息
+      commitnote(){
+        // alert("拒绝对话框 带备注信息"+JSON.stringify(this.refuseToReason));
+        var that = this;
+        this.userObj = this._Storage.getObj("userObj", "userObj");
+        that.isLoading = true;
+        that.$axios
+          .$POST_NEW({
+            api_name: "applyRefuse",
+            params: {
+              unitId: that.refuseReaObj.unitId,
+              applyId: that.refuseReaObj.applyId,
+              disposeUserId: that.userObj.id,
+              disposeUserName: that.userObj.loginName,
+              disposeOpinion: that.refuseToReason,
+              applyResult: "2",
+            }
+          })
+          .then(res => {
+            that.isLoading = false;
+            that.dialog1Visible = false;
+            if (res.data.code == 'success') {
+              that.$message.success('拒绝成功！');
+              that.queryFreeUnitUpdateApplyList();
+            } else {
+              that.$message.warning(res.data.message);
+            }
+          });
+      },
+      //分配运营中心
+      assignToCenter (row) {
+        // alert('需要的四个参数 applyId:'+row.applyId+"dispatchUserId:"+row.dispatchUserId+"dispatchUserName:"+row.dispatchUserName+"dispatchOpinion:"+row.dispatchOpinion);
+        // ToDo
+        //需要确认分配运营中心接口
+        this.dialog2Visible = true;
+        this.distributionObj = {};
+        this.distributionObj.applyId = row.applyId;
+        this.distributionObj.dispatchUserId = row.dispatchUserId;
+        this.distributionObj.dispatchUserName = row.dispatchUserName;
+        this.distributionObj.dispatchOpinion = row.dispatchOpinion;
+        this.operatList.shift();
+        this.subCenterCode = null;
+      },
+      //分配运营中心确认
+      distribution(){
+        // debugger
+        let that = this;
+        this.userObj = this._Storage.getObj("userObj", "userObj");
+        this.isLoading = true;
+        this.$axios
+          .$POST_NEW({
+            api_name: "applyDispatch",
+            params: {
+              applyId: that.distributionObj.applyId,
+              dispatchUserId: that.userObj.id,
+              dispatchUserName: that.userObj.loginName,
+              dispatchOpinion: "",
+              subCenterCode: that.subCenterCode
+            }
+          })
+          .then(res => {
+            this.isLoading = false;
+            if (res.data.code == 'success') {
+              this.$message.success('分派成功！');
+              that.dialog2Visible = false;
+              that.queryFreeUnitUpdateApplyList();
+            } else {
+              this.$message.warning(res.data.message);
+            }
+          });
+      },
+      //变更服务
+      changeClick(row){
+        var that = this;
+        this.isLoading = true;
+        this.$axios
+          .$POST_NEW({
+            api_name: "queryServiceAgreementByUnitId",
+            params: {
+              unitId: row.unitId
+            }
+          })
+          .then(res => {
+            this.isLoading = false;
+            if (res.data.code == 'success') {
+              // ToDO
+              this.$message.success('变更成功！');
+            } else {
+              this.$message.warning(res.data.message);
+            }
+          });
+      },
+    }
+  };
+</script>
+
+<style lang="scss" scoped>
+  @import "~/assets/css/list.scss";
+  /*/deep/.el-table {*/
+  /*  .el-table__body-wrapper {*/
+  /*    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px*/
+  /*    height: calc(*/
+  /*      100vh - 90px - 64px - 20px - 65px - 76px - 85px - 82px*/
+  /*    ) !important;*/
+  /*  }*/
+  /*}*/
+  .add-btn-style {
+    text-align: right;
+    padding-right: 25px;
+    box-sizing: border-box;
+  }
+  .hardware-form{
+    padding: 20px 25px 0 25px;
+  }
+  .list-wrap {
+    //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76
+    height: calc(100vh - 90px - 64px - 20px - 65px - 76px);
+    overflow: hidden;
+    /deep/.el-table {
+      padding: 0;
+      overflow: hidden;
+      th {
+        background: rgba(240, 243, 247, 1);
+      }
+      .el-table__body-wrapper {
+        //导航90px 面包屑64px 距离底部20px 面板标题65px 查询form表单76 分页85 头部高度48px
+        height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 85px - 48px);
+        overflow-y: auto;
+      }
+    }
+  }
+
+</style>

@@ -1,0 +1,436 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item>数据中心</el-breadcrumb-item>
+        <el-breadcrumb-item>风险评估</el-breadcrumb-item>
+        <el-breadcrumb-item>建筑评分</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <div class="location">
+        <el-col :span="12">
+          <h3>建筑评分</h3>
+        </el-col>
+      </div>
+      <div class="main-container">
+        <!-- 查询 -->
+        <el-form :inline="true"
+                 :model="serchForm"
+                 ref="serchForm"
+                 class="hardware-form">
+          <el-form-item label="运营中心:" :label-width="labelWidth">
+            <el-select
+              placeholder="全部"
+              filterable
+              v-model.trim="serchForm.subCenterVal"
+              @change="changeSubCode"
+              clearable
+            >
+              <el-option
+                v-for="item in subCenter"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="单位名称:" :label-width="labelWidth">
+            <el-select placeholder="全部"
+                       filterable
+                       v-model.trim="serchForm.unitVal"
+                       :loading="loadingFlag"
+                       clearable>
+              <el-option
+                v-for="(item,index) in units"
+                :key="index"
+                :label="item.label"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button type="primary" size="small" style="margin-left: 10px;" @click="startCounting()">开始计算</el-button>
+            <el-button type="primary" size="small" style="margin-left: 10px;" @click="serch()">查询</el-button>
+            <el-button size="smal" style="margin-left: 10px;" @click="rest('serchForm')">重置</el-button>
+          </el-form-item>
+        </el-form>
+        <div class="list-wrap">
+          <el-table v-loading.lock="isLoading" :data="tableData" stripe show-overflow-tooltip>
+            <el-table-column label="运营中心" prop="orgName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="业主单位" prop="unitName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="楼栋名称" prop="buildName" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="评分值" prop="buildScore" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="评分时间" prop="createTime" show-overflow-tooltip align="center"></el-table-column>
+            <el-table-column label="评分记录" show-overflow-tooltip align="center">
+              <template slot-scope="scope">
+                <div>
+                  <el-link type="primary" @click="look(scope.row)">查看</el-link>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+        <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange"></Pagination>
+      </div>
+    </div>
+    <el-dialog title="评分记录" :visible.sync="dialogFormVisible" width="1020px">
+      <div class="deviceInfoList-wrap" id="deviceInfoList_wrap">
+        <el-table :data="deviceInfoList"
+                  class="deviceInfoList-table"
+                  v-loading.lock="dialogIsLoading"
+                  stripe
+                  show-overflow-tooltip>
+          <el-table-column label="运营中心" prop="orgName" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column label="业主单位" prop="unitName" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column label="楼栋名称" prop="buildName" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column label="评分值" prop="buildScore" show-overflow-tooltip align="center"></el-table-column>
+          <el-table-column label="评分时间" prop="createTime" show-overflow-tooltip align="center"></el-table-column>
+        </el-table>
+      </div>
+      <Pagination1 :widgetInfo="widgetInfo1"
+                   v-on:sonHandleCurrentChange="sonHandleCurrentChange1"></Pagination1>
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+    import Pagination from "~/components/Pagination";
+    import Pagination1 from "~/components/Pagination";
+    import ApiConfig from "@/config/api";
+
+    export default {
+        components: {
+            Pagination,
+            Pagination1
+        },
+        data() {
+            return {
+                isLoading: false,
+                dialogIsLoading: false,
+                dialogFormVisible: false,
+                deviceInfoList: [],
+                labelWidth: "100px",
+                tableData: [],
+                serchForm: {
+                    unitVal: "",
+                    subCenterVal: ""
+                },
+                subCenter: [{value: "", label: "全部"}],
+                units: [{value: "", label: "全部"}],
+                loadingFlag: false,
+                widgetInfo: {
+                    pageSize: 10,
+                    pageNo: 1,
+                    total: 0
+                },
+                widgetInfo1: {
+                    pageSize: 10,
+                    pageNo: 1,
+                    total: 0
+                },
+                org_code: "",
+                unit_id: "",
+                build_id: ""
+            };
+        },
+        created() {
+            if (process.client) {
+                if (process.client) {
+                    this.getSubCenterList();
+                    this.changeSubCode();
+                }
+            }
+        },
+        mounted() {
+        },
+        methods: {
+            getTableData() {
+                this.isLoading = true;
+                this.$axios
+                    .$GET_ENTER({
+                        api_name: "riskBuildLatest",
+                        params: {
+                            orgCode: this.serchForm.subCenterVal,
+                            unitId: this.serchForm.unitVal,
+                            pageNo: this.widgetInfo.pageNo,
+                            pageSize: this.widgetInfo.pageSize
+                        }
+                    })
+                    .then(res => {
+                        this.isLoading = false;
+                        if (res.data.code === 'success') {
+                            let data = res.data.data;
+                            this.tableData = data.content;
+                            this.widgetInfo.total = data.totalSize === null ? 0 : data.totalSize;
+                        } else {
+                            this.tableData = [];
+                            this.widgetInfo.list = res.data.data.content;
+                            this.widgetInfo.total = 0;
+                        }
+                    });
+            },
+
+            serch() {
+                this.widgetInfo.pageNo = 1;
+                this.getTableData();
+            },
+
+            look(row) {
+                let that = this;
+                that.dialogFormVisible = true;
+                that.widgetInfo1 = {
+                    pageSize: 10,
+                    pageNo: 1,
+                    total: 0
+                };
+                that.getDeviceByRecordId(row.orgCode, row.unitId, row.buildId);
+            },
+
+            getDeviceByRecordId(org_code, unit_id, build_id) {
+                let that = this;
+                that.dialogIsLoading = true;
+                that.org_code = org_code;
+                that.unit_id = unit_id;
+                that.build_id = build_id;
+                that.deviceInfoList = [];
+                that.$axios
+                    .$GET_ENTER({
+                        api_name: "riskBuildHis",
+                        params: {
+                            orgCode: org_code,
+                            unitId: unit_id,
+                            buildId: build_id,
+                            pageNo: that.widgetInfo1.pageNo,
+                            pageSize: that.widgetInfo1.pageSize
+                        }
+                    })
+                    .then(res => {
+                        that.dialogIsLoading = false;
+                        if (res.data.code === "success") {
+                            let data = res.data.data;
+                            that.deviceInfoList = data.content;
+                            that.widgetInfo1.total = data.totalSize === null ? 0 : data.totalSize;
+                        } else {
+                            that.deviceInfoList = [];
+                            that.widgetInfo1.list = res.data.data.content;
+                            that.widgetInfo1.total = 0;
+                            that.$message.error(res.data.message);
+                        }
+                    });
+            },
+            startCounting() {
+                this.isLoading = true;
+                this.$axios
+                    .$GET_ENTER({
+                        api_name: "riskBuildStart",
+                        params: {
+                            orgCode: this.serchForm.subCenterVal,
+                            unitId: this.serchForm.unitVal,
+                        }
+                    })
+                    .then(res => {
+                        this.isLoading = false;
+                        if (res.data.code === "success") {
+                            this.$message.success("建筑评分计算成功！");
+                            this.getTableData();
+                        } else {
+                            this.$message.error('建筑评分计算失败');
+                        }
+                    });
+            },
+            rest(formName) {
+                this.$refs[formName].resetFields();
+                this.widgetInfo.pageNo = 1;
+                this.serchForm.unitVal = "";
+                this.serchForm.subCenterVal = "";
+                this.getTableData();
+            },
+            sonHandleCurrentChange(widgetInfo) {
+                //分页
+                this.widgetInfo.pageSize = widgetInfo.pageSize
+                    ? parseInt(widgetInfo.pageSize)
+                    : this.widgetInfo.pageSize;
+                this.widgetInfo.pageNo = widgetInfo.pageNo
+                    ? parseInt(widgetInfo.pageNo)
+                    : this.widgetInfo.pageNo;
+                this.getTableData();
+            },
+            sonHandleCurrentChange1(widgetInfo) {
+                //分页
+                this.widgetInfo1.pageSize = widgetInfo.pageSize
+                    ? parseInt(widgetInfo.pageSize)
+                    : this.widgetInfo1.pageSize;
+                this.widgetInfo1.pageNo = widgetInfo.pageNo
+                    ? parseInt(widgetInfo.pageNo)
+                    : this.widgetInfo1.pageNo;
+                this.getDeviceByRecordId(this.org_code, this.unit_id, this.build_id);
+            },
+            //获取运营中心
+            getSubCenterList() {
+                this.$axios
+                    .$POST({
+                        api_name: "findSubCenterValue"
+                    })
+                    .then(res => {
+                        if (res.data.code === "success") {
+                            var list = [];
+                            this.subCenter = [];
+                            list = res.data.data;
+                            for (var key in list) {
+                                var temp = {};
+                                temp.value = list[key].value;
+                                temp.label = list[key].label;
+                                this.subCenter.push(temp);
+                            }
+                        } else {
+                        }
+                    });
+            },
+            //获取单位名称
+            findUnitValue() {
+                this.units = [];
+                if (!this.serchForm.subCenterVal) {
+                    return
+                }
+                this.loadingFlag = true;
+                this.$axios
+                    .$POST({
+                        api_name: "findUnitValue",
+                        params: {
+                            subCenterCode: this.serchForm.subCenterVal
+                        },
+                        time: 10000
+                    })
+                    .then(res => {
+                        if (res.data.code === "success") {
+                            this.units = [];
+                            this.loadingFlag = false;
+                            var list = [];
+                            list = res.data.data;
+                            for (var key in list) {
+                                var temp = {};
+                                temp.value = list[key].value;
+                                temp.label = list[key].label;
+                                this.units.push(temp);
+                            }
+                        } else {
+                            this.loadingFlag = false;
+                            console.log("没有数值。。。。。");
+                        }
+                    });
+            },
+            changeSubCode() {
+                this.serchForm.unitVal = "";
+                this.findUnitValue();
+            },
+            //时间戳转换(yyyy-mm-dd hh:mm:ss)
+            formatftimes(timestamp) {
+                if (timestamp === null || timestamp === '' || timestamp === undefined) {
+                    return '-';
+                }
+                if (typeof (timestamp) == "string") {
+                    return timestamp;
+                }
+                if (typeof (timestamp) == "number" && timestamp.toString().length !== 13) {//这里只处理13位的标准时间戳
+                    return timestamp;
+                }
+                let date = new Date(timestamp);
+                let Y = date.getFullYear() + '-';
+                let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+                let D = this.setFormat(date.getDate()) + ' ';
+                let h = this.setFormat(date.getHours()) + ':';
+                let m = this.setFormat(date.getMinutes()) + ':';
+                let s = this.setFormat(date.getSeconds());
+                return (Y + M + D + h + m + s);
+            },
+            //时间位数为1位数时，前面补0
+            setFormat(x) {
+                if (x < 10) {
+                    x = "0" + x;
+                }
+                return x;
+            }
+        }
+    };
+</script>
+
+<style lang="scss" scoped>
+  @import "~/assets/css/list.scss";
+
+  .main-wrap {
+    /deep/ .el-table {
+      .el-icon-arrow-right {
+        font-size: 17px;
+        font-weight: bold;
+        color: #b7b5b5;
+      }
+
+      .scope-span {
+        margin-right: 15px;
+      }
+
+      .el-table__expanded-cell[class*="cell"] {
+        padding: 0;
+
+        th {
+          background: #e7eaef;
+        }
+
+        tr {
+          background: rgba(245, 247, 252, 1);
+        }
+      }
+    }
+
+    /deep/ .el-form {
+      .el-form-item {
+        width: 20%;
+
+        &.DataSelect {
+          width: 30%;
+
+          .el-date-editor .el-range__icon,
+          .el-date-editor .el-range__close-icon {
+            display: none;
+          }
+
+          .el-date-editor .el-range-input {
+            width: 100%;
+          }
+        }
+      }
+
+      .el-form-item__content {
+        width: calc(100% - 100px);
+      }
+    }
+  }
+
+  .deviceInfoList-wrap {
+    /deep/ .el-table {
+      .el-table__body-wrapper {
+        height: auto;
+        min-height: 250px;
+        overflow-y: auto;
+      }
+    }
+  }
+
+  /deep/ .el-dialog__wrapper {
+    overflow: hidden;
+  }
+
+  @media screen and (max-width: 1680px) {
+    .main-wrap {
+      /deep/ .el-form {
+        .el-form-item {
+          &.DataSelect {
+            width: 40%;
+          }
+        }
+      }
+    }
+  }
+</style>

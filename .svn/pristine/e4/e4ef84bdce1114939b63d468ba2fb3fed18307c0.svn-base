@@ -1,0 +1,318 @@
+<template>
+  <div>
+    <div class="Crumbs">
+      <el-breadcrumb separator-class="el-icon-arrow-right">
+        <el-breadcrumb-item >工具平台</el-breadcrumb-item>
+        <el-breadcrumb-item>组织架构</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <div class="main-wrap">
+      <el-row class="location">
+        <el-col :span="12">
+          <h3>组织架构</h3>
+        </el-col>
+        <el-col :span="12" class="search-btn">
+          <el-button type="primary" size="small" @click="refreshList()">刷新数据</el-button>
+          <el-button type="primary" size="small" @click="deleteUser()">已删除名单</el-button>
+        </el-col>
+
+      </el-row>
+      <div class="main-container">
+					<!--<el-tree :data="organizationalStructureData"
+						:props="defaultProps"
+						@node-click="handleNodeClick"
+						node-key="id"
+						:render-content="renderContent"
+						highlight-current
+						></el-tree>-->
+				  <div class="org-tt">
+				  	<el-row>
+						  <el-col :span="5" style="text-indent: 24px;"><div class="grid-content bg-purple">部门人员</div></el-col>
+						  <el-col :span="5"><div class="grid-content bg-purple-light">UID</div></el-col>
+						  <el-col :span="3"><div class="grid-content bg-purple"></div>岗位</el-col>
+						  <el-col :span="5"><div class="grid-content bg-purple-light">手机</div></el-col>
+						  <el-col :span="6"><div class="grid-content bg-purple-light">邮箱</div></el-col>
+						</el-row>
+				  </div>
+				  <div class="list-container"  v-loading.lock="isLoading" element-loading-text="数据同步中，请稍候...">
+				  	<p class="company-name">{{companyName}}</p>
+					  <el-collapse v-model="activeName" accordion  v-for="(item,index) in organizationalStructureData">
+						  <el-collapse-item :title="item.name" :name="index">
+						    <div class="" v-if="item.children.length>0" >
+						  		<div v-for="(itemUser2,index) in item.users">
+							  		<el-row>
+										  <el-col :span="5" class="company-person"><div class="grid-content bg-purple"><i class="iconfont icon-person-1 " ></i> {{itemUser2.name}}</div></el-col>
+										  <el-col :span="5"><div class="grid-content bg-purple-light">{{itemUser2.userid}}</div></el-col>
+										  <el-col :span="3"><div class="grid-content bg-purple"></div>{{itemUser2.position}}</el-col>
+										  <el-col :span="5"><div class="grid-content bg-purple-light">{{itemUser2.mobile}}</div></el-col>
+										  <el-col :span="6"><div class="grid-content bg-purple-light">{{itemUser2.email}}</div></el-col>
+										</el-row>
+							  	</div>
+                  <div class="" v-for="(itemChild1,index) in item.children" :key="index">
+                    <p class="department-name" :class="{'isActive':curIndex==index}" @click="showUsers(index)"><i class="iconfont icon-supervise"></i>{{itemChild1.name}}</p>
+                    <div class="users-list" v-if="curIndex==index">
+                      <div class="" v-for="(itemUser3,index) in itemChild1.users" :key="index">
+                        <el-row>
+                          <el-col :span="5" class="company-person"><div class="grid-content bg-purple"><i class="iconfont icon-person-1 " ></i> {{itemUser3.name}}</div></el-col>
+                          <el-col :span="5"><div class="grid-content bg-purple-light">{{itemUser3.userid}}</div></el-col>
+                          <el-col :span="3"><div class="grid-content bg-purple"></div>{{itemUser3.position}}</el-col>
+                          <el-col :span="5"><div class="grid-content bg-purple-light">{{itemUser3.mobile}}</div></el-col>
+                          <el-col :span="6"><div class="grid-content bg-purple-light">{{itemUser3.email}}</div></el-col>
+                        </el-row>
+                      </div>
+                    </div>
+                  </div>
+						  	</div>
+						  	<div class="" v-if="item.children.length<=0" v-for="(itemChild2,index) in item.users">
+						  		<el-row>
+										  <el-col :span="5" class="company-person"><div class="grid-content bg-purple"><i class="iconfont icon-person-1 " ></i> {{itemChild2.name}}</div></el-col>
+										  <el-col :span="5"><div class="grid-content bg-purple-light">{{itemChild2.userid}}</div></el-col>
+										  <el-col :span="3"><div class="grid-content bg-purple"></div>{{itemChild2.position}}</el-col>
+										  <el-col :span="5"><div class="grid-content bg-purple-light">{{itemChild2.mobile}}</div></el-col>
+										  <el-col :span="6"><div class="grid-content bg-purple-light">{{itemChild2.email}}</div></el-col>
+										</el-row>
+						  	</div>
+						  </el-collapse-item>
+
+						</el-collapse>
+				  </div>
+
+
+      </div>
+    </div>
+
+		<!--已删除名单-->
+    <el-dialog title="已删除名单" :visible.sync="dialogTableVisible">
+      <div class="record-table">
+	      <el-table stripe :data="recordData">
+	        <el-table-column prop="name" label="姓名" width="100"></el-table-column>
+	        <el-table-column prop="department" label="部门" width></el-table-column>
+	        <el-table-column prop="position" label="岗位" width></el-table-column>
+	        <el-table-column prop="mobile" label="手机号"></el-table-column>
+	        <el-table-column prop="updateTime" label="删除时间"></el-table-column>
+	      </el-table>
+	      <Pagination
+            :widgetInfo="widgetInfo"
+            v-on:sonHandleCurrentChange="sonHandleCurrentChange"
+          />
+      </div>
+
+    </el-dialog>
+  </div>
+</template>
+<script>
+	import Pagination from "~/components/Pagination";
+  export default {
+  	components: {
+	    Pagination
+	  },
+    data() {
+      return {
+      	curIndex:-1,
+      	onOff:true,
+      	organizationalStructureData:[],
+      	companyName:"",
+      	defaultProps:{
+      		children: 'children',
+          label: 'label'
+      	},
+      	activeName: '1',
+      	isLoading: false,
+      	dialogTableVisible: false,
+      	recordData: [],
+      	widgetInfo: {
+	        pageSize: 10,
+	        pageNo: 1,
+	        total: 0
+	      },
+      };
+    },
+    methods: {
+    	showUsers(tab){
+    		this.curIndex = this.curIndex == tab ? -1 : tab;
+    	},
+      handleNodeClick(data) {
+        console.log(data);
+      },
+      handleChange(val) {
+        console.log(val);
+      },
+      append(data) {
+        const newChild = { id: id++, label: 'testtest', children: [] };
+        if (!data.children) {
+          this.$set(data, 'children', []);
+        }
+        data.children.push(newChild);
+      },
+      renderContent(h, { node, data }) {
+        return (
+          <span style="flex: 1; display: flex; align-items: center; justify-content: space-between; font-size: 14px; padding-right: 8px;">
+            <span>
+              <span>{node.label}</span>
+            </span>
+
+            <span>
+              <el-button style="font-size: 12px;" type="text" on-click={ () => this.append(data) }>Append</el-button>
+              <el-button style="font-size: 12px;" type="text" on-click={ () => this.remove(node, data) }>Delete</el-button>
+            </span>
+          </span>);
+      },
+      getOrganizationalStructureData(){
+      	this.isLoading = true;
+      	this.$axios
+        .$GET({
+          api_name: "getCompanyDepartmentTree",
+          params: {
+          }
+        })
+        .then(res => {
+          if (res.data.code == "success") {
+            this.isLoading = false;
+						this.companyName = res.data.data[0].name
+						this.organizationalStructureData = res.data.data[0].children;
+						console.log(this.organizationalStructureData)
+
+          } else {
+            console.log("没有数值。。。。。");
+          }
+        });
+      },
+      refreshList(){
+      	var that = this;
+      	if(this.onOff){
+      		this.onOff = false;
+      		this.isLoading = true;
+	      	this.organizationalStructureData = [];
+	      	this.$axios
+	        .$GET({
+	          api_name: "syncCompanyDepartmentTreeData",
+	          params: {},
+	          time:15000
+	        })
+	        .then(res => {
+							console.log(res,"res")
+		          if (res.data.code == "success") {
+		          	setTimeout(function(){
+		          		that.onOff = true;
+		          	},10000)
+		            this.isLoading = false;
+								this.companyName = res.data.data[0].name;
+								this.organizationalStructureData = res.data.data[0].children;
+
+		          } else {
+		          	setTimeout(function(){
+		          		that.onOff = true;
+		          	},10000)
+		            this.isLoading = false;
+		            this.companyName = "";
+								this.organizationalStructureData = [];
+		          }
+	        });
+      	}else{
+      		this.$message({
+	          message: '请勿频繁同步数据，待10秒之后再试！',
+	          type: 'warning'
+	        });
+      	}
+      },
+      deleteUser(){
+      	this.dialogTableVisible = true;
+	      this.$axios
+	        .$GET({
+	          api_name: "getDelUserList",
+	          params: {
+	            pageNo: this.widgetInfo.pageNo,
+            	pageSize: this.widgetInfo.pageSize
+	          }
+	        })
+	        .then(res => {
+	          if (res.data.code == "success") {
+	            this.recordData = res.data.data.rows;
+	            console.log(this.recordData);
+	            this.widgetInfo.total = res.data.data.total === null ? 0 : res.data.data.total;
+	          } else {
+	            this.recordData = [];
+	            this.widgetInfo.total = 0;
+	            console.log("没有数值。。。。。");
+	          }
+	        });
+      },
+      //分页
+	    sonHandleCurrentChange(widgetInfo) {
+	      this.widgetInfo.pageSize = widgetInfo.pageSize
+	        ? parseInt(widgetInfo.pageSize)
+	        : this.widgetInfo.pageSize;
+	      this.widgetInfo.pageNo = widgetInfo.pageNo
+	        ? parseInt(widgetInfo.pageNo)
+	        : this.widgetInfo.pageNo;
+	      this.deleteUser();
+	    },
+    },
+    mounted(){
+    	this.getOrganizationalStructureData();
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+.isActive{
+	color: #0069d8;
+}
+.search-btn{
+	text-align: right;
+	padding-right: 25px;
+}
+
+.list-container{
+	padding: 0 25px;
+	height: calc(100vh - 90px - 64px - 20px - 65px - 76px - 5px);
+  overflow-y: auto;
+	/deep/.el-collapse-item__header{
+		position: relative;
+		padding-left: 25px;
+		font-size: 14px;
+	}
+	/deep/.el-collapse-item__content{
+		overflow-y: auto;
+	}
+	/deep/.el-collapse-item__arrow{
+		position: absolute;
+    left: 0px;
+    top: 17px;
+	}
+	/deep/.el-col-3{
+		height: 22.4px;
+	}
+	.company-person{
+		padding-left: 24px;
+	}
+	.department-name{
+		padding-left: 24px;
+		cursor: pointer;
+	}
+	.users-list{
+		padding-left: 5px;
+	}
+}
+.org-tt{
+	padding: 0 25px;
+	height: 30px;
+	line-height: 30px;
+	margin: 10px 0;
+	font-size: 14px;
+	background: #f2f2f2;
+}
+
+.company-name{
+	line-height: 49px;
+	font-size: 14px;
+}
+
+
+
+@media screen and (max-width: 1680px) {
+  .list-container {
+    height: calc(100vh - 90px - 64px - 20px - 65px - 36px );
+  }
+}
+</style>
+

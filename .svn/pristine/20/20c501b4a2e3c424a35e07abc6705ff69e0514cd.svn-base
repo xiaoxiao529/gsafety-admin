@@ -1,0 +1,104 @@
+<template>
+  <div class="DialogStockWrap">
+    <el-dialog title="设备信息" :visible.sync="dialogFormVisible" width="1020px">
+      <div class="deviceInfoList-wrap" id="deviceInfoList_wrap">
+        <el-table
+          :data="deviceInfoList"
+          class="deviceInfoList-table"
+          v-loading.lock="dialogIsLoading"
+        >
+          <el-table-column label="序号" prop="deviceName" type="index" align="left" min-width="5%"></el-table-column>
+          <el-table-column label="硬件ID" prop="id" align="left" min-width="8%"></el-table-column>
+          <el-table-column label="硬件名称" prop="deviceName" align="left" min-width="8%"></el-table-column>
+          <el-table-column label="序列号" prop="serialNumber" align="left" min-width="7%"></el-table-column>
+          <el-table-column label="硬件类型" prop="deviceTypeName" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="厂家" prop="factory" align="left" min-width="10%"></el-table-column>
+          <el-table-column label="型号" prop="model" align="left" min-width="7%"></el-table-column>
+          <el-table-column label="供应商" prop="supplier" align="left" min-width="8%"></el-table-column>
+          <el-table-column label="单价/计量单位" prop="deviceId" align="left" min-width="13%">
+            <template slot-scope="scope">{{scope.row.price}}元/{{scope.row.measurementUnit}}</template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <Pagination :widgetInfo="widgetInfo" v-on:sonHandleCurrentChange="sonHandleCurrentChange" />
+    </el-dialog>
+  </div>
+</template>
+<script>
+  import Pagination from "~/components/Pagination";
+  export default {
+    components: {
+      Pagination
+    },
+    data() {
+      return {
+        dialogIsLoading: false,
+        dialogFormVisible: false,
+        deviceInfoList: [],
+        widgetInfo: {
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        val:''
+      };
+    },
+    mounted() {
+
+    },
+    methods: {
+      init(val){
+        const that = this;
+        that.dialogFormVisible = true;
+        that.val=val;
+        that.widgetInfo={
+          pageSize: 10,
+          pageNo: 1,
+          total: 0
+        },
+        that.getDeviceByRecordId(that.val);
+      },
+      getDeviceByRecordId(recordId) {
+        let that = this;
+        that.dialogIsLoading = true;
+        that.deviceInfoList = [];
+        that.$axios
+          .$POST({
+            api_name: "getDeviceByRecordId",
+            params: {
+              recordId: recordId
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              that.dialogIsLoading = false;
+              var data = res.data.data;
+              that.deviceInfoList = data.rows;
+              that.widgetInfo.total = data.total === null ? 0 : data.total;
+            } else {
+              that.deviceInfoList = [];
+              that.widgetInfo.list = res.data.rows;
+              that.widgetInfo.total = 0;
+              console.log("没有数值。。。。。");
+            }
+          });
+      },
+
+      sonHandleCurrentChange(widgetInfo) {
+        //分页
+        this.widgetInfo.pageSize = widgetInfo.pageSize
+          ? parseInt(widgetInfo.pageSize)
+          : this.widgetInfo.pageSize;
+        this.widgetInfo.pageNo = widgetInfo.pageNo
+          ? parseInt(widgetInfo.pageNo)
+          : this.widgetInfo.pageNo;
+        this.getDeviceByRecordId(this.val);
+      }
+
+
+    }
+  };
+</script>
+<style lang="scss" scoped="scoped">
+
+</style>

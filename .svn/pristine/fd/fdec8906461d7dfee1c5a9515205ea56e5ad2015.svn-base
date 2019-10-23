@@ -1,0 +1,198 @@
+/*
+ * @Author: TanZer.hanyu
+ * @Date: 2019-05-09 11:53:15
+ */
+// import Vue from 'vue';
+// import _http from '../utils/http';
+
+// export default () => {
+//     // Vue.use(_)
+//     // Window.$http = Vue.prototype.$http = _http;
+//     Window.$POST = Vue.prototype.$POST = _http.$POST;
+//     Window.$GET = Vue.prototype.$GET = _http.$GET;
+// }
+
+import ApiConfig from '@/config/api'
+import qs from 'qs'
+import axios, {
+  AxiosInstance
+} from 'axios';
+
+export default function ({
+  $axios,
+  redirect
+}) {
+  // $axios.defaults.timeout = 60000
+  $axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+
+  // 请求回调
+  $axios.onRequest(config => {
+    console.log('Making request to ' + config.url)
+  })
+
+  // 返回回调
+  $axios.onResponse(res => {})
+
+  // 错误回调
+  $axios.onError(error => {
+    const code = parseInt(error.response && error.response.status)
+    // if (code === 404) {
+    //     redirect('/404')
+    // }
+  })
+
+  $axios.$GET = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/gsafetyclound"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+
+    return $axios({
+      method: 'get',
+      url: url,
+      params: params,
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$POST = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/gsafetyclound"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+
+    console.log(url)
+    return $axios({
+      method: 'post',
+      url: url,
+      data: qs.stringify(params),
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$GET_NEW = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/test"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+    return $axios({
+      method: 'get',
+      url: url,
+      params: params,
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$POST_NEW = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/test"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+    return $axios({
+      method: 'post',
+      url: url,
+      data: qs.stringify(params),
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$GET_CENTER = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/center/config"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+    return $axios({
+      method: 'get',
+      url: url,
+      params: params,
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$POST_CENTER = ({
+    api_name,
+    params,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = "/center/config"
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+    return $axios({
+      method: 'post',
+      url: url,
+      data: qs.stringify(params),
+      timeout: time || 60000,
+    })
+  };
+
+  $axios.$AllRequst = ({
+    data,
+    callback
+  }) => {
+    axios.all(data).then((args) => {
+      callback(args);
+    });
+  };
+
+  $axios.$POSTFile = ({
+    api_name,
+    baseURL,
+    fb,
+    time
+  }) => {
+    if (process.env.NODE_ENV === "development") {
+      $axios.defaults.baseURL = baseURL;
+    } else {
+      $axios.defaults.baseURL = ApiConfig.apiHost;
+    }
+    let url = ApiConfig.api[api_name];
+    let config = {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+    };
+    return $axios({
+      method: 'post',
+      url: url,
+      data: fb,
+      contentType: false, //需设置为false。因为是FormData对象，且已经声明了属性enctype="multipart/form-data"
+      processData: false,
+      config: config,
+      timeout: time || 100000,
+    })
+
+  }
+}

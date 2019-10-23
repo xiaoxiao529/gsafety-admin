@@ -1,0 +1,197 @@
+<template>
+  <b-map :center="center" :zoom="zoom" @click="paintPolyline" @ready="handler" :scroll-wheel-zoom="true">
+    <bm-view class="map"></bm-view>
+    <bm-control :offset="{width: '10px', height: '10px'}">
+      <bm-auto-complete v-model="keyword" :sugStyle="{zIndex: 1}">
+        <el-input v-model.trim="keyword" @keyup.enter.native="onSubmit" placeholder="请输入地名关键字"></el-input> <!-- 这里指代一个自定义搜索框组件 -->
+      </bm-auto-complete>
+    </bm-control>
+<!--    <bm-local-search :keyword="keyword" :auto-viewport="false" :forceLocal="false" :panel="false" style="display: none"></bm-local-search>-->
+<!--    <bm-geolocation anchor="BMAP_ANCHOR_BOTTOM_RIGHT"-->
+<!--                    :enableAutoLocation = "true"-->
+<!--                    :showAddressBar="false"-->
+<!--                    :autoLocation="true" @locationSuccess="getLoctionSuccess"></bm-geolocation>-->
+
+    <bm-info-window :position="infoWindow.position" :title="infoWindow.title" :show="infoWindow.show">
+      <el-button type="primary" size="small" @click="exportPoint">导出坐标</el-button>
+    </bm-info-window>
+  </b-map>
+
+</template>
+<script>
+    import bMap from 'vue-baidu-map/components/map/Map.vue'
+    import bmView from 'vue-baidu-map/components/map/MapView.vue'
+    import bmControl from 'vue-baidu-map/components/controls/Control.vue'
+    import bmAutoComplete from 'vue-baidu-map/components/others/AutoComplete.vue'
+    import bmLocalSearch from 'vue-baidu-map/components/search/LocalSearch.vue'
+    import bmInfoWindow from 'vue-baidu-map/components/overlays/InfoWindow.vue'
+    import bmGeolocation from 'vue-baidu-map/components/controls/Geolocation.vue'
+
+    export default {
+        props: {
+            center: {
+                type: [Object, String]
+            },
+            zoom: Number
+        },
+        data () {
+            return {
+                locData:{
+                    lng:'',
+                    lat:'',
+                    address:'',
+                },
+                locationAdd:"",
+                keyword: "",
+                BMap:null,
+                map:null,
+                icon_Url:require('~/assets/img/map_marker_check.png'),
+                infoWindow: {
+                    show: false,
+                    position:{lng:0,lat:0},
+                    title:""
+                },
+                Icon_0:null,
+                mapMarker:null,//点图选点
+            }
+        },
+        components: {
+            bMap , //指定组件模板
+            bmAutoComplete,
+            bmView,
+            bmControl,
+            bmLocalSearch,
+            bmInfoWindow,
+            bmGeolocation
+        },
+        methods: {
+            //从父页面带过来打点
+            handler ({BMap, map}) {
+                const that = this;
+                that.map = map;
+                that.BMap = BMap;
+                debugger
+                if (that.center.optMode != "add"){
+                    let b = new BMap.MercatorProjection().pointToLngLat(new BMap.Pixel(that.center.lng,that.center.lat));
+                    that.center.lng = b.lng;
+                    that.center.lat = b.lat;
+                    that.Icon_0 = new BMap.Icon(that.icon_Url, new BMap.Size(36, 36), {anchor: new BMap.Size(18, 32),imageSize: new BMap.Size(36, 36)});
+                    let myMarker = new BMap.Marker(new BMap.Point(that.center.lng, that.center.lat),{icon: that.Icon_0});
+                    myMarker.addEventListener('mouseover',function (val) {
+                        that.infoWindow.title = that.locationAdd;
+                        that.infoWindow.position.lng = that.center.lng;
+                        that.infoWindow.position.lat = that.center.lat;
+                        that.infoWindow.show = true;
+                    });
+                    map.addOverlay(myMarker);
+                    this.$emit("mapLoaded");
+                } else {
+                    let b = new BMap.MercatorProjection().pointToLngLat(new BMap.Pixel(that.center.lng,that.center.lat));
+                    that.center.lng = b.lng;
+                    that.center.lat = b.lat;
+                    this.$nextTick(() => {
+                        map.setCenter(new BMap.Point(b.lng, b.lat));
+                    });
+                }
+            },
+            //地图选点
+            paintPolyline (e) {
+                const that = this;
+                let gc = new this.BMap.Geocoder();
+                gc.getLocation(e.point, function (rs) {
+                    if (tha.mapMarker != null){
+                        that.map.removeOverlay(that.mapMarker);
+                        that.mapMarker = null;
+                        that.infoWindow.show = false;
+                    }
+                    that.locData.address = rs.address;
+                    that.locData.lng = e.point.lng;
+                    that.locData.lat = e.point.lat;
+                    that.mapMarker = new that.BMap.Marker(new that.BMap.Point(e.point.lng, e.point.lat),{icon: that.Icon_0});
+                    that.mapMarker.addEventListener('mouseover',function (val) {
+                        that.infoWindow.title = that.locData.address;
+                        that.infoWindow.position.lng = that.locData.lng;
+                        that.infoWindow.position.lat = that.locData.lat;
+                        that.infoWindow.show = true;
+                    });
+                    that.map.addOverlay(that.mapMarker);
+                    that.infoWindow.title = rs.address;
+                    that.infoWindow.position.lng = e.point.lng;
+                    that.infoWindow.position.lat = e.point.lat;
+                    that.map.setCenter(e.point);
+                    that.infoWindow.show = true;
+                });
+            },
+            //搜索
+            onSubmit(){
+                const that = this;
+                if (that.keyword == ''){
+                    if (that.mapMarker != null){
+                        that.map.removeOverlay(that.mapMarker);
+                        that.mapMarker = null;
+                        that.infoWindow.show = false;
+                    }
+                } else {
+                    let gc = new that.BMap.Geocoder();
+                    gc.getPoint(that.keyword,function (point) {
+                        if (point){
+                            if (that.mapMarker != null){
+                                that.map.removeOverlay(that.mapMarker);
+                                that.mapMarker = null;
+                                that.infoWindow.show = false;
+                            }
+                            that.mapMarker = new that.BMap.Marker(new that.BMap.Point(point.lng, point.lat),{icon: that.Icon_0});
+                            that.mapMarker.addEventListener('mouseover',function (val) {
+                                that.infoWindow.title = that.locationAdd;
+                                that.infoWindow.position.lng = val.point.lng;
+                                that.infoWindow.position.lat = val.point.lat;
+                                that.infoWindow.show = true;
+                            });
+                            that.infoWindow.title = that.keyword;
+                            that.infoWindow.position.lng = point.lng;
+                            that.infoWindow.position.lat = point.lat;
+                            that.infoWindow.show = true;
+                            that.map.setCenter(point);
+                            that.map.addOverlay(that.mapMarker);
+                        }
+                    },that.keyword);
+                }
+            },
+            setLocationAdd(val){
+              const that = this;
+              this.$nextTick(() => {
+                  that.locationAdd = val;
+                  that.keyword = val;
+                  let point = new that.BMap.Point(that.center.lng, that.center.lat);
+                  that.infoWindow.title = that.keyword;
+                  that.infoWindow.position.lng = point.lng;
+                  that.infoWindow.position.lat = point.lat;
+                  that.infoWindow.show = true;
+                  that.map.setCenter(point);
+              });
+            },
+
+            exportPoint () {
+                this.$emit("mapPointChange", this.infoWindow);
+            },
+            getLoctionSuccess({point, addressComponent}){
+debugger
+            }
+        },
+        mounted() {
+
+        }
+    }
+</script>
+<style lang="scss">
+  .map {width: 100%;height: 650px;}
+  //隐藏左下角百度地图logo
+  .anchorBL {display: none!important;}
+  .el-button--small{
+    padding: 6px 15px;
+    float: right;
+  }
+  .anchorTL{
+    width: 260px;
+  }
+</style>

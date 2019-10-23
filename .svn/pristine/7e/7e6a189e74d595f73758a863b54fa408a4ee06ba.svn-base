@@ -1,0 +1,801 @@
+<template>
+  <div v-cloak style="height:100%" class="default-page">
+    <el-row class="container">
+      <el-col :span="24" class="header">
+        <el-col :span="14" class="logo">
+          <span class="icon-list" @click.prevent="collapse">
+            <i class="iconfont icon-shouqikaobei"></i>
+          </span>
+          <img class="main-logo" src="../assets/img/main-logo.jpg" />
+        </el-col>
+        <!--<el-col :span="4">
+          <el-input placeholder="请输入关键词" prefix-icon="el-icon-search" v-model="form.searchInput"></el-input>
+        </el-col>
+        <el-col :span="2" class="bell">
+          <a href="javascript:;">
+            <i class="el-icon-bell"></i>
+          </a>
+        </el-col>-->
+        <el-col :span="8" class="userinfo">
+          <el-dropdown trigger="hover">
+            <span class="el-dropdown-link userinfo-inner">
+            	<i class="el-icon-arrow-down"></i>
+              <b>{{sysUserName}}</b>
+              <!--<img src="../assets/img/avatar.jpg" />-->
+              <div class="gg-userLogo"><span class="icon-user-2 iconfont"></span></div>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
+              <el-dropdown-item divided @click.native="logout">退出账号</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </el-col>
+      </el-col>
+      <el-col :span="24" class="main">
+        <aside :class="isCollapse?'menu-collapsed':'menu-expanded'">
+
+
+          <!--导航菜单-->
+          <!--<el-menu
+            router
+            unique-opened
+            default-active="this.$route.path"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            :collapse="isCollapse"
+          >
+            <el-menu-item index="/" class="index-page">
+              <i class="iconfont icon-shouye"></i>
+              <span slot="title">首页</span>
+            </el-menu-item>
+            <el-submenu index="2">
+              <template slot="title">
+                <i class="iconfont icon-yingjian"></i>
+                <span slot="title">硬件平台</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/hardwareCategory"><span class="dot">·</span> 硬件类型</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/hardwareStock"><span class="dot">·</span> 硬件库存列表</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/outInRecord"><span class="dot">·</span> 出入库记录</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/equipmentList"><span class="dot">·</span> 项目设备列表</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/downLine/downlinkControl"><span class="dot">·</span> 下行控制</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/attachmentManagement"><span class="dot">·</span> 附件管理</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="3">
+              <template slot="title">
+                <i class="iconfont icon-gongju"></i>
+                <span slot="title">工具平台</span>
+              </template>
+              <el-menu-item-group>
+                <a class="menu-link" href="http://112.27.198.15:9835/e-record" target="_blank"><span class="dot">·</span> 电子档案</a>
+              </el-menu-item-group>
+            </el-submenu>
+            <el-submenu index="4">
+              <template slot="title">
+                <i class="iconfont icon-zu1"></i>
+                <span slot="title">系统配置</span>
+              </template>
+              <el-menu-item-group>
+                <el-menu-item index="/userManager"><span class="dot">·</span> 用户管理</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/roleManager"><span class="dot">·</span> 角色管理</el-menu-item>
+              </el-menu-item-group>
+              <el-menu-item-group>
+                <el-menu-item index="/resourceManager"><span class="dot">·</span> 资源管理</el-menu-item>
+              </el-menu-item-group>
+            </el-submenu>
+          </el-menu>-->
+
+
+	         <el-menu class="el-menu-vertical-demo" 
+	            :unique-opened=true @select="handleselect" :collapse="isCollapse"
+	            :collapse-transition="false" :default-openeds="openeds" :default-active="currentIndex">
+	            	<!--首页-->
+	            	<el-menu-item @click='changeMenu("/index")' class="shouye" index="1">
+	              	<!--<i class="iconfont icon-shouye " ></i>-->
+	              	<p class="index-icon1">
+	              		<svg class="icon" aria-hidden="true">
+							        <use xlink:href="#icon-shouye"></use>
+							      </svg>
+	              	</p>
+	                <span slot="title" title="首页">首页</span>
+	              </el-menu-item>
+
+	              <!--一级菜单没有子节点-->
+	              <el-menu-item v-for="(item,index) in listAll" class="shouye" :key="index" @click='changeMenu(item,item.resUrl,"",index)'  :index="index+''" v-if="item.children.length==0" >
+									<p class="index-icon1">
+	              		<svg class="icon" aria-hidden="true">
+							        <use xlink:href="#icon-yingjian1"></use>
+							      </svg>
+	              	</p>
+	                <span slot="title" :title="item.resName">{{item.resName}}</span>
+	              </el-menu-item>
+
+	              <!--一级菜单有子节点-->
+	              <el-submenu :index="index+'2'" v-for="(item,index) in listAll" :key="index" v-if=" item.children && item.children.length != 0" popper-class="popperClass">
+	                <!--二级菜单没有子节点-->
+	                <el-menu-item class="index-page" v-for="(item1,index) in item.children" :key="index" :index="item1.id" v-if="item1.children.length==0" @click='changeMenu(item1,item.resUrl,"",index)'>
+		                <span slot="title" :title="item1.resName"><strong class="dot">·</strong>{{item1.resName}}</span>
+		              </el-menu-item>
+		              <template  slot="title" v-if="item.children.length!=0">
+
+										<p class="index-icon" v-if="index==0">
+		              		<svg class="icon" aria-hidden="true">
+								        <use xlink:href="#icon-yingjian1"></use>
+								      </svg>
+		              	</p>
+		              	<p class="index-icon" v-else-if="index==1">
+		              		<svg class="icon" aria-hidden="true">
+								        <use xlink:href="#icon-gongju"></use>
+								      </svg>
+		              	</p>
+		              	<p class="index-icon" v-else-if="index==2">
+		              		<svg class="icon" aria-hidden="true">
+								        <use xlink:href="#icon-shezhi"></use>
+								      </svg>
+		              	</p>
+		              	
+		              	<p class="index-icon" v-else-if="index==3">
+		              		<svg class="icon" aria-hidden="true">
+								        <use xlink:href="#icon-folder-close"></use>
+								      </svg>
+		              	</p>
+		              	
+		              	<p class="index-icon" v-else="index==4">
+		              		<svg class="icon" aria-hidden="true">
+								        <use xlink:href="#icon-folder-close"></use>
+								      </svg>
+		              	</p>
+		              	
+		              	
+	                  <span slot="title" :title="item.resName">{{item.resName}}</span>
+	                </template>
+	                <!--二级菜单有子节点-->
+	                <el-submenu v-for="(item1,index) in item.children" class="second-item" :key="index" :index="index+'4'" v-if="item1.children.length!=0" >
+	                	<template  slot="title">
+		                  <span slot="title" :title="item1.resName"><strong class="dot">·</strong>{{item1.resName}}</span>
+		                </template>
+		                <!--判断是否为三级菜单-->
+		                <el-menu-item class="third-item" v-for="(itt,index1) in item1.children" :key="index1" :index="itt.id" @click='changeMenu(itt,itt.resUrl,itt.resUrl,index)'>
+	                    <span slot="title" :title="itt.resName"><strong class="dot">·</strong>{{itt.resName}}</span>
+	                  </el-menu-item>
+	                </el-submenu>
+	              </el-submenu>
+	          </el-menu>
+        </aside>
+        <section class="content-container" >
+
+	        <el-col :span="24" class="breadcrumb-container">
+	          <!--<strong class="title"><nuxt-link :to="$route.path">{{$route.name}}</nuxt-link></strong>
+						<span class="title">/</span>
+	          <span class="title" v-for="item in $route.matched" :key="item.path">{{item.name}}</span>-->
+	          <!--<span class="title">/</span>-->
+	        </el-col>
+	        <el-col :span="24" class="content-wrapper">
+	          <transition name="fade" mode="out-in">
+	            <nuxt />
+	          </transition>
+	        </el-col>
+
+        </section>
+      </el-col>
+    </el-row>
+    <ChangePsw :changePswVis="changePswVis" v-on:success="success" />
+  </div>
+</template>
+
+<script>
+import ChangePsw from '~/pages/ChangePsw';
+export default {
+  components: {
+    ChangePsw,
+  },
+  data() {
+    return {
+    	currentIndex:"1",
+      sysUserName: "",
+      isCollapse: false,
+      collapsed: false,
+      form: {
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+        searchInput: ""
+      },
+      navlist: [],
+      list: [],
+      resourceData:[],
+      linkName: "",
+      changePswVis: false,
+      icons:["icon-shouye","icon-yingjian","icon-gongju","icon-zu1","icon-shouye","icon-yingjian","icon-gongju","icon-zu1"],
+      openeds:[],
+      myOpeneds:[],
+      flag:[],
+    };
+  },
+  methods: {
+  	success(res) {
+      this.changePswVis = res;
+   },
+  	changePassword(){
+  		this.changePswVis = true;
+  	},
+    handleselect: function(a, b) {
+    		console.log(b,"bbbbb")
+    		/*电子档案*/
+    		if (b[1] == "2c938c586bb68c66016be40cdd470202" || b[1] == "2c9078c46c2c64c2016c41f6922000f5" || b[1] == "bg_ms_02_submenu_01000000000000"){
+            this.openeds = this.flag;
+        } else {
+            this.flag = b;
+        }
+        /*统计报表*/
+        if (b[1] == "2c938c586bff40f6016c28190f910824" || b[1] == "2c9078c46c2c64c2016c41e391d100de"){
+            this.openeds = this.myOpeneds;
+        } else {
+            this.myOpeneds = b;
+        }
+        /*首页*/
+        /*if (b[0] == "1" ){
+            this.openeds = this.flag;
+        } else {
+            this.flag = b;
+        }*/
+    },
+    //退出登录
+    logout: function() {
+      var _this = this;
+      this.$confirm("确认退出吗?", "提示", {
+        //type: 'warning'
+      })
+        .then(() => {
+          _this._Storage.remove("userObj");
+          _this.$router.push("/login");
+        })
+        .catch(() => {});
+    },
+    //折叠导航栏
+    collapse: function() {
+      this.isCollapse = !this.isCollapse;
+    },
+    //页面跳转
+	  changeMenu: function (item, pathName, parName,index) {
+			if( item.resName == "电子档案" ){
+        //内网环境
+        // window.open("http://172.19.12.128/e-record/login/","_blank");
+        //外网环境
+        window.open("http://112.27.198.15:9835/e-record/login/","_blank");
+        this.openeds = this.flag;
+        if(this.openeds[1] && this.openeds[1].length){
+        	this.currentIndex = this.openeds[1].length>10?this.openeds[1]:this.openeds[2]
+        }
+        console.log("点击的item flag   "+ this.flag);
+
+			} else if (item.resName == "统计报表"){
+          //外网环境
+          window.open("http://101.37.193.214:9846/TZDataStatistics/#","_blank");
+             this.openeds = this.myOpeneds;
+             if(this.openeds[1] && this.openeds[1].length){
+             	this.currentIndex = this.openeds[1].length>10?this.openeds[1]:this.openeds[2]
+             }
+          console.log("点击的item  myOpeneds   "+this.myOpeneds );
+     } else {      	
+      		
+          let url = item.resUrl;
+          this.$router.push({
+              name: (url ? url : "manageIndex"),
+          }).catch(function (error) {
+              console.log(error)
+          });
+      }
+	  },
+    findUserResource(){
+    	//this.resourceData = this._Storage.getObj("jurisdictionList", "jurisdictionList");
+
+    	/*function queryList(json) {
+			    for (var i = 0; i < json.length; i++) {
+			    	if (json[i].resType == "2") {
+							json.splice(i,1)
+							i--;
+			    	} else {
+			    		queryList(json[i].children);
+			    	}
+			    }
+			    return json
+			}
+    	this.list = queryList(this.resourceData)*/
+
+
+    	var that = this;
+    	that.$axios.$POST({
+	        api_name: "findUserByUserId",
+	        params: {
+	          userId: that.userObj.id,
+	        }
+	      })
+	    .then(res => {
+	      if (res.data.code == "success") {
+	        let roleId = res.data.data.userAuthList[0].authRoleList[0].roleId
+	        that.$axios.$POST({
+			        api_name: "findResourceByRoleId",
+			        params: {
+			          roleId: roleId,
+			        }
+			      })
+			    .then(res => {
+			      if (res.data.code == "success") {
+              this._Storage.setObj("jurisdictionList", "jurisdictionList", res.data.data);
+			        	this.resourceData = res.data.data;
+
+			        function queryList(json) {
+							    for (var i = 0; i < json.length; i++) {
+							    	if (json[i].resType == "2") {
+											json.splice(i,1)
+											i--;
+							    	} else {
+							    		queryList(json[i].children);
+							    	}
+							    }
+							    return json
+							}
+			        this.list = queryList(this.resourceData)
+							console.log(this.list)
+
+			      } else {
+			        that.logining = false;
+			        that.$message({
+			          type: "error",
+			          message: res.data.message
+			        });
+			      }
+			    });
+
+	      } else {
+	        that.logining = false;
+	        that.$message({
+	          type: "error",
+	          message: res.data.message
+	        });
+	      }
+	    });
+    }
+  },
+  computed:{
+  	userObj(){
+  		return this._Storage.getObj("userObj", "userObj");
+  	},
+  	/*resourceData(){
+  		return this._Storage.getObj("jurisdictionList", "jurisdictionList");
+  	},*/
+  	listAll: function () {
+	    return this.list
+
+	  },
+	  
+  },
+  mounted() {
+
+  	if(this.userObj ){
+  		this.sysUserName = this.userObj.loginName;
+  		var userId = this.userObj.id;
+  		this.findUserResource();
+
+
+  	}else{
+  		this.sysUserName = ""
+  		this.$router.push("/login");
+  	}
+
+  },
+  watch: {
+    "this.$route.matched": function(newVal, oldVal) {}
+  }
+};
+</script>
+<style lang="scss">
+	.dot{
+		float: left;
+		font-size: 20px;
+		margin-right: 8px;
+		width: 10px;
+		opacity: 0;
+	}
+
+.default-page{
+	.el-menu-item.is-active{
+		.dot{
+			opacity: 1;
+		}
+		outline: 0;
+
+		color: #1C77FF;
+
+		.index-icon{
+	    	background: #fff;
+	    }
+	    .index-icon1{
+	    	background: #fff;
+	    }
+	}
+}
+
+/*.el-menu-item:focus{
+	  outline: 0;
+    color: #1577ff;
+    span,i{
+    	color: #1577ff;
+    }
+}*/
+
+.el-submenu__title:hover,.el-submenu__title:focus,.shouye:hover,.shouye.is-active{
+    outline: 0;
+    background-color: #1C77FF !important;
+    color: #fff;
+    span,i{
+    	color: #fff;
+    }
+    .index-icon{
+    	background: #fff;
+    }
+    .index-icon1{
+    	background: #fff;
+    }
+}
+.el-submenu .el-menu{
+	background: #ecf3ff;
+}
+/*.menu-link {
+  font-size: 16px;
+  height: 60px;
+  line-height: 60px;
+  padding: 0 45px;
+  min-width: auto;
+  display: block;
+  color: #25282E;
+  text-decoration: none;
+}
+.menu-link:focus{
+	color: #1577ff;
+	.dot{
+		opacity: 1;
+	}
+}*/
+</style>
+<style  scoped lang="scss">
+.icon-shouqikaobei{
+	display: block;
+}
+.el-menu{
+	.el-submenu{
+		span{
+			font-size: 18px;
+		}
+	}
+	.el-menu-item{
+		span{
+			font-size: 16px;
+		}
+	}
+	.shouye{
+		span{
+			font-size: 18px;
+		}
+	}
+	.second-item{
+		span{
+			font-size: 16px;
+		}
+	}
+}
+
+.el-dropdown-menu{
+	top: 70px !important;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 236px;
+  min-height: 400px;
+}
+html {
+  font-family: "microsoft yahei";
+  font-size: 16px;
+  word-spacing: 1px;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+
+.el-submenu .el-menu-item {
+  height: 60px;
+  font-size: 16px;
+  line-height: 60px;
+  padding: 0 45px;
+  min-width: auto;
+
+}
+
+.container {
+
+  padding-bottom: 10px;
+  .header {
+  	position: relative;
+  	z-index: 100;
+    height: 90px;
+    line-height: 90px;
+    background: #ffffff;
+    box-shadow: 0px 7px 7px -7px #E9ECF2;
+    .bell i {
+      color: #667480;
+      margin-left: 40px;
+      font-size: 20px;
+      border: 1px solid #e3e7ec;
+      border-radius: 50%;
+      padding: 5px;
+    }
+    .icon-list {
+      width: 64px;
+      text-align: center;
+      background-color: #edf2fa;
+      float: left;
+      font-size: 32px;
+      height: 90px;
+      line-height: 90px;
+      margin-bottom: 15px;
+      color: #606266;
+      transition: color 0.15s linear;
+      i {
+        cursor: pointer;
+      }
+    }
+    .userinfo {
+      text-align: right;
+      padding-right: 35px;
+      float: right;
+      height: 90px;
+      .userinfo-inner {
+        cursor: pointer;
+        color: #25282e;
+        outline:none;
+        .gg-userLogo {
+        		margin: 32px 0px 0 44px;
+				    width: 26px;
+				    line-height: 22px;
+				    text-align: center;
+				    height: 26px;
+				    border: 1px solid #000;
+				    border-radius: 50%;
+				    font-size: 14px;
+	          float: right;
+          span{
+          	width: 40px;
+	          height: 40px;
+	          border-radius: 20px;
+
+          }
+        }
+        b {
+          float: right;
+          font-weight: normal;
+          margin-left: 10px;
+        }
+        i{
+			    margin: 40px 0px 10px 10px;
+			    float: right;
+        }
+      }
+    }
+    .logo {
+      height: 90px;
+      line-height: 90px;
+      font-size: 22px;
+      border-color: rgba(238, 241, 146, 0.3);
+      border-right-width: 1px;
+      border-right-style: solid;
+      img {
+        float: left;
+        margin: 30px 10px 10px 25px;
+      }
+      .txt {
+        color: #fff;
+      }
+    }
+    .logo-width {
+    }
+    .logo-collapse-width {
+      width: 60px;
+    }
+    .tools {
+      padding: 0px 23px;
+      width: 14px;
+      height: 60px;
+      line-height: 60px;
+      cursor: pointer;
+    }
+  }
+  .main {
+    /*padding-bottom: 30px;*/
+    display: flex;
+    /*position: absolute;
+			top: 95px;
+			bottom: 0px;*/
+
+
+    aside {
+      flex: 0 0 236px;
+      width: 236px;
+      transition: all 0s;
+      .el-menu {
+        height: 100%;
+      }
+      .collapsed {
+        width: 60px;
+        transition: all 0s;
+        .item {
+          position: relative;
+        }
+        .submenu {
+          position: absolute;
+          top: 0px;
+          left: 60px;
+          z-index: 99999;
+          height: auto;
+          display: none;
+        }
+      }
+    }
+    .menu-collapsed {
+      flex: 0 0 65px;
+      width: 60px;
+      transition: all 0s;
+    }
+    .menu-expanded {
+      transition: all 0s;
+          margin-bottom: -18px;
+    }
+    .content-container {
+      flex: 1;
+      padding: 0 15px 0;
+      background: #f5f8fc;
+      overflow-y: auto;
+      .breadcrumb-container {
+        .title {
+          margin-right: 5px;
+          font-weight: normal;
+          padding: 0 0 26px;
+          float: left;
+          color: #a5adb8;
+          font-size: 16px;
+        }
+        .breadcrumb-inner {
+          float: left;
+        }
+      }
+      .content-wrapper {
+        box-sizing: border-box;
+      }
+    }
+  }
+}
+
+
+@media screen and (max-width: 1680px) {
+    .container{
+		    padding-bottom: 10px;
+			  .header {
+			    height: 60px;
+			    line-height: 60px;
+			    .bell i {
+			      margin-left: 40px;
+			      font-size: 20px;
+			      padding: 5px;
+			    }
+			    .icon-list {
+			      width: 64px;
+			      font-size: 32px;
+			      height: 60px;
+			      line-height: 60px;
+			      margin-bottom: 0;
+			    }
+			    .userinfo {
+
+			      padding-right: 35px;
+
+			      height: 90px;
+			      .userinfo-inner {
+			        .gg-userLogo {
+			        		margin: 18px 0px 0 44px;
+							    width: 26px;
+							    line-height: 22px;
+							    height: 26px;
+							    font-size: 14px;
+			          span{
+			          	width: 40px;
+				          height: 40px;
+				          border-radius: 20px;
+			          }
+			        }
+			        b {
+			          margin-left: 10px;
+			        }
+			        i{
+						    margin: 24px 0px 10px 10px;
+			        }
+			      }
+			    }
+			    .logo {
+			      height: 60px;
+			      line-height: 60px;
+			      font-size: 22px;
+			      border-color: rgba(238, 241, 146, 0.3);
+			      border-right-width: 1px;
+			      border-right-style: solid;
+			      img {
+			        float: left;
+			        width: 220px;
+			        margin: 20px 10px 10px 25px;
+			      }
+			    }
+			    .logo-collapse-width {
+			      width: 60px;
+			    }
+			    .tools {
+			      padding: 0px 23px;
+			      width: 14px;
+			      height: 60px;
+			      line-height: 60px;
+			      cursor: pointer;
+			    }
+			  }
+			  .el-menu-item{
+			  	height: 45px;
+			  	line-height: 45px;
+
+			  }
+			  .index-page{
+			  	font-size: 16px !important;
+			  }
+
+			  .menu-link{
+			  	font-size: 14px;
+			  }
+			  /deep/.el-submenu__title{
+			  	height: 45px;
+			  	line-height: 45px;
+			  	font-size: 16px !important;
+			  }
+			  .index-icon {
+			    margin-top: 9px;
+			  }
+			  .index-icon1 {
+			    margin-top: 10px;
+			  }
+		}
+		.el-dropdown-menu{
+			  	top:55px !important;
+			  }
+}
+
+</style>

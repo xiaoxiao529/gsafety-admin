@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
+    "area-data": "5.0.6",
     "cross-env": "^5.2.0",
     "echarts": "^4.2.1",
     "element-ui": "2.10.1",
@@ -27,15 +28,18 @@
     "lodash": "^4.17.11",
     "nuxt": "^2.4.0",
     "qs": "^6.7.0",
+    "vue-baidu-map": "0.21.22",
     "vue-bus": "^1.2.1",
+    "vue-area-linkage": "5.1.0",
     "vue-quill-editor": "^3.0.6"
   },
   "devDependencies": {
     "axios": "^0.19.0",
     "node-sass": "^4.12.0",
     "nodemon": "^1.18.9",
-    "sass-loader": "^7.1.0",
+    "sass-loader": "^8.0.0",
     "scss-loader": "^0.0.1",
+    "vue-baidu-map": "0.21.22",
     "vue-qriously": "^1.1.1"
   }
 }

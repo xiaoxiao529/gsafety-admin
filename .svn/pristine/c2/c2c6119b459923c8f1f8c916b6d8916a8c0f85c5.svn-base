@@ -1,0 +1,554 @@
+<template>
+  <div class="configuration-parameter-wrapper">
+    <h3 class="title">
+      参数配置
+      <el-link :disabled="disbledFlag">
+        <i class="el-icon-refresh" @click="findMonitorDeviceStateExtByMonitorId"></i>
+      </el-link>
+      <el-button size="small" style="margin-left:20px;" @click="getLatestParameters">最新参数获取</el-button>
+    </h3>
+    <template class="tab-content-detail">
+      <el-form
+        :label-position="labelPosition"
+        :rules="rules"
+        ref="configParameter"
+        label-width="100%"
+        :model="configParameter"
+        class="el-form-diy"
+      >
+        <el-form-item label="设备正常检测周期" class="switch-show" prop="key1">
+          <div class="item-warpper">
+            <el-input placeholder="1-1400" v-model.number="configParameter.key1">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备正常发送周期" class="switch-show" prop="key2">
+          <div class="item-warpper">
+            <el-input placeholder="1-1440" v-model.number="configParameter.key2">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="变化量报警值" class="switch-show" prop="key3">
+          <div class="item-warpper">
+            <el-input placeholder="请输入变化量报警值" v-model.trim="configParameter.key3">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警上限值" class="switch-show" prop="key4">
+          <div class="item-warpper">
+            <el-input placeholder="请输入报警上限值" v-model.trim="configParameter.key4">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警下限值" class="switch-show" prop="key5">
+          <div class="item-warpper">
+            <el-input placeholder="请输入报警下限值" v-model.trim="configParameter.key5">
+              <i slot="suffix" class="test-icon-diy">kpa</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="电池电压下限报警" class="switch-show" prop="key6">
+          <div class="item-warpper">
+            <el-input placeholder="请输入电池电压下限报警" v-model.trim="configParameter.key6">
+
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="服务器 IP" class="switch-show" prop="key7">
+          <div class="item-warpper">
+            <el-input placeholder="请输入服务器 IP" v-model.trim="configParameter.key7">
+
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="报警开关" class="switch-show" prop="key8">
+          <el-radio v-model="configParameter.key8" label="1">开</el-radio>
+          <el-radio v-model="configParameter.key8" label="0">关</el-radio>
+        </el-form-item>
+        <el-form-item label="服务器端口 PORT" class="switch-show" prop="key9">
+          <div class="item-warpper">
+            <el-input placeholder="请输入服务器端口 PORT" v-model.trim="configParameter.key9">
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 YEAR" class="switch-show" prop="key10">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key10"
+                       placeholder="YEAR"
+                       class="selet-width-100"
+                       filterable
+                        @change="getDateVal"
+            >
+              <el-option
+                v-for="item of yearList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 MONTH" class="switch-show" prop="key11">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key11"
+                        placeholder="MONTH"
+                        class="selet-width-100"
+                        filterable
+                        @change="getDateVal"
+            >
+              <el-option
+                v-for="item of monthList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 DATE" class="switch-show" prop="key12">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key12"
+                        placeholder="DATE"
+                        class="selet-width-100"
+                        filterable
+                        :disabled="dataFlag"
+            >
+              <el-option
+                v-for="item of dateList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 HOUR" class="switch-show" prop="key13">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key13"
+                        placeholder="YEAR"
+                        class="selet-width-100"
+                        filterable
+            >
+              <el-option
+                v-for="item of hourList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 MINUTE" class="switch-show" prop="key14">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key14"
+                        placeholder="YEAR"
+                        class="selet-width-100"
+                        filterable
+            >
+              <el-option
+                v-for="item of minAndSecList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备时间 SECOND" class="switch-show" prop="key15">
+          <div class="item-warpper">
+            <el-select  v-model="configParameter.key15"
+                        placeholder="YEAR"
+                        class="selet-width-100"
+                        filterable
+            >
+              <el-option
+                v-for="item of minAndSecList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+        </el-form-item>
+        <el-form-item label="经度信息" class="switch-show" prop="key16">
+          <div class="item-warpper">
+            <el-input placeholder="-180.000000-180.000000" v-model.trim="configParameter.key16"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="纬度信息" class="switch-show" prop="key17">
+          <div class="item-warpper">
+            <el-input placeholder="-90.000000-90.000000" v-model.trim="configParameter.key17"></el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备报警检测周期" class="switch-show" prop="key18">
+          <div class="item-warpper">
+            <el-input placeholder="1-1440" v-model.trim="configParameter.key18">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="设备报警发送周期" class="switch-show" prop="key19">
+          <div class="item-warpper">
+            <el-input placeholder="1-1440" v-model.trim="configParameter.key19">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="温度报警下限" class="switch-show" prop="key20">
+          <div class="item-warpper">
+            <el-input placeholder="请输入温度报警下限" v-model.trim="configParameter.key20">
+              <i slot="suffix" class="test-icon-diy">min</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item label="流量报警上限" class="switch-show" prop="key21">
+          <div class="item-warpper">
+            <el-input placeholder="请输入流量报警上限" v-model.trim="configParameter.key21">
+              <i slot="suffix" class="test-icon-diy">L/s</i>
+            </el-input>
+          </div>
+        </el-form-item>
+        <el-form-item class="btn-wrapper">
+          <el-button
+            type="primary"
+            :disabled="disbledSubmitFlag"
+            @click="submitForm()"
+            v-loading.fullscreen.lock="fullscreenloading"
+          >确定</el-button>
+          <el-button :disabled="disbledFlag" @click="findMonitorDeviceStateExtByMonitorId()">取消</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+  </div>
+</template>
+
+<script>
+  export default {
+    //
+    props: ["fromParent"],
+    data() {
+      return {
+        dataFlag:true,
+        dateTemp:null,
+        dateList:[],
+        fullscreenloading: false,
+        labelPosition: "top",
+        isOpenArr: [],
+        isValidArr: [],
+        isShow: "",
+        disbledFlag: false,
+        disbledSubmitFlag: true,
+        configParameter: {
+          key1:'',
+          key2:'',
+          key3:'',
+          key4:'',
+          key5:'',
+          key6:'',
+          key7:'',
+          key8:'',
+          key9:'',
+          key10:'',
+          key11:'',
+          key12:'',
+          key13:'',
+          key14:'',
+          key15:'',
+          key16:'',
+          key17:'',
+          key18:'',
+          key19:'',
+          key20:'',
+          key21:''
+        },
+        rules: {
+          key1: [{ required: true, message: "设备正常检测周期必填", trigger: "blur" },
+                 { type: 'number',min: 1, max: 1440,  message: '必须为1-1440的数字', trigger: 'blur' }],
+          key2: [{ required: true, message: "设备正常发送周期必填", trigger: "blur" },
+                 { type: 'number',min: 1, max: 1440,  message: '必须为1-1440的数字', trigger: 'blur' }],
+          key3: [{ required: true, message: "变化量报警值必填", trigger: "blur" }],
+          key4: [{ required: true, message: "报警上限值必填", trigger: "blur" }],
+          key5: [{ required: true, message: "报警下限值必填", trigger: "blur" }],
+          key6: [{ required: true, message: "电池电压下限报警必填", trigger: "blur" }],
+          key7: [{ required: true, message: "服务器 IP必填", trigger: "blur" },
+                 {pattern: /(?=(\b|\D))(((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))\.){3}((\d{1,2})|(1\d{1,2})|(2[0-4]\d)|(25[0-5]))(?=(\b|\D))/, message: '请输入正确的ip',trigger:'blur'}],
+          key8: [{ required: true, message: "报警开关必填", trigger: "blur" }],
+          key9: [{ required: true, message: "服务器端口 PORT必填", trigger: "blur" }],
+          key10: [{ required: true, message: "设备时间 YEAR必填", trigger: "blur" }],
+          key11: [{ required: true, message: "设备时间 MONTH必填", trigger: "blur" }],
+          key12: [{ required: true, message: "设备时间 DATE必填", trigger: "blur" }],
+          key13: [{ required: true, message: "设备时间 HOUR必填", trigger: "blur" }],
+          key14: [{ required: true, message: "设备时间 MINUTE必填", trigger: "blur" }],
+          key15: [{ required: true, message: "设备时间 SECOND必填", trigger: "blur" }],
+          key16: [{ required: true, message: "经度信息必填", trigger: "blur" },
+            {pattern: /^(\-|\+)?(((\d|[1-9]\d|1[0-7]\d|0{1,3})\.\d{0,6})|(\d|[1-9]\d|1[0-7]\d|0{1,3})|180\.0{0,6}|180)$/, message: '正确经度信息',trigger:'blur'}],
+          key17: [{ required: true, message: "纬度信息必填", trigger: "blur" },
+            {pattern:/^(\-|\+)?([0-8]?\d{1}\.\d{0,6}|90\.0{0,6}|[0-8]?\d{1}|90)$/, message: '请输入正确纬度的信息',trigger:'blur'}],
+          key18: [{ required: true, message: "设备报警检测周期必填", trigger: "blur" },
+                  { type: 'number',min: 1, max: 1440,  message: '必须为1-1440的数字', trigger: 'blur' }],
+          key19: [{ required: true, message: "设备报警发送周期必填", trigger: "blur" },
+                  { type: 'number',min: 1, max: 1440,  message: '必须为1-1440的数字', trigger: 'blur' }],
+          key20: [{ required: true, message: "温度报警下限必填", trigger: "blur" }],
+          key21: [{ required: true, message: "流量报警上限必填", trigger: "blur" }]
+        }
+      };
+    },
+    computed:{
+      yearList(){
+         let arry =[];
+         let temp=null;
+         for(let i = 0 ; i < 256; i++){
+           temp = (i < 10) ? ('200'+i) : ((i>9&&i<100)? ('20'+i) : ('2'+i));
+           arry.push({
+             value:i.toString(),
+             label:temp
+           })
+         }
+         return arry
+      },
+      monthList(){
+        return this.getSelectVal(1,13)
+      },
+      hourList(){
+        return this.getSelectVal(0,60)
+      },
+      minAndSecList(){
+        return this.getSelectVal(0,60)
+      },
+    },
+    watch: {
+
+    },
+    mounted() {
+      const that = this;
+      this.$nextTick(()=>{
+        that.getDateVal();
+      })
+    },
+    methods: {
+      /**
+       * 日期时间的范围生成
+       * @param start
+       * @param end
+       * @returns {Array}
+       */
+      getSelectVal(start,end){
+        let arry =[];
+        for(let i = start ; i < end; i++){
+          arry.push({
+            value:i.toString(),
+            label:i
+          })
+        }
+        return arry
+      },
+      /**
+       * 天数切换（31，30，29，28）
+       */
+      getDateVal(){
+        const that = this;
+        let yearVal = that.configParameter.key10;
+        let monthVal = that.configParameter.key11;
+        let dateVal = that.configParameter.key12;
+        if(yearVal&& monthVal){
+          that.dataFlag = false;
+          yearVal = Number((yearVal < 10) ? ('200'+yearVal) : ((yearVal>9&&yearVal<100)? ('20'+yearVal) : ('2'+yearVal)));
+          if(['1','3','5','7','8','10','12'].includes(monthVal)){
+            that.dateList = that.getSelectVal(1,32);
+          }else if(['4','6','9','11'].includes(monthVal)){
+            that.dateList = that.getSelectVal(1,31);
+          }else if(monthVal === '2'){
+            let day =  (yearVal%400==0||yearVal%4==0&&yearVal%100!=0) ? 30 : 29
+            that.dateList = that.getSelectVal(1,day);
+          }
+          let obj = null;
+          obj = this.dateList.find((item)=>{
+            return item.value === dateVal;
+          });
+          if(!obj){
+            that.configParameter.key12 ='';
+          }
+        }else{
+          that.dataFlag = true;
+          that.dateList=[];
+        }
+      },
+      changeOrBlur() {
+        this.disbledSubmitFlag = false;
+      },
+      findMonitorDeviceStateExtByMonitorId() {
+        //硬件平台-根据监测设备ID获取设备阈值信息---乐鸟
+        let that = this;
+        this.$axios
+          .$POST({
+            api_name: "findMonitorDeviceStateExtByMonitorId",
+            params: {
+              monitorId: that.fromParent.id,
+              sourceId: that.fromParent.sourceId
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              that.configParameter = JSON.parse(res.data.data.thresholdValue);
+              that.isOpenArr = that.configParameter.isOpen.split("");
+              that.isValidArr = that.configParameter.isValid.split("");
+            } else {
+              console.log("失败");
+            }
+          });
+      },
+
+      resetForm(formName) {
+        this.findMonitorDeviceStateExtByMonitorId();
+      },
+      sendCommand(type) {
+        let that = this;
+        that.configParameter.isOpen = that.isOpenArr.join(""); //isOpenArr拼接成字符串赋值给isOpen
+        that.configParameter.isValid = that.isValidArr.join(""); //isValidArr拼接成字符串赋值给isValid
+        that.$refs.configParameter.validate(valid => {
+          if (valid) {
+            this.$axios
+              .$POST({
+                api_name: "sendCommand",
+                params: {
+                  monitorId: that.fromParent.id,
+                  controlHost: that.fromParent.controlHost,
+                  sourceId: that.fromParent.sourceId,
+                  commandType: type,
+                  params: type == "5" ? JSON.stringify(that.configParameter) : ""
+                }
+              })
+              .then(res => {
+                if (res.data.code == "success") {
+                  //如果state不存在 或者state值为空 直接
+                  if (!res.data.data.state) {
+                    console.log("state为空");
+                    this.$message.error("命令发送失败");
+                    return;
+                  }
+                  if (res.data.data.state == "1") {
+                    this.$message({
+                      message: "命令下发成功",
+                      type: "success"
+                    });
+                    //发送成功后，取消刷新按钮3秒后才能动 防止不入库
+                    that.disbledFlag = true;
+                    setTimeout(function() {
+                      that.disbledFlag = false;
+                    }, 3000);
+                  } else if (res.data.data.state == "2") {
+                    this.$message.error("发送失败");
+                  } else if (res.data.data.state == "3") {
+                    this.$message({
+                      message: "设备不在线或者未接入",
+                      type: "warning"
+                    });
+                  }
+                } else {
+                  console.log("失败");
+                }
+              });
+            //防止重复点击确定按钮，间隔1秒才能修改
+            that.disbledSubmitFlag = true;
+            setTimeout(function() {
+              that.disbledSubmitFlag = false;
+            }, 1000);
+          } else {
+            console.log("error submit!!");
+            return false;
+          }
+        });
+      },
+      submitForm() {
+        let that = this;
+        that.sendCommand(5);
+        that.fullscreenloading = true;
+        setTimeout(function() {
+          that.fullscreenloading = false;
+          that.findMonitorDeviceStateExtByMonitorId();
+        }, 5000);
+      },
+      getLatestParameters() {
+        //获取最新参数
+        let that = this;
+        this.$axios
+          .$POST({
+            api_name: "sendCommand",
+            params: {
+              monitorId: that.fromParent.id,
+              controlHost: that.fromParent.controlHost,
+              sourceId: that.fromParent.sourceId,
+              commandType: "2",
+              flushThreshold: "1"
+            }
+          })
+          .then(res => {
+            if (res.data.code == "success") {
+              this.$message({
+                message: "命令下发成功",
+                type: "success"
+              });
+              setTimeout(function() {
+                that.findMonitorDeviceStateExtByMonitorId();
+              }, 5000);
+            } else {
+              console.log("失败");
+            }
+          });
+      }
+    }
+  };
+</script>
+
+<style lang="scss" scoped>
+  .configuration-parameter-wrapper {
+    width: auto;
+    max-width: 1200px;
+    /deep/.el-form-diy {
+      padding: 0 0 20px 0;
+      .el-form-item {
+        box-sizing: border-box;
+        padding-right: 40px;
+        width: 33.33%;
+        float: left;
+        margin-bottom: 10px;
+        &.btn-wrapper {
+          width: 100%;
+          margin-top: 20px;
+        }
+        &.switch-show {
+          .item-warpper {
+            display: flex;
+          }
+          .el-switch-wrap {
+            width: 120px;
+            text-align: right;
+            .el-switch__label--left {
+              margin-right: 5px;
+            }
+            .el-switch__label--right {
+              margin-left: 5px;
+            }
+          }
+        }
+        .el-form-item__label {
+          padding: 0;
+          line-height: 36px;
+        }
+        .el-input--suffix .el-input__inner {
+          padding-right: 36px;
+        }
+        .test-icon-diy {
+          font-style: normal;
+          width: 36px;
+          text-align: center;
+          display: inline-block;
+        }
+      }
+    }
+  }
+</style>

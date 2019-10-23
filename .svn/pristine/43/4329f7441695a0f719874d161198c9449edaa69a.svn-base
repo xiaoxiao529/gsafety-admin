@@ -1,0 +1,115 @@
+<template>
+  <b-map :center="center" :zoom="zoom" @click="paintPolyline" @ready="handler" :scroll-wheel-zoom="true">
+<!--    <bm-view class="map"></bm-view>-->
+<!--    <bm-control :offset="{width: '10px', height: '10px'}">-->
+<!--      <bm-auto-complete v-model="keyword" :sugStyle="{zIndex: 1}">-->
+<!--        <el-input v-model.trim="locationAdd" @keyup.enter.native="onSubmit" placeholder="请输入地名关键字"></el-input> &lt;!&ndash; 这里指代一个自定义搜索框组件 &ndash;&gt;-->
+<!--      </bm-auto-complete>-->
+<!--    </bm-control>-->
+<!--    <bm-local-search :keyword="keyword" :auto-viewport="true" :panel="false" ></bm-local-search>-->
+  </b-map>
+
+</template>
+<script>
+    import bMap from 'vue-baidu-map/components/map/Map.vue'
+    import bmView from 'vue-baidu-map/components/map/MapView.vue'
+    import bmControl from 'vue-baidu-map/components/controls/Control.vue'
+    import bmAutoComplete from 'vue-baidu-map/components/others/AutoComplete.vue'
+    import bmLocalSearch from 'vue-baidu-map/components/search/LocalSearch.vue'
+    export default {
+        props: {
+            center: {
+                type: [Object, String]
+            },
+            zoom: Number
+        },
+        data () {
+            return {
+                // center:{},
+                locData:{
+                    lng:'',
+                    lat:'',
+                    address:'',
+                },
+                locationAdd:"",
+                keyword: "",
+            }
+        },
+        components: {
+            bMap , //指定组件模板
+            bmAutoComplete,
+            bmView,
+            bmControl,
+            bmLocalSearch
+        },
+        methods: {
+            handler ({BMap, map}) {
+                // console.log(BMap, map);
+                let b = new BMap.MercatorProjection().pointToLngLat(new BMap.Pixel(this.center.lng,this.center.lat));
+                this.center.lng = b.lng;
+                this.center.lat = b.lat;
+                window.map = map;
+                window.BMap = BMap;
+            },
+            paintPolyline (e) {
+                const that = this;
+                // map.clearOverlays();
+                // let Icon_0 = new BMap.Icon("icon/map_marker_check.png", new BMap.Size(64, 64), {anchor: new BMap.Size(18, 32),imageSize: new BMap.Size(36, 36)});
+                // var myMarker = new BMap.Marker(new BMap.Point(e.point.lng, e.point.lat),{icon: Icon_0});
+                // map.addOverlay(myMarker);
+                let gc = new BMap.Geocoder();
+                that.locData.lng = e.point.lng;
+                that.locData.lat = e.point.lat;
+                gc.getLocation(e.point, function (rs) {
+                    //console.log(rs.address);//地址信息
+                    that.locData.address = rs.address;
+                    that.$emit("mapPointChange", that.locData);
+                });
+            },
+            onSubmit(val){
+                const that = this;
+                const address = that.center;
+                let gc = new BMap.Geocoder();
+                gc.getPoint(address,function (point) {
+                    if (point){
+                        that.locData.lng = point.lng;
+                        that.locData.lat = point.lat;
+                        that.locData.address = address;
+                        that.$emit("mapPointChange", that.locData);
+                    }
+                },address);
+            },
+            setLocationAdd(val){
+              // this.locationAdd = val;
+              // this.keyword = val;
+              //   this.center = val;
+                const that = this;
+                let gc = new BMap.Geocoder();
+                gc.getPoint(val,function (point) {
+                    if (point){
+                        that.center.lng = point.lng;
+                        that.center.lat = point.lat;
+                    }
+                },val);
+            },
+
+            infohtmlset(poi){
+// debugger
+            },
+        },
+        mounted() {
+            // let that = this;
+            // that.$emit("mapPointChange", {
+            //     lng: that.center.lng,
+            //     lat: that.center.lat
+            // });
+
+        }
+    }
+</script>
+<style lang="scss" scoped>
+  .map {width: 100%;height: 500px; //必须给容器指高度，要不然地图将显示在一个高度为0的容器中，自然看不到
+    　　//隐藏左下角百度地图logo
+    .anchorBL {display: none!important;}
+  }
+</style>
